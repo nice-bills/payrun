@@ -1,0 +1,55 @@
+{
+  "label": "agent-09-esi-expense-scope-t0",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T21:51:11.231Z",
+  "latencyMs": 4388,
+  "servHeaders": {
+    "x-openserv-request-id": "3d5bacfc-3d20-4efe-962d-c4afb39802d0"
+  },
+  "json": {
+    "id": "chatcmpl-ERldM65jDOII6eXffaOmpcSOJvULy",
+    "object": "chat.completion",
+    "created": 1790286668,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_wly5MVMljpsKiGW6iGR3VpQL",
+              "type": "function",
+              "function": {
+                "name": "hold_invoice",
+                "arguments": "{\"cited_clauses\":[3,7],\"reasons\":[{\"clause\":3,\"finding\":\"The dinner expense has no written approval on file; the listed prior written approval is only for the Figma seat.\",\"evidence_quote\":\"Written expense approvals on file for this contractor: Figma seat for campaign design work up to 200 USDC (approved 2026-08-10 by Kofi Tetteh (CEO))\"},{\"clause\":7,\"finding\":\"The investor pitch deck design work is outside the agreed growth-marketing scope and no manager sign-off is recorded.\",\"evidence_quote\":\"Scope of work: Growth marketing: paid social campaigns and analytics reporting.\"}],\"policy_covers\":true,\"question_for_owner\":\"Please confirm whether the investor pitch deck design had manager sign-off and whether the team dinner expense had prior written approval.\"}"
+              }
+            }
+          ],
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1993,
+      "completion_tokens": 186,
+      "total_tokens": 2179,
+      "prompt_tokens_details": {
+        "cached_tokens": 1155,
+        "cache_write_tokens": 712,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

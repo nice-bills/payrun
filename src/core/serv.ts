@@ -49,7 +49,7 @@ export interface ServCall {
   shadow?: { hint: string; maxIterations?: number };
   /** Bypass SERV entirely (x-openserv-disable-braid) for a controlled comparison. */
   raw?: boolean;
-  reasoningEffort?: "low" | "medium" | "high";
+  reasoningEffort?: "none" | "low" | "medium" | "high";
   /** Caps output; also lowers SERV's pre-flight cost ceiling for the request. */
   maxCompletionTokens?: number;
   /** Force SERV to regenerate the reasoning prompt instead of using its cache. */

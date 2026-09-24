@@ -216,7 +216,9 @@ export async function runInvoiceAgent(serv: ServClient, input: AgentInput): Prom
     const res = await serv.call({
       model: SMALL_MODEL,
       features: MODES.serv.features,
-      reasoningEffort: MODES.serv.reasoningEffort,
+      // gpt-6-luna on chat completions takes function tools only with reasoning_effort "none"
+      // (SERV 400, 24 Sep). SERV's compiled reasoning graph carries the structure instead.
+      reasoningEffort: "none",
       shadow: input.shadow === false ? undefined : { hint: agentShadowHint(policy, findings), maxIterations: 2 },
       maxCompletionTokens: 1500,
       system,

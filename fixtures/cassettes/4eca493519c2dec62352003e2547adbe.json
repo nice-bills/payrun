@@ -1,0 +1,55 @@
+{
+  "label": "agent-11-unknown-contractor-t0",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T21:51:15.577Z",
+  "latencyMs": 4339,
+  "servHeaders": {
+    "x-openserv-request-id": "937bc59f-a95c-46f2-b6ea-8fddd8754357"
+  },
+  "json": {
+    "id": "chatcmpl-ERldSH4JNErSkRfy1DBqhXEP6KHDK",
+    "object": "chat.completion",
+    "created": 1790286674,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_otsRcxnrlovKENzB79smqdiF",
+              "type": "function",
+              "function": {
+                "name": "block_invoice",
+                "arguments": "{\"cited_clauses\":[],\"reasons\":[],\"suspected_manipulation\":true}"
+              }
+            }
+          ],
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1641,
+      "completion_tokens": 32,
+      "total_tokens": 1673,
+      "prompt_tokens_details": {
+        "cached_tokens": 1155,
+        "cache_write_tokens": 360,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

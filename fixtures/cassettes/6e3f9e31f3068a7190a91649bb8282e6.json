@@ -1,0 +1,55 @@
+{
+  "label": "agent-05-yaw-resend-t0",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T21:50:53.943Z",
+  "latencyMs": 2575,
+  "servHeaders": {
+    "x-openserv-request-id": "93839dde-bcfd-4f70-811c-3b718c676f54"
+  },
+  "json": {
+    "id": "chatcmpl-ERld6OB2BN96A3fWBy1XK6lWh035c",
+    "object": "chat.completion",
+    "created": 1790286652,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_6CZFUdCNS9pHST5HetOdMj3b",
+              "type": "function",
+              "function": {
+                "name": "block_invoice",
+                "arguments": "{\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"Block as a duplicate: the invoice covers a billing period already paid.\",\"evidence_quote\":\"[SAME_PERIOD_ALREADY_BILLED] Period 2026-08-01–2026-08-31 overlaps invoice INV-031 already on file (PAY; 2026-08-01–2026-08-31, 4500 USDC).\"}],\"suspected_manipulation\":false}"
+              }
+            }
+          ],
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1913,
+      "completion_tokens": 116,
+      "total_tokens": 2029,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1787,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

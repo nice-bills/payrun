@@ -1,0 +1,55 @@
+{
+  "label": "agent-08-nana-arithmetic-t0",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T21:51:06.838Z",
+  "latencyMs": 6875,
+  "servHeaders": {
+    "x-openserv-request-id": "3d3402e4-00c3-4c2e-957a-5ef6fcb3536c"
+  },
+  "json": {
+    "id": "chatcmpl-ERldFr3zwAVjSSErXG0aLSrR2GOhp",
+    "object": "chat.completion",
+    "created": 1790286661,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_UPADQtBP62ugAmWA5b85nQBR",
+              "type": "function",
+              "function": {
+                "name": "block_invoice",
+                "arguments": "{\"cited_clauses\":[1],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice total conflicts with the agreed day rate for the billed days, so the requested amount is not payable as stated.\",\"evidence_quote\":\"10 days × 300 = 3,300\"}],\"suspected_manipulation\":false}"
+              }
+            }
+          ],
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1755,
+      "completion_tokens": 80,
+      "total_tokens": 1835,
+      "prompt_tokens_details": {
+        "cached_tokens": 1155,
+        "cache_write_tokens": 474,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

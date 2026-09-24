@@ -14,6 +14,7 @@
  * deploy it with `npx @openserv-labs/client deploy`.
  */
 import "dotenv/config";
+import { existsSync } from "node:fs";
 import { Agent, run } from "@openserv-labs/sdk";
 import { provision, triggers } from "@openserv-labs/client";
 import { z } from "zod";
@@ -53,6 +54,10 @@ agent.addCapability({
 });
 
 async function main() {
+  // The deployed copy must reuse the provisioned identity, never sign up a new account.
+  if (process.env.PAYRUN_REQUIRE_OPENSERV_STATE === "1" && !existsSync(".openserv.json")) {
+    throw new Error(".openserv.json is missing, so provision() would create a new OpenServ account. Rebuild with npm run openserv:build.");
+  }
   const result = await provision({
     agent: {
       instance: agent,
