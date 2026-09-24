@@ -30,12 +30,14 @@ export function PayoutsBoard({
   paid,
   tags,
   payer,
+  owner,
   scale,
 }: {
   due: DueRow[];
   paid: (PaymentResult & { name: string })[];
   tags: TagRow[];
   payer: string | null;
+  owner: string | null;
   scale: number;
 }) {
   const router = useRouter();
@@ -162,7 +164,7 @@ export function PayoutsBoard({
       <aside aria-label="Wallet rules" className="px-4 pb-12 pt-6 sm:px-8 lg:scroll-y lg:min-h-0 lg:pl-2">
         <h2 className="text-2xl font-black tracking-[-0.03em] text-ink">The wallet&apos;s own rules</h2>
         <p className="mt-1 max-w-[40ch] text-sm text-ink">
-          Compiled from the same policy and attached to the paying wallet{payer ? ` (${shortHash(payer)})` : ""}. Coinbase&apos;s signer enforces them, not Payrun and not a model.
+          Compiled from the same policy and attached to your payroll wallet{payer ? ` (${shortHash(payer)})` : ""}. Coinbase&apos;s signer enforces them, not Payrun and not a model.
         </p>
         <ul className="mt-6 flex flex-col gap-3">
           {tags.map((t, n) => (
@@ -182,6 +184,23 @@ export function PayoutsBoard({
               </div>
             </li>
           ))}
+          {owner ? (
+            <li className="flex items-center" style={{ rotate: `${tags.length % 2 ? 0.6 : -0.6}deg` }}>
+              <svg aria-hidden viewBox="0 0 40 10" className="h-3 w-10 shrink-0 text-ink">
+                <path d="M0 5 C 12 1, 26 9, 40 5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+              </svg>
+              <div className="tag flex flex-1 items-center justify-between gap-3 bg-paper py-2.5 pr-4">
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-black text-ink">You, withdrawing</span>
+                  <span className="block font-type text-[0.7rem] text-ink-2">{shortHash(owner)}</span>
+                </span>
+                <span className="text-right">
+                  <span className="block font-type text-sm font-bold text-ink">any amount</span>
+                  <span className="block font-type text-[0.65rem] text-ink-2">your own money</span>
+                </span>
+              </div>
+            </li>
+          ) : null}
         </ul>
 
         <div className={`mt-8 rounded-[3px] bg-band p-5 shadow-[var(--shadow-paper)] ${scam?.refused ? "refuse" : ""}`} key={scam ? "tried" : "idle"}>

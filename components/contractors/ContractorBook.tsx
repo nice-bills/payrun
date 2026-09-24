@@ -148,7 +148,7 @@ export function ContractorBook({ contractors, rulesCurrent, rulesAttachedAt }: {
         <div className="mx-auto max-w-[900px]">
           <h1 className="text-[2.6rem] font-black leading-none tracking-[-0.045em] text-ink">Contractor book</h1>
           <p className="mt-2 max-w-[60ch] text-ink">
-            {contractors.length} contractors. Payrun pays only these wallets, never more than a month at the agreed rate. The same limits live on the paying wallet.
+            {contractors.length} contractors. Payrun pays only these wallets, never more than a month at the agreed rate. The same limits live on your payroll wallet.
           </p>
 
           <div className={`mt-5 flex flex-wrap items-center gap-4 rounded-[3px] px-5 py-4 shadow-[var(--shadow-paper)] ${rulesCurrent ? "bg-paper" : "bg-band text-on-band"}`}>

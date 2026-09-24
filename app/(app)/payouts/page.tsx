@@ -1,5 +1,7 @@
 import { PayoutsBoard } from "@/components/payouts/PayoutsBoard";
 import { loadDesk } from "@/lib/data";
+import { dbPath, isDemo } from "@/lib/demo";
+import { Store } from "@/src/core/store";
 import { agreementMaxUsdc, settlementScale, toSettled } from "@/src/core/walletPolicy";
 
 export const dynamic = "force-dynamic";
@@ -24,5 +26,5 @@ export default function PayoutsPage() {
     maxUsdc: agreementMaxUsdc(c),
     maxSettled: toSettled(agreementMaxUsdc(c), scale),
   }));
-  return <PayoutsBoard due={due} paid={paid} tags={tags} payer={process.env.PAYRUN_WALLET_ADDRESS ?? null} scale={scale} />;
+  return <PayoutsBoard due={due} paid={paid} tags={tags} payer={process.env.PAYRUN_WALLET_ADDRESS ?? null} owner={new Store(dbPath(), { readOnly: isDemo() }).setting("owner_wallet")} scale={scale} />;
 }

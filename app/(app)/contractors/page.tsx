@@ -8,8 +8,9 @@ export const dynamic = "force-dynamic";
 
 export default function ContractorsPage() {
   const data = loadDesk();
-  const saved = new Store(dbPath(), { readOnly: isDemo() }).setting("wallet_rules");
+  const store = new Store(dbPath(), { readOnly: isDemo() });
+  const saved = store.setting("wallet_rules");
   const attached = saved ? (JSON.parse(saved) as { fingerprint: string; at: string }) : null;
-  const current = data.policy ? walletRulesFingerprint(data.contractors, data.policy) : null;
+  const current = data.policy ? walletRulesFingerprint(data.contractors, data.policy, store.setting("owner_wallet")) : null;
   return <ContractorBook contractors={data.contractors} rulesCurrent={!!attached && attached.fingerprint === current} rulesAttachedAt={attached?.at ?? null} />;
 }

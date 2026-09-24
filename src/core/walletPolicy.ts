@@ -28,6 +28,16 @@ export function agreementMaxUsdc(c: Contractor): number {
 /** CDP accepts at most 10 rules per policy. */
 export const MAX_POLICY_RULES = 10;
 
+export interface WalletPolicyOptions {
+  scale?: number;
+  /**
+   * The company owner's own wallet. When set, one more rule lets the payroll
+   * wallet send USDC back to it (any amount), so the owner can always withdraw.
+   * Every other address is still refused.
+   */
+  owner?: string | null;
+}
+
 /**
  * Compile the hard invariants into a CDP account policy, enforced by Coinbase's
  * signer rather than by our code or any model:
@@ -36,15 +46,22 @@ export const MAX_POLICY_RULES = 10;
  *   - for at most that contractor's agreement maximum (at the settlement scale).
  * A transaction that matches no accept rule is rejected by the signer.
  *
+ * With an owner wallet on file, one extra rule allows withdrawals to it.
+ *
  * AgentKit's transfer goes through `sendEvmTransaction`, so that is the only
  * operation accepted. With more contractors than CDP's rule limit, the per-
  * contractor caps collapse into one rule: any address-book wallet, largest cap.
  */
-export function compileWalletPolicy(contractors: Contractor[], policy: PolicyVersion, scale = settlementScale()): CreatePolicyBody {
+export function compileWalletPolicy(contractors: Contractor[], policy: PolicyVersion, opts: WalletPolicyOptions = {}): CreatePolicyBody {
+  const scale = opts.scale ?? settlementScale();
+  const owner = opts.owner || null;
+  if (owner && contractors.some((c) => c.wallet.toLowerCase() === owner.toLowerCase())) {
+    throw new Error("The owner wallet is also a contractor's wallet; withdrawals would lift that contractor's cap.");
+  }
   const usdc = { type: "evmAddress" as const, addresses: [USDC_BASE_SEPOLIA as `0x${string}`], operator: "in" as const };
   const baseSepolia = { type: "evmNetwork" as const, networks: ["base-sepolia" as const], operator: "in" as const };
   const units = (usdcAmount: number) => parseUnits(String(toSettled(usdcAmount, scale)), USDC_DECIMALS).toString();
-  const rule = (wallets: string[], maxUsdc: number) => ({
+  const rule = (wallets: string[], maxUsdc: number | null) => ({
     action: "accept" as const,
     operation: "sendEvmTransaction" as const,
     criteria: [
@@ -58,17 +75,21 @@ export function compileWalletPolicy(contractors: Contractor[], policy: PolicyVer
             function: "transfer",
             params: [
               { name: "to", operator: "in" as const, values: wallets },
-              { name: "value", operator: "<=" as const, value: units(maxUsdc) },
+              ...(maxUsdc === null ? [] : [{ name: "value", operator: "<=" as const, value: units(maxUsdc) }]),
             ],
           },
         ],
       },
     ],
   });
-  const rules: CreatePolicyBody["rules"] =
-    contractors.length <= MAX_POLICY_RULES
+  const room = MAX_POLICY_RULES - (owner ? 1 : 0);
+  const rules: CreatePolicyBody["rules"] = [
+    ...(contractors.length <= room
       ? contractors.map((c) => rule([c.wallet], agreementMaxUsdc(c)))
-      : [rule(contractors.map((c) => c.wallet), Math.max(...contractors.map(agreementMaxUsdc)))];
+      : [rule(contractors.map((c) => c.wallet), Math.max(...contractors.map(agreementMaxUsdc)))]),
+    // Withdrawals: back to the owner, uncapped (it is the owner's own money).
+    ...(owner ? [rule([owner], null)] : []),
+  ];
   return {
     scope: "account",
     // CDP allows 50 chars of [A-Za-z0-9 ,.]

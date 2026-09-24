@@ -203,7 +203,7 @@ describe("gap classification", () => {
 
 describe("wallet policy", () => {
   it("allows USDC transfer only to each contractor, capped at their scaled agreement max", () => {
-    const wp = compileWalletPolicy(contractors, policy, 0.001);
+    const wp = compileWalletPolicy(contractors, policy, { scale: 0.001 });
     expect(wp.scope).toBe("account");
     expect(wp.rules).toHaveLength(contractors.length);
     expect(wp.description).toMatch(/^[A-Za-z0-9 ,.]{1,50}$/);
@@ -215,11 +215,22 @@ describe("wallet policy", () => {
   });
   it("stays within CDP's 10-rule limit for large address books", () => {
     const many = Array.from({ length: 14 }, (_, i) => ({ ...ama, id: `c${i}`, wallet: `0x${String(i).padStart(40, "0")}` as `0x${string}`, dayRateUsdc: 100 + i }));
-    const wp = compileWalletPolicy(many, policy, 0.001);
+    const wp = compileWalletPolicy(many, policy, { scale: 0.001 });
     expect(wp.rules).toHaveLength(1);
     const params = (wp.rules[0] as any).criteria[2].conditions[0].params;
     expect(params[0].values).toHaveLength(14);
     expect(params[1].value).toBe(String(Math.round(113 * 15 * 0.001 * 1e6)));
+  });
+  it("adds one uncapped withdraw rule for the owner, and only for the owner", () => {
+    const owner = "0x069c000000000000000000000000000000004032";
+    const wp = compileWalletPolicy(contractors, policy, { scale: 0.001, owner });
+    expect(wp.rules).toHaveLength(contractors.length + 1);
+    const params = (wp.rules.at(-1) as any).criteria[2].conditions[0].params;
+    expect(params).toEqual([{ name: "to", operator: "in", values: [owner] }]);
+    // Ten contractors plus an owner would be 11 rules: contractors collapse, the owner rule stays.
+    const ten = Array.from({ length: 10 }, (_, i) => ({ ...ama, id: `c${i}`, wallet: `0x${String(i).padStart(40, "0")}` as `0x${string}` }));
+    expect(compileWalletPolicy(ten, policy, { scale: 0.001, owner }).rules).toHaveLength(2);
+    expect(() => compileWalletPolicy(contractors, policy, { owner: ama.wallet })).toThrow(/contractor/);
   });
 });
 

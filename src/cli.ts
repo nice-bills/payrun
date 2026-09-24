@@ -149,13 +149,13 @@ async function main() {
     case "wallet": {
       const sub = args[0];
       if (sub === "policy") {
-        console.log(JSON.stringify(compileWalletPolicy(store.contractors(), requirePolicy()), null, 2));
+        console.log(JSON.stringify(compileWalletPolicy(store.contractors(), requirePolicy(), { owner: store.setting("owner_wallet") }), null, 2));
         break;
       }
       const payer = await (await payments()).createAgentKitPayer();
       if (sub === "address" || !sub) console.log(payer.address);
       if (sub === "fund") console.log(await payer.fundFromFaucet());
-      if (sub === "apply") console.log(`Applied CDP policy ${await payer.applyPolicy(requirePolicy(), store.contractors())} to ${payer.address}`);
+      if (sub === "apply") console.log(`Applied CDP policy ${await payer.applyPolicy(requirePolicy(), store.contractors(), store.setting("owner_wallet"))} to ${payer.address}`);
       break;
     }
     case "pay": {

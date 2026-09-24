@@ -26,8 +26,8 @@ export interface PaymentResult {
 
 export interface Payer {
   address: string;
-  /** Apply the compiled CDP policy to the paying account. Returns the policy id. */
-  applyPolicy(policy: PolicyVersion, contractors: Contractor[]): Promise<string>;
+  /** Apply the compiled CDP policy to the paying account (with the owner's withdraw rule, if set). Returns the policy id. */
+  applyPolicy(policy: PolicyVersion, contractors: Contractor[], owner?: string | null): Promise<string>;
   transfer(to: string, amountUsdc: number): Promise<{ ok: boolean; txHash: string | null; message: string }>;
   /** Policy ids currently attached to the paying account. */
   attachedPolicies(): Promise<string[]>;
@@ -56,8 +56,8 @@ export async function createAgentKitPayer(): Promise<Payer> {
 
   return {
     address,
-    async applyPolicy(policy, contractors) {
-      const created = await cdp.policies.createPolicy({ policy: compileWalletPolicy(contractors, policy) });
+    async applyPolicy(policy, contractors, owner) {
+      const created = await cdp.policies.createPolicy({ policy: compileWalletPolicy(contractors, policy, { owner }) });
       await cdp.evm.updateAccount({ address: address as `0x${string}`, update: { accountPolicy: created.id } });
       return created.id;
     },

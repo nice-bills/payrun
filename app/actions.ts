@@ -5,6 +5,7 @@ import { decide, MODES } from "@/src/core/decide";
 import { ServClient } from "@/src/core/serv";
 import { DEMO_MESSAGE, dbPath, isDemo } from "@/lib/demo";
 import { Store } from "@/src/core/store";
+import { walletRulesFingerprint } from "@/lib/walletRules";
 import type { Decision } from "@/src/core/types";
 
 const store = () => new Store(dbPath(), { readOnly: isDemo() });
@@ -228,6 +229,8 @@ export async function saveContractor(input: import("@/src/core/types").Contracto
     const problems = contractorProblems(input);
     if (problems.length) return { ok: false, error: problems.join(" ") };
     const s = store();
+    const owner = s.setting("owner_wallet");
+    if (owner && input.wallet.toLowerCase() === owner.toLowerCase()) return { ok: false, error: "That is the owner's wallet. A contractor needs their own." };
     const taken = new Set(s.contractors().map((c) => c.id));
     const id = input.isNew || !input.id ? slugId(input.name, taken) : input.id;
     const { isNew: _drop, ...c } = input;
@@ -255,15 +258,86 @@ export async function attachWalletRules(): Promise<ActionResult<string>> {
   if (isDemo()) return demoRefusal();
   try {
     const { createAgentKitPayer } = await import("@/src/core/pay");
-    const { walletRulesFingerprint } = await import("@/lib/walletRules");
     const s = store();
     const policy = s.livePolicy();
     if (!policy) return { ok: false, error: "No live policy." };
+    const owner = s.setting("owner_wallet");
     const payer = await createAgentKitPayer();
-    const id = await payer.applyPolicy(policy, s.contractors());
-    s.setSetting("wallet_rules", JSON.stringify({ id, fingerprint: walletRulesFingerprint(s.contractors(), policy), at: new Date().toISOString() }));
+    const id = await payer.applyPolicy(policy, s.contractors(), owner);
+    s.setSetting("wallet_rules", JSON.stringify({ id, fingerprint: walletRulesFingerprint(s.contractors(), policy, owner), at: new Date().toISOString() }));
     revalidatePath("/", "layout");
     return { ok: true, value: id };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export interface OwnerStatus {
+  /** The company owner's own wallet: the only place withdrawals can go. */
+  owner: string | null;
+  /** The rules attached to the payroll wallet include the owner's withdraw rule. */
+  withdrawReady: boolean;
+}
+
+function ownerStatusOf(s: Store): OwnerStatus {
+  const owner = s.setting("owner_wallet");
+  const policy = s.livePolicy();
+  const saved = s.setting("wallet_rules");
+  if (!owner || !policy || !saved) return { owner, withdrawReady: false };
+  return { owner, withdrawReady: (JSON.parse(saved) as { fingerprint: string }).fingerprint === walletRulesFingerprint(s.contractors(), policy, owner) };
+}
+
+export async function ownerWallet(): Promise<ActionResult<OwnerStatus>> {
+  try {
+    return { ok: true, value: ownerStatusOf(store()) };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/**
+ * Record the wallet the owner topped up from as the owner wallet. The first
+ * connected wallet is saved automatically; replacing it is an explicit choice.
+ * Either way the withdraw rule only takes effect once the rules are re-attached.
+ */
+export async function setOwnerWallet(address: string, replace = false): Promise<ActionResult<OwnerStatus>> {
+  if (isDemo()) return demoRefusal();
+  try {
+    const { getAddress, isAddress } = await import("viem");
+    if (!isAddress(address)) return { ok: false, error: "That is not a wallet address." };
+    const s = store();
+    const current = s.setting("owner_wallet");
+    if (current && !replace) return { ok: true, value: ownerStatusOf(s) };
+    if (s.contractors().some((c) => c.wallet.toLowerCase() === address.toLowerCase())) {
+      return { ok: false, error: "That wallet is in the contractor book. The owner needs a wallet of their own." };
+    }
+    s.setSetting("owner_wallet", getAddress(address));
+    revalidatePath("/", "layout");
+    return { ok: true, value: ownerStatusOf(s) };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/**
+ * Send USDC from the payroll wallet back to the owner wallet on file. The
+ * destination is never taken from the request, and Coinbase's signer only
+ * allows it because the owner's withdraw rule is attached.
+ */
+export async function withdrawToOwner(amountUsdc: number): Promise<ActionResult<{ txHash: string; to: string }>> {
+  if (isDemo()) return demoRefusal();
+  try {
+    const s = store();
+    const { owner, withdrawReady } = ownerStatusOf(s);
+    if (!owner) return { ok: false, error: "No owner wallet on file. Connect the wallet you top up from first." };
+    if (!withdrawReady) return { ok: false, error: "The withdraw rule is not on the wallet yet. Attach the rules first." };
+    if (!(amountUsdc > 0)) return { ok: false, error: "Enter an amount above zero." };
+    const balance = await payerBalance();
+    if (balance.ok && amountUsdc > balance.value.usdc) return { ok: false, error: `The payroll wallet holds ${balance.value.usdc} test USDC.` };
+    const { createAgentKitPayer } = await import("@/src/core/pay");
+    const r = await (await createAgentKitPayer()).transfer(owner, Math.round(amountUsdc * 1e6) / 1e6);
+    if (!r.ok || !r.txHash) return { ok: false, error: r.message.replace(/^Error transferring the asset: (APIError: )?/, "").slice(0, 200) };
+    return { ok: true, value: { txHash: r.txHash, to: owner } };
   } catch (e) {
     return fail(e);
   }

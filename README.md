@@ -13,7 +13,7 @@ A small company pays 5–30 contractors in USDC. Every month a pile of invoices 
 1. **SERV Prompt Guard reads it first, alone.** The invoice is written by the person who gains from fooling the reviewer, so an injected instruction is refused before any model sees it (0 tokens billed).
 2. **Code checks the facts** that must never be guessed: sums, day cap, rate, wallet on file, invoices already on file. It states what passed as well as what failed, and it can only make a verdict stricter.
 3. **SERV Reasoning applies the policy.** The written policy is the system prompt; SERV compiles it into a bounded reasoning graph (Kronos audit + Multipath), cached per version, and a small model (`gpt-6-luna`) walks it for each invoice with a per-invoice Shadow Agent hint. Every verdict cites clauses and quotes evidence.
-4. **The wallet enforces the same limits.** Approved invoices are paid through Coinbase AgentKit from a CDP wallet whose account policy allows USDC `transfer` only to contractor-book wallets, up to each agreement's monthly maximum. The signer refused a direct transfer to the scammer's address and an over-cap transfer in testing.
+4. **The wallet enforces the same limits.** Approved invoices are paid through Coinbase AgentKit from a CDP wallet whose account policy allows USDC `transfer` only to contractor-book wallets, up to each agreement's monthly maximum. The signer refused a direct transfer to the scammer's address and an over-cap transfer in testing. The payroll wallet is the company's own (created under its Coinbase developer account); one more rule lets it send back to the owner's wallet, the one it was topped up from, so the owner can always withdraw and nobody else can.
 
 ## Where SERV sits
 
