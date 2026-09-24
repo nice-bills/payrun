@@ -38,6 +38,9 @@ export function FundPayer() {
   const [tx, setTx] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  // Only the browser can know whether a wallet extension exists; decide after mount so the first render matches the server's.
+  const [hasWallet, setHasWallet] = useState<boolean | null>(null);
+  useEffect(() => setHasWallet(!!injected()), []);
 
   const refresh = useCallback(async () => {
     const r = await payerBalance();
@@ -53,7 +56,10 @@ export function FundPayer() {
 
   const readMine = useCallback(async (who: `0x${string}`) => {
     const v = await chain.readContract({ address: USDC, abi: erc20Abi, functionName: "balanceOf", args: [who] });
-    setMine(Number(formatUnits(v, 6)));
+    const held = Number(formatUnits(v, 6));
+    setMine(held);
+    // Start from an amount the wallet can actually send.
+    setAmount((a) => (Number(a) > held ? String(Math.floor(held * 100) / 100) : a));
   }, []);
 
   const connect = async () => {
@@ -112,8 +118,6 @@ export function FundPayer() {
     setTimeout(() => setCopied(false), 1400);
   };
 
-  const hasWallet = typeof window !== "undefined" && !!injected();
-
   return (
     <section aria-label="Paying wallet" className="rounded-[3px] bg-band p-5 text-on-band shadow-[var(--shadow-paper)] sm:p-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -138,7 +142,9 @@ export function FundPayer() {
         </div>
 
         {step === "idle" || (step === "error" && !account) ? (
-          hasWallet ? (
+          hasWallet === null ? (
+            <span className="skeleton inline-block h-10 w-48 rounded-[3px]" aria-hidden />
+          ) : hasWallet ? (
             <button type="button" onClick={connect} className="press rounded-[3px] bg-marker px-4 py-2.5 text-sm font-black text-ink hover:bg-marker-press" style={{ boxShadow: "2px 3px 0 oklch(0.18 0.06 258)" }}>
               Top up from your wallet
             </button>
@@ -156,8 +162,10 @@ export function FundPayer() {
 
       {account && step !== "idle" ? (
         <div className="mt-5 flex flex-wrap items-center gap-3 rounded-[3px] bg-paper p-3 text-ink">
-          <span className="font-type text-xs">
-            From {shortHash(account)} · {mine ?? "…"} test USDC
+          <span className="font-type text-xs leading-relaxed">
+            From your wallet {shortHash(account)} · {mine ?? "…"} test USDC
+            <br />
+            To Payrun&apos;s paying wallet {balance ? shortHash(balance.address) : "…"}
           </span>
           <span className="flex-1" />
           <label className="flex items-center gap-2 text-sm font-bold">
@@ -177,7 +185,7 @@ export function FundPayer() {
             disabled={step === "sending" || step === "confirming"}
             className="press rounded-[3px] bg-ink px-4 py-2 text-sm font-black text-paper hover:bg-band disabled:cursor-progress disabled:opacity-70"
           >
-            {step === "sending" ? "Confirm in your wallet…" : step === "confirming" ? "Waiting for Base…" : "Send to the payer"}
+            {step === "sending" ? "Confirm in your wallet…" : step === "confirming" ? "Waiting for Base…" : `Send ${amount || 0} USDC to ${balance ? shortHash(balance.address) : "the payer"}`}
           </button>
         </div>
       ) : null}
