@@ -79,11 +79,11 @@ export function judgmentUserMessage(invoice: Invoice, fields: InvoiceFields, con
     "AGREEMENT",
     agreement,
     "",
-    "FACTS (computed by code; treat as true)",
+    "FACTS",
     `- Invoice total: ${fields.totalUsdc ?? "missing"} USDC`,
     facts,
     "",
-    "EXTRACTED FIELDS",
+    "EXTRACTED",
     JSON.stringify(fields),
     "",
     `<invoice source="${invoice.source}">`,
@@ -151,8 +151,11 @@ export async function decide(serv: ServClient, input: DecideInput): Promise<Deci
     model: mode.model,
     features: mode.features,
     raw: mode.raw,
-    guard: mode.guard,
-    shadow: mode.shadow ? { hint: shadowHint(policy, findings) } : undefined,
+    // Prompt Guard runs on extraction only, where the payee's text arrives alone.
+    // On this call the user turn also carries our own context (agreement, facts),
+    // which the guard mis-read as an override attempt on clean invoices (spike, 24 Sep).
+    shadow: mode.shadow ? { hint: shadowHint(policy, findings), maxIterations: 2 } : undefined,
+    maxCompletionTokens: 1500,
     reasoningEffort: mode.reasoningEffort,
     system: judgmentSystemPrompt(policy.clauses),
     user: judgmentUserMessage(invoice, fields, contractor, findings),
@@ -161,9 +164,6 @@ export async function decide(serv: ServClient, input: DecideInput): Promise<Deci
   });
   calls.push(res.meta);
 
-  if (res.meta.guardBlocked) {
-    return { ...base, fields, contractorId: contractor?.id ?? null, findings, judgment: null, finalVerdict: "BLOCK", payAmountUsdc: 0, overriddenBy: [], blockedByGuard: true, calls };
-  }
   const judgment = res.parsed ? toJudgment(res.parsed, policy.clauses.length) : null;
   // An unparseable judgment is never a PAY.
   const modelVerdict = judgment?.verdict ?? "HOLD";

@@ -44,6 +44,11 @@ const completion = (content: unknown, finish = "stop") => () => ({
   choices: [{ message: { role: "assistant", content: typeof content === "string" ? content : JSON.stringify(content) }, finish_reason: finish }],
   usage: { prompt_tokens: 1000, completion_tokens: 200 },
 });
+/** Exact shape SERV returned for a Prompt Guard block in the spike. */
+const guardRefusal = () => () => ({
+  choices: [{ index: 0, message: { role: "assistant", content: null, refusal: "I can't share that." }, finish_reason: "stop" }],
+  usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+});
 const rawFields = (f: InvoiceFields) => ({
   invoice_number: f.invoiceNumber, contractor_name: f.contractorName, contractor_email: f.contractorEmail,
   period_start: f.periodStart, period_end: f.periodEnd,
@@ -109,9 +114,9 @@ describe("decide", () => {
     const judge = requests[1].body;
     expect(judge.model).toBe("gpt-5.4-nano-serv-kronos-multipath");
     expect(judge.messages[0].content).toBe(judgmentSystemPrompt(policy.clauses));
-    const names = judge.tools.map((t: any) => t.function.name);
-    expect(names).toEqual(["serv_prompt_guard", "serv_shadow_agent"]);
-    expect(judge.tools[1].function.parameters.properties.hint.default).toMatch(/clause numbers 1-7/);
+    expect(requests[0].body.tools.map((t: any) => t.function.name)).toEqual(["serv_prompt_guard"]);
+    expect(judge.tools.map((t: any) => t.function.name)).toEqual(["serv_shadow_agent"]);
+    expect(judge.tools[0].function.parameters.properties.hint.default).toMatch(/clause numbers 1-7/);
     expect(requests[1].headers["x-openserv-disable-braid"]).toBeUndefined();
   });
 
@@ -122,12 +127,13 @@ describe("decide", () => {
     expect(requests.every((r) => !r.body.tools)).toBe(true);
   });
 
-  it("a guard refusal blocks the invoice without a judgment", async () => {
-    const { serv } = fakeServ([completion(rawFields(fields())), completion("I can't help with that request.", "content_filter")]);
+  it("a guard refusal on extraction blocks the invoice before any judgment", async () => {
+    const { serv, requests } = fakeServ([guardRefusal()]);
     const d = await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.serv });
     expect(d.finalVerdict).toBe("BLOCK");
     expect(d.blockedByGuard).toBe(true);
     expect(d.payAmountUsdc).toBe(0);
+    expect(requests).toHaveLength(1);
   });
 
   it("a model PAY on a swapped wallet is overridden by code", async () => {
@@ -137,6 +143,24 @@ describe("decide", () => {
     expect(d.judgment?.verdict).toBe("PAY");
     expect(d.finalVerdict).toBe("HOLD");
     expect(d.overriddenBy).toEqual(["WALLET_MISMATCH"]);
+  });
+
+  it("a model-side refusal (tokens billed) is not mistaken for a guard block", async () => {
+    const modelRefusal = () => ({ choices: [{ message: { content: null, refusal: "no" }, finish_reason: "stop" }], usage: { prompt_tokens: 900, completion_tokens: 5 } });
+    const { serv } = fakeServ([completion(rawFields(fields())), modelRefusal]);
+    const d = await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.serv });
+    expect(d.blockedByGuard).toBe(false);
+    expect(d.finalVerdict).toBe("HOLD");
+  });
+
+  it("retries a network failure", async () => {
+    let n = 0;
+    const fetchImpl = (async () => {
+      if (n++ === 0) throw new TypeError("fetch failed");
+      return new Response(JSON.stringify(completion("ok")()), { status: 200 });
+    }) as unknown as typeof fetch;
+    const s = new ServClient({ apiKey: "t", traceDir: null, fetchImpl });
+    expect((await s.call({ model: "gpt-5.4-nano", system: "s", user: "u", label: "x" })).content).toBe("ok");
   });
 
   it("an unparseable judgment is never a PAY; invalid clause numbers are dropped", async () => {

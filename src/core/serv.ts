@@ -29,6 +29,8 @@ export interface ServCall {
   /** Bypass SERV entirely (x-openserv-disable-braid) for a controlled comparison. */
   raw?: boolean;
   reasoningEffort?: "low" | "medium" | "high";
+  /** Caps output; also lowers SERV's pre-flight cost ceiling for the request. */
+  maxCompletionTokens?: number;
   /** Force SERV to regenerate the reasoning prompt instead of using its cache. */
   noCache?: boolean;
   /** Used to name the trace file. */
@@ -65,20 +67,17 @@ export function estimateCost(model: string, promptTokens: number, completionToke
 }
 
 /**
- * Prompt Guard returns an "endpoint-shaped refusal" without calling the model
- * (docs.openserv.ai/serv-reasoning/tutorials/prompt-guard). The exact shape is
- * not documented, so detection is deliberately broad and every response is
- * traced to disk so it can be tightened against real output.
+ * Prompt Guard blocks before the upstream model runs, so a guard refusal is the
+ * only response with zero tokens billed. Observed shapes (spike, 2026-09-24):
+ *   { content: null, refusal: "I can't share that." }, finish_reason "stop"
+ *   { content: "I can't share that." },                finish_reason "content_filter"
+ * A refusal the model itself produces has non-zero usage and is not a guard block.
  */
-export function looksLikeGuardRefusal(choice: any, expectJson: boolean): boolean {
+export function looksLikeGuardRefusal(choice: any, usage: any): boolean {
   if (!choice) return false;
-  if (choice.finish_reason === "content_filter") return true;
-  if (choice.message?.refusal) return true;
-  const text: string = choice.message?.content ?? "";
-  if (expectJson && text && !text.trimStart().startsWith("{")) {
-    return /(prompt injection|injection attempt|can(?:no|')t (?:help|comply|assist)|unable to (?:help|comply|assist))/i.test(text);
-  }
-  return false;
+  const modelRan = (usage?.prompt_tokens ?? 0) > 0 || (usage?.completion_tokens ?? 0) > 0;
+  if (modelRan) return false;
+  return choice.finish_reason === "content_filter" || !!choice.message?.refusal;
 }
 
 export class ServClient {
@@ -131,6 +130,7 @@ export class ServClient {
       };
     }
     if (c.reasoningEffort) body.reasoning_effort = c.reasoningEffort;
+    if (c.maxCompletionTokens) body.max_completion_tokens = c.maxCompletionTokens;
     if (c.noCache && !c.raw) body.metadata = { prompt_cache: "disabled" };
 
     const headers: Record<string, string> = {
@@ -145,7 +145,7 @@ export class ServClient {
 
     const choice = json?.choices?.[0];
     const content: string = choice?.message?.content ?? "";
-    const guardBlocked = !c.raw && !!c.guard && looksLikeGuardRefusal(choice, !!c.schema);
+    const guardBlocked = !c.raw && !!c.guard && looksLikeGuardRefusal(choice, json?.usage);
     let parsed: T | null = null;
     if (c.schema && !guardBlocked) {
       try {
@@ -180,13 +180,22 @@ export class ServClient {
   private async post(url: string, headers: Record<string, string>, body: unknown): Promise<{ json: any; servHeaders: Record<string, string> }> {
     let lastError: unknown;
     for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
-      const res = await this.fetchImpl(url, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(body),
-        signal: AbortSignal.timeout(180_000),
-      });
-      const text = await res.text();
+      let res: Response;
+      let text: string;
+      try {
+        res = await this.fetchImpl(url, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body),
+          signal: AbortSignal.timeout(180_000),
+        });
+        text = await res.text();
+      } catch (e) {
+        // Network failures happen on slow cache-miss compiles; retry them like 5xx.
+        lastError = e;
+        await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
+        continue;
+      }
       if (res.ok) {
         const servHeaders: Record<string, string> = {};
         res.headers.forEach((v, k) => {

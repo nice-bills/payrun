@@ -2,6 +2,14 @@ import { AgentKit, CdpEvmWalletProvider, erc20ActionProvider } from "@coinbase/a
 import { compileWalletPolicy, toSettled, USDC_BASE_SEPOLIA } from "./walletPolicy.js";
 import type { Contractor, Decision, PolicyVersion } from "./types.js";
 
+// AgentKit 0.10.4 fires usage analytics without awaiting them; when the
+// analytics endpoint answers 400 the rejection is unhandled and kills Node.
+// Swallow exactly that rejection and nothing else.
+process.on("unhandledRejection", (reason) => {
+  if (reason instanceof Error && reason.stack?.includes("sendAnalyticsEvent")) return;
+  throw reason;
+});
+
 export interface PaymentResult {
   invoiceId: string;
   contractorId: string;

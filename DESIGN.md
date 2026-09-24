@@ -16,7 +16,7 @@ Track: AgentKit (OpenServ SERV Hackathon, Edition 01). Network: Base Sepolia onl
 
 - **The policy is the system prompt.** `judgmentSystemPrompt()` is byte-stable per policy version and holds no invoice data, so SERV compiles one reasoning graph per version and caches it (30 days, per org). `policy.hash` = sha256 of that prompt = the version fingerprint on every decision.
 - **Kronos + Multipath** (`gpt-5.4-nano-serv-kronos-multipath`): audited, branch-aware graph for a rule set with exceptions; a nano model walks it.
-- **Prompt Guard** on extraction and judgment: the invoice is written by the party who gains from fooling the reviewer. A guard refusal → BLOCK, the model never saw the invoice.
+- **Prompt Guard** on extraction, where the payee's text arrives alone: the invoice is written by the party who gains from fooling the reviewer. A guard refusal (zero tokens billed, `refusal` set or `finish_reason: content_filter`) → BLOCK before any judgment. Spike 24 Sep: guarding the judgment call instead false-blocked 2 of 4 clean invoices, because that user turn also carries our own agreement/facts; guarding extraction passed all clean invoices and still blocked the hidden-text PDF.
 - **Shadow Agent** with a per-invoice hint naming the facts the verdict must address (hint lives in `tools`, so it does not break the policy cache).
 - **Raw mode** (`x-openserv-disable-braid`) is the control arm for every comparison: same model, same prompts, SERV off.
 - **Gap finder** (`gaps.ts`): SERV writes boundary invoices; each is judged 3×; a flip, an uncited verdict, or `policy_covers=false` is a gap; SERV drafts a one-line clause to close it.
@@ -26,7 +26,8 @@ Track: AgentKit (OpenServ SERV Hackathon, Edition 01). Network: Base Sepolia onl
 
 - SERV's compiled graph is private (its content filter blocks it). We show our clause view, not SERV's graph.
 - Testnet settles at a disclosed 1/1000 scale (`PAYRUN_SETTLEMENT_SCALE`), applied to transfers and wallet caps alike.
-- Costs are estimates from catalog prices × returned tokens; the console is the source of truth.
+- Returned token counts do not include SERV's own feature calls (reasoning-prompt generation, Kronos audit, guard judge, shadow validator). ~30 calls on 24 Sep spent ~$4.26, about 100× the token estimate. The console Usage page is the only real cost figure.
+- SERV does not report Shadow Agent outcomes per response (only `x-openserv-request-id`), so Payrun cannot force HOLD when validation is exhausted; outcomes are in the console's Shadow Agent report.
 
 ## Proof
 

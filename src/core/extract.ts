@@ -119,6 +119,7 @@ export async function extractFields(
     system: EXTRACT_SYSTEM,
     user: `<invoice>\n${invoiceText}\n</invoice>`,
     schema: { name: "invoice_fields", schema: INVOICE_FIELDS_SCHEMA },
+    maxCompletionTokens: 1500,
     label,
   });
   return { fields: res.parsed ? toFields(res.parsed) : null, meta: res.meta };
