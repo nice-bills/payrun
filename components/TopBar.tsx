@@ -8,6 +8,7 @@ import { usdc } from "@/lib/format";
 const NAV = [
   { href: "/desk", label: "Desk" },
   { href: "/policy", label: "Policy" },
+  { href: "/contractors", label: "Contractors" },
   { href: "/payouts", label: "Payouts" },
   { href: "/proof", label: "Proof" },
 ];

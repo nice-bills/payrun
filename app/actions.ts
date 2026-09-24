@@ -194,3 +194,59 @@ export async function payerBalance(): Promise<ActionResult<{ address: string; us
     return fail(e);
   }
 }
+
+/** SERV reads a pasted agreement into a draft contractor for the owner to confirm. */
+export async function readAgreementText(text: string): Promise<ActionResult<import("@/src/core/agreement").AgreementDraft>> {
+  try {
+    if (text.trim().length < 40) return { ok: false, error: "Paste the agreement or the email that sets the terms." };
+    const { readAgreement } = await import("@/src/core/agreement");
+    return { ok: true, value: await readAgreement(new ServClient(), text) };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function saveContractor(input: import("@/src/core/types").Contractor & { isNew?: boolean }): Promise<ActionResult<string>> {
+  try {
+    const { contractorProblems, slugId } = await import("@/src/core/agreement");
+    const problems = contractorProblems(input);
+    if (problems.length) return { ok: false, error: problems.join(" ") };
+    const s = store();
+    const taken = new Set(s.contractors().map((c) => c.id));
+    const id = input.isNew || !input.id ? slugId(input.name, taken) : input.id;
+    const { isNew: _drop, ...c } = input;
+    s.upsertContractors([{ ...c, id, network: "base-sepolia", dayRateUsdc: Number(c.dayRateUsdc), monthlyDayCap: Number(c.monthlyDayCap), expenseApprovals: c.expenseApprovals ?? [] }]);
+    revalidatePath("/", "layout");
+    return { ok: true, value: id };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function removeContractor(id: string): Promise<ActionResult<string>> {
+  try {
+    store().deleteContractor(id);
+    revalidatePath("/", "layout");
+    return { ok: true, value: id };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/** Compile the contractor book into the wallet's own rules and attach them to the paying wallet. */
+export async function attachWalletRules(): Promise<ActionResult<string>> {
+  try {
+    const { createAgentKitPayer } = await import("@/src/core/pay");
+    const { walletRulesFingerprint } = await import("@/lib/walletRules");
+    const s = store();
+    const policy = s.livePolicy();
+    if (!policy) return { ok: false, error: "No live policy." };
+    const payer = await createAgentKitPayer();
+    const id = await payer.applyPolicy(policy, s.contractors());
+    s.setSetting("wallet_rules", JSON.stringify({ id, fingerprint: walletRulesFingerprint(s.contractors(), policy), at: new Date().toISOString() }));
+    revalidatePath("/", "layout");
+    return { ok: true, value: id };
+  } catch (e) {
+    return fail(e);
+  }
+}
