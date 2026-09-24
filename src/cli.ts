@@ -158,6 +158,33 @@ async function main() {
       if (sub === "apply") console.log(`Applied CDP policy ${await payer.applyPolicy(requirePolicy(), store.contractors(), store.setting("owner_wallet"))} to ${payer.address}`);
       break;
     }
+    case "arena": {
+      // Scam Payrun. setup: a separate CDP account with only the per-transfer cap. try: one local attempt.
+      const { compileArenaWalletPolicy, runArenaAttempt, ArenaLog, validateEntry, arenaMaxSettled } = await import("./core/arena");
+      const { createAgentKitPayer } = await payments();
+      const sub = args[0];
+      if (sub === "setup") {
+        const wallet = await createAgentKitPayer(process.env.PAYRUN_ARENA_WALLET ? { address: process.env.PAYRUN_ARENA_WALLET } : { idempotencyKey: "payrun-arena-v1" });
+        const id = await wallet.applyRules(compileArenaWalletPolicy());
+        console.log(`Arena wallet ${wallet.address}: policy ${id} attached (any address, at most ${arenaMaxSettled()} test USDC per transfer).`);
+        if (args.includes("--faucet")) console.log("Faucet:", await wallet.fundFromFaucet());
+        if (!process.env.PAYRUN_ARENA_WALLET) console.log(`Add to .env: PAYRUN_ARENA_WALLET=${wallet.address}`);
+        break;
+      }
+      if (sub === "try") {
+        const entry = { wallet: opt("wallet") ?? "", invoice: opt("file") ? readFileSync(opt("file")!, "utf8") : "", handle: opt("handle") ?? null };
+        const bad = validateEntry(entry);
+        if (bad) throw new Error(bad);
+        const wallet = args.includes("--dry") ? null : await createAgentKitPayer({ address: process.env.PAYRUN_ARENA_WALLET });
+        const a = await runArenaAttempt(serv, wallet, entry);
+        new ArenaLog("data/arena.json").add(a);
+        for (const st of a.steps) console.log(`  ${st.actor.padEnd(8)} ${st.ok === false ? "✗" : st.ok ? "✓" : "·"} ${st.title} — ${st.detail}`);
+        console.log(a.caughtBy ? `→ ${a.verdict}, caught by ${a.caughtBy}` : `→ PAID ${a.paidUsdc} test USDC (${a.txHash})`);
+        break;
+      }
+      console.log("Usage: arena setup [--faucet] | arena try --wallet 0x… --file invoice.txt [--handle x] [--dry]");
+      break;
+    }
     case "payroll": {
       // The SERV agent pays the unpaid pile itself through AgentKit tools. --dry: no wallet, nothing moves.
       const { runPayroll } = await import("./core/payroll");

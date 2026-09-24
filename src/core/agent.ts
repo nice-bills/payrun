@@ -4,7 +4,7 @@ import { extractFields } from "./extract";
 import { isPolicyRejection, type PaymentResult } from "./pay";
 import { judgmentSystemPrompt } from "./policy";
 import type { AppTool, ChatTurn, ServClient } from "./serv";
-import type { CallMeta, Contractor, Decision, Finding, Invoice, Judgment, PolicyVersion, Verdict } from "./types";
+import type { CallMeta, Contractor, Decision, Finding, Invoice, InvoiceFields, Judgment, PolicyVersion, Verdict } from "./types";
 import { settlementScale, toSettled } from "./walletPolicy";
 
 /**
@@ -155,6 +155,8 @@ export interface AgentInput {
   policy: PolicyVersion;
   contractors: Contractor[];
   history: HistoryEntry[];
+  /** Build the contractor book from what the invoice says (the arena puts every challenger on file). */
+  bookFor?: (fields: InvoiceFields) => Contractor[];
   /** null runs the agent without money: pay_invoice approves and queues instead of sending. */
   wallet: AgentWallet | null;
   onStep?: (s: AgentStep) => void;
@@ -195,7 +197,7 @@ export async function runInvoiceAgent(serv: ServClient, input: AgentInput): Prom
   }
 
   // 2. Facts that must never be guessed.
-  const contractor = matchContractor(fields, contractors);
+  const contractor = matchContractor(fields, input.bookFor ? input.bookFor(fields) : contractors);
   const findings = runChecks(fields, contractor, history);
   step({
     actor: "Payrun",

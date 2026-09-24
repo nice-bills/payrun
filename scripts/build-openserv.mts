@@ -17,7 +17,8 @@ mkdirSync(`${out}/src`, { recursive: true });
 await build({ entryPoints: ["openserv/agent.ts"], bundle: true, platform: "node", format: "esm", packages: "external", outfile: `${out}/src/agent.ts`, logLevel: "warning" });
 
 const root = JSON.parse(readFileSync("package.json", "utf8"));
-const deps = ["@openserv-labs/client", "@openserv-labs/sdk", "dotenv", "tsx", "unpdf", "viem", "zod"];
+const arena = !!process.env.PAYRUN_ARENA_WALLET || /^PAYRUN_ARENA_WALLET=0x/m.test(readFileSync(".env", "utf8"));
+const deps = ["@openserv-labs/client", "@openserv-labs/sdk", "dotenv", "tsx", "unpdf", "viem", "zod", ...(arena ? ["@coinbase/agentkit", "@coinbase/cdp-sdk", "graphql"] : [])];
 // Peers the SDK needs at runtime; legacy-peer-deps won't install them on its own.
 const peers: Record<string, string> = { openai: "^7.23.0" };
 const pick = (n: string) => root.dependencies?.[n] ?? root.devDependencies?.[n];
@@ -26,11 +27,17 @@ writeFileSync(
   JSON.stringify({ name: "payrun-check", private: true, type: "module", scripts: { start: "tsx src/agent.ts" }, engines: { node: ">=20" }, dependencies: { ...Object.fromEntries(deps.map((n) => [n, pick(n) ?? "latest"])), ...peers } }, null, 2) + "\n",
 );
 writeFileSync(`${out}/.gitignore`, "node_modules\n");
+// The app's lockfile pins the Coinbase/Solana versions that work together; npm keeps them and prunes the rest.
+copyFileSync("package-lock.json", `${out}/package-lock.json`);
 // Same as the app: the OpenServ SDK still declares zod 3 peers; it runs fine on zod 4.
 writeFileSync(`${out}/.npmrc`, "legacy-peer-deps=true\n");
 
 const env = parse(readFileSync(".env"));
-const keep = ["SERV_API_KEY", "SERV_BASE_URL", "PAYRUN_MODEL", "PAYRUN_CHECK_PRICE_USD", "PAYRUN_EARNINGS_WALLET", "SERV_COST_PER_REQUEST_USD", "WALLET_PRIVATE_KEY", "OPENSERV_USER_API_KEY", "OPENSERV_API_KEY", "OPENSERV_AUTH_TOKEN", "OPENSERV_CONTAINER_ID"];
+const keep = [
+  // Scam Payrun drives its own arena wallet, so the container needs CDP keys. The payroll wallet
+  // (PAYRUN_WALLET_ADDRESS) is deliberately not passed.
+  ...(arena ? ["PAYRUN_ARENA_WALLET", "CDP_API_KEY_ID", "CDP_API_KEY_SECRET", "CDP_WALLET_SECRET", "PAYRUN_SETTLEMENT_SCALE", "ARENA_FEE_USD", "ARENA_DAILY_LIMIT", "ARENA_WALLET_DAILY_LIMIT", "ARENA_BOARD_URL"] : []),
+  "SERV_API_KEY", "SERV_BASE_URL", "PAYRUN_MODEL", "PAYRUN_CHECK_PRICE_USD", "PAYRUN_EARNINGS_WALLET", "SERV_COST_PER_REQUEST_USD", "WALLET_PRIVATE_KEY", "OPENSERV_USER_API_KEY", "OPENSERV_API_KEY", "OPENSERV_AUTH_TOKEN", "OPENSERV_CONTAINER_ID"];
 const lines = keep.filter((k) => env[k]).map((k) => `${k}=${env[k]}`);
 if (!env.SERV_API_KEY) throw new Error("SERV_API_KEY missing from .env");
 if (!existsSync(".openserv.json")) throw new Error("Run `npm run openserv` once first so the agent is provisioned.");

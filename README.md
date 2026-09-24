@@ -27,6 +27,12 @@ A small company pays 5–30 contractors in USDC. Every month a pile of invoices 
 
 Every refusal goes back to the model as a tool result, and it must hold or block rather than retry. This follows SERV's Day One guidance: the model judges and picks the next action, tools do exact work and validate their arguments, and credentials are least-privilege. On the Payouts page each step shows who acted: SERV, Payrun, AgentKit or the signer. `npm run cli -- payroll --dry` runs it with no wallet.
 
+## Scam Payrun: try to scam the agent
+
+`/arena` is a public challenge. Anyone pays a small x402 entry on OpenServ, becomes a contractor on file (100 USDC a day, 5-day cap), and sends any invoice. The arena policy approves no work this month, so the right answer is always "don't pay". If the agent pays you, you keep it (at most 0.5 test USDC, enforced by Coinbase's signer on a separate arena wallet). Each attempt runs the real pipeline, and the public board records which layer caught it: Prompt Guard, Payrun's checks, SERV, or the signer. Invoice text is never published. Limits: 100 attempts a day, 5 per wallet (`ARENA_DAILY_LIMIT`, `ARENA_WALLET_DAILY_LIMIT`), because SERV credit is real even when the entry fee is test USDC.
+
+Setup: `npm run cli -- arena setup` (creates the arena wallet and its cap rule), fund it with test USDC and a little Base Sepolia ETH, then `npm run openserv:deploy`. Local attempt: `npm run cli -- arena try --wallet 0x… --file invoice.txt`.
+
 ## Payrun Check, sold per call on OpenServ
 
 `openserv/agent.ts` publishes the review as an x402 service on OpenServ's agent market: another agent sends its own policy, an invoice and the payee's terms, pays per call in USDC on Base, and gets PAY / HOLD / BLOCK with cited clauses. Same pipeline (`src/core/check.ts`): SERV reads the terms, Prompt Guard screens the invoice, code checks the facts, SERV applies the caller's policy. Set `PAYRUN_EARNINGS_WALLET` to receive payments in your own wallet, then `npm run openserv` (its first run signs up for OpenServ with a new wallet and prints the paywall URL). Live: [Payrun Check paywall](https://platform.openserv.ai/workspace/paywall/274c7b5ee0c745d6afbfa9f35264be85), $0.05 per check.

@@ -1,4 +1,5 @@
 import { AgentKit, CdpEvmWalletProvider, erc20ActionProvider } from "@coinbase/agentkit";
+import type { CreatePolicyBody } from "@coinbase/cdp-sdk";
 import { compileWalletPolicy, toSettled, USDC_BASE_SEPOLIA } from "./walletPolicy";
 import type { Contractor, Decision, PolicyVersion } from "./types";
 
@@ -28,6 +29,8 @@ export interface Payer {
   address: string;
   /** Apply the compiled CDP policy to the paying account (with the owner's withdraw rule, if set). Returns the policy id. */
   applyPolicy(policy: PolicyVersion, contractors: Contractor[], owner?: string | null): Promise<string>;
+  /** Attach an already-compiled CDP policy body. */
+  applyRules(body: CreatePolicyBody): Promise<string>;
   transfer(to: string, amountUsdc: number): Promise<{ ok: boolean; txHash: string | null; message: string }>;
   /** USDC held by the paying account, read through AgentKit's own get_balance action. */
   balance(): Promise<{ usdc: number | null; message: string }>;
@@ -41,27 +44,40 @@ export interface Payer {
  * on a CDP server wallet, so the CDP account policy is the last gate: a transfer
  * outside the address book or above the agreement cap is refused by the signer.
  */
-export async function createAgentKitPayer(): Promise<Payer> {
+export interface PayerOptions {
+  /** An existing CDP account to drive. Defaults to PAYRUN_WALLET_ADDRESS. */
+  address?: string;
+  /** Creates (or finds) the account by this key when no address is given. */
+  idempotencyKey?: string;
+}
+
+export async function createAgentKitPayer(opts: PayerOptions = {}): Promise<Payer> {
+  const address = opts.address ?? (opts.idempotencyKey ? undefined : process.env.PAYRUN_WALLET_ADDRESS);
   const walletProvider = await CdpEvmWalletProvider.configureWithWallet({
     apiKeyId: process.env.CDP_API_KEY_ID,
     apiKeySecret: process.env.CDP_API_KEY_SECRET,
     walletSecret: process.env.CDP_WALLET_SECRET,
     networkId: "base-sepolia",
-    address: (process.env.PAYRUN_WALLET_ADDRESS as `0x${string}`) || undefined,
-    idempotencyKey: process.env.PAYRUN_WALLET_ADDRESS ? undefined : "payrun-demo-payer-v1",
+    address: (address as `0x${string}`) || undefined,
+    idempotencyKey: address ? undefined : (opts.idempotencyKey ?? "payrun-demo-payer-v1"),
   });
   const agentkit = await AgentKit.from({ walletProvider, actionProviders: [erc20ActionProvider()] });
   const transferAction = agentkit.getActions().find((a) => a.name.endsWith("_transfer"));
   const balanceAction = agentkit.getActions().find((a) => a.name.endsWith("_get_balance"));
   if (!transferAction || !balanceAction) throw new Error("AgentKit ERC20 transfer/get_balance actions not found");
   const cdp = walletProvider.getClient();
-  const address = walletProvider.getAddress();
+  const account = walletProvider.getAddress();
 
   return {
-    address,
+    address: account,
+    async applyRules(body) {
+      const created = await cdp.policies.createPolicy({ policy: body });
+      await cdp.evm.updateAccount({ address: account as `0x${string}`, update: { accountPolicy: created.id } });
+      return created.id;
+    },
     async applyPolicy(policy, contractors, owner) {
       const created = await cdp.policies.createPolicy({ policy: compileWalletPolicy(contractors, policy, { owner }) });
-      await cdp.evm.updateAccount({ address: address as `0x${string}`, update: { accountPolicy: created.id } });
+      await cdp.evm.updateAccount({ address: account as `0x${string}`, update: { accountPolicy: created.id } });
       return created.id;
     },
     async transfer(to, amountUsdc) {
@@ -79,13 +95,13 @@ export async function createAgentKitPayer(): Promise<Payer> {
       return { usdc: n === undefined ? null : Number(n), message };
     },
     async attachedPolicies() {
-      const account = await cdp.evm.getAccount({ address: address as `0x${string}` });
-      return account.policies ?? [];
+      const acct = await cdp.evm.getAccount({ address: account as `0x${string}` });
+      return acct.policies ?? [];
     },
     async fundFromFaucet() {
       const hashes: string[] = [];
       for (const token of ["eth", "usdc"] as const) {
-        const r = await cdp.evm.requestFaucet({ address, network: "base-sepolia", token });
+        const r = await cdp.evm.requestFaucet({ address: account, network: "base-sepolia", token });
         hashes.push(r.transactionHash);
       }
       return hashes;

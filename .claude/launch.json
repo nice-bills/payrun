@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "payrun-web", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 3100 }
+    { "name": "payrun-web", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev"], "port": 3100, "cwd": "/home/bills/code/payrun" }
   ]
 }

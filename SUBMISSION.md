@@ -49,6 +49,14 @@ Record the local app (not the hosted demo) at 1440×900 so live actions work. Sa
 
 ## 5. The X post
 
+> We gave an AI payroll agent a wallet. Try to scam it.
+>
+> Send Payrun any invoice: hidden text, fake approvals, a frozen-wallet sob story. If it pays you, you keep it. <arena link>
+>
+> Built on @openservai SERV Reasoning + Coinbase AgentKit. Every attempt shows which layer caught it.
+
+Alternative:
+
 > Payrun: pay contractors by the book.
 >
 > Write your payment policy in plain English. Payrun reads every invoice against it with SERV Reasoning, finds the holes in your wording, and makes the paying wallet (Coinbase AgentKit) obey it too.

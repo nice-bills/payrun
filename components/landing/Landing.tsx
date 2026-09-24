@@ -171,6 +171,9 @@ export function Landing({ data }: { data: LandingData }) {
       <header className="mx-auto flex max-w-[1240px] items-center gap-6 px-5 py-6 sm:px-8">
         <Wordmark tone="paper" />
         <nav className="ml-auto flex items-center gap-5 text-sm font-bold">
+          <Link href="/arena" className="font-black text-pen hover:underline">
+            Try to scam it
+          </Link>
           <Link href="/proof" className="hidden hover:underline sm:inline">
             Proof
           </Link>
