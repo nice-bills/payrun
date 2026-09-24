@@ -1,11 +1,11 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { payApproved, tryScammerTransfer } from "@/app/actions";
+import { tryScammerTransfer } from "@/app/actions";
 import { Stamp } from "@/components/Stamp";
 import { FundPayer } from "./FundPayer";
+import { PayrollRun, type OpenRow } from "./PayrollRun";
 import { shortHash, usdc } from "@/lib/format";
 import type { PaymentResult } from "@/src/core/pay";
 
@@ -17,47 +17,29 @@ export interface TagRow {
   maxSettled: number;
 }
 
-export interface DueRow {
-  invoiceId: string;
-  name: string;
-  amountUsdc: number;
-}
 
 const SCAMMER = "0x94e672298C44c94b0606740cBEfa6963fA3409C6";
 
 export function PayoutsBoard({
-  due,
+  open,
   paid,
   tags,
   payer,
   owner,
   scale,
 }: {
-  due: DueRow[];
+  open: OpenRow[];
   paid: (PaymentResult & { name: string })[];
   tags: TagRow[];
   payer: string | null;
   owner: string | null;
   scale: number;
 }) {
-  const router = useRouter();
   const reduce = useReducedMotion();
-  const [working, setWorking] = useState<"pay" | "scam" | null>(null);
+  const [working, setWorking] = useState<"scam" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [scam, setScam] = useState<{ refused: boolean; message: string } | null>(null);
   const [, startTransition] = useTransition();
-  const dueTotal = due.reduce((s, d) => s + d.amountUsdc, 0);
-
-  const pay = () => {
-    setError(null);
-    setWorking("pay");
-    startTransition(async () => {
-      const r = await payApproved();
-      setWorking(null);
-      if (!r.ok) return setError(r.error);
-      router.refresh();
-    });
-  };
 
   const scamTry = () => {
     setError(null);
@@ -77,34 +59,7 @@ export function PayoutsBoard({
       <main className="px-4 pb-12 pt-6 sm:px-8 lg:scroll-y lg:min-h-0">
         <div className="mx-auto max-w-[720px]">
           <FundPayer />
-          <h1 className="mt-10 text-[2.6rem] font-black leading-none tracking-[-0.045em] text-ink">
-            {due.length ? `${due.length} to pay` : "Nothing left to pay"}
-          </h1>
-          <p className="mt-2 text-ink">
-            {due.length
-              ? `${usdc(dueTotal)} USDC, each to the wallet on file. Testnet moves 1/${Math.round(1 / scale)} of it.`
-              : `${paid.length} invoice${paid.length === 1 ? "" : "s"} paid this month. Every transfer is on Base Sepolia.`}
-          </p>
-
-          {due.length ? (
-            <div className="mt-6 flex flex-wrap items-center gap-4">
-              <button
-                type="button"
-                onClick={pay}
-                disabled={!!working}
-                className="press rounded-[3px] bg-marker px-6 py-3.5 text-lg font-black text-ink hover:bg-marker-press disabled:cursor-progress disabled:opacity-70"
-              >
-                {working === "pay" ? "Paying…" : `Pay ${due.length} · ${usdc(dueTotal)} USDC`}
-              </button>
-              <ul className="flex flex-wrap gap-2">
-                {due.map((d) => (
-                  <li key={d.invoiceId} className="rounded-[2px] bg-paper px-2.5 py-1 text-sm font-bold text-ink shadow-[var(--shadow-press)]">
-                    {d.name.split(" ")[0]} {usdc(d.amountUsdc)}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : null}
+          <PayrollRun open={open} scale={scale} />
           {error ? <p role="alert" className="mt-4 w-fit rounded-[2px] bg-paper px-3 py-2 font-bold text-block shadow-[var(--shadow-press)]">{error}</p> : null}
 
           <div className="mt-10 flex items-baseline justify-between">

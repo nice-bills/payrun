@@ -29,6 +29,8 @@ export interface Payer {
   /** Apply the compiled CDP policy to the paying account (with the owner's withdraw rule, if set). Returns the policy id. */
   applyPolicy(policy: PolicyVersion, contractors: Contractor[], owner?: string | null): Promise<string>;
   transfer(to: string, amountUsdc: number): Promise<{ ok: boolean; txHash: string | null; message: string }>;
+  /** USDC held by the paying account, read through AgentKit's own get_balance action. */
+  balance(): Promise<{ usdc: number | null; message: string }>;
   /** Policy ids currently attached to the paying account. */
   attachedPolicies(): Promise<string[]>;
   fundFromFaucet(): Promise<string[]>;
@@ -50,7 +52,8 @@ export async function createAgentKitPayer(): Promise<Payer> {
   });
   const agentkit = await AgentKit.from({ walletProvider, actionProviders: [erc20ActionProvider()] });
   const transferAction = agentkit.getActions().find((a) => a.name.endsWith("_transfer"));
-  if (!transferAction) throw new Error("AgentKit ERC20 transfer action not found");
+  const balanceAction = agentkit.getActions().find((a) => a.name.endsWith("_get_balance"));
+  if (!transferAction || !balanceAction) throw new Error("AgentKit ERC20 transfer/get_balance actions not found");
   const cdp = walletProvider.getClient();
   const address = walletProvider.getAddress();
 
@@ -69,6 +72,11 @@ export async function createAgentKitPayer(): Promise<Payer> {
       });
       const hash = /0x[0-9a-fA-F]{64}/.exec(message)?.[0] ?? null;
       return { ok: !message.startsWith("Error") && !!hash, txHash: hash, message };
+    },
+    async balance() {
+      const message = await balanceAction.invoke({ tokenAddress: USDC_BASE_SEPOLIA });
+      const n = /is ([0-9.]+)\s*$/.exec(message.trim())?.[1];
+      return { usdc: n === undefined ? null : Number(n), message };
     },
     async attachedPolicies() {
       const account = await cdp.evm.getAccount({ address: address as `0x${string}` });

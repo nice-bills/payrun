@@ -15,6 +15,22 @@ A small company pays 5–30 contractors in USDC. Every month a pile of invoices 
 3. **SERV Reasoning applies the policy.** The written policy is the system prompt; SERV compiles it into a bounded reasoning graph (Kronos audit + Multipath), cached per version, and a small model (`gpt-6-luna`) walks it for each invoice with a per-invoice Shadow Agent hint. Every verdict cites clauses and quotes evidence.
 4. **The wallet enforces the same limits.** Approved invoices are paid through Coinbase AgentKit from a CDP wallet whose account policy allows USDC `transfer` only to contractor-book wallets, up to each agreement's monthly maximum. The signer refused a direct transfer to the scammer's address and an over-cap transfer in testing. The payroll wallet is the company's own (created under its Coinbase developer account); one more rule lets it send back to the owner's wallet, the one it was topped up from, so the owner can always withdraw and nobody else can.
 
+## The pay run is an agent
+
+**Run payroll** hands the unpaid pile to a SERV agent that holds the payroll wallet. The policy is its system prompt (compiled once per version with Kronos + Multipath), and it acts through tools that SERV forwards alongside its own `serv_shadow_agent` marker:
+
+| Tool | What runs | Who can refuse |
+|---|---|---|
+| `check_balance` | AgentKit's ERC-20 `get_balance` on the payroll wallet | |
+| `pay_invoice` | AgentKit's ERC-20 `transfer` to the wallet on file (the model never supplies an address) | Payrun's code checks (hard facts, exact total), then Coinbase's signer (wallet rules) |
+| `hold_invoice` / `block_invoice` | Records the decision with cited clauses and quoted evidence | Code can only make it stricter |
+
+Every refusal goes back to the model as a tool result, and it must hold or block rather than retry. This follows SERV's Day One guidance: the model judges and picks the next action, tools do exact work and validate their arguments, and credentials are least-privilege. On the Payouts page each step shows who acted: SERV, Payrun, AgentKit or the signer. `npm run cli -- payroll --dry` runs it with no wallet.
+
+## Payrun Check, sold per call on OpenServ
+
+`openserv/agent.ts` publishes the review as an x402 service on OpenServ's agent market: another agent sends its own policy, an invoice and the payee's terms, pays per call in USDC on Base, and gets PAY / HOLD / BLOCK with cited clauses. Same pipeline (`src/core/check.ts`): SERV reads the terms, Prompt Guard screens the invoice, code checks the facts, SERV applies the caller's policy. Set `PAYRUN_EARNINGS_WALLET` to receive payments in your own wallet, then `npm run openserv` (its first run signs up for OpenServ with a new wallet and prints the paywall URL).
+
 ## Where SERV sits
 
 | Surface | SERV feature |
@@ -24,6 +40,8 @@ A small company pays 5–30 contractors in USDC. Every month a pile of invoices 
 | Policy editor | SERV reviews the wording on every save (conflicts, undefined terms, ambiguity, missing cases) with one-click fixes |
 | Holes in the policy | SERV writes boundary invoices, judges each three times, and surfaces cases the wording leaves to the reviewer; the owner picks a reading, SERV drafts the clause, replay shows what changes before it goes live |
 | Contractor book | SERV reads a pasted agreement into a draft card the owner confirms |
+| Pay run | SERV agent with AgentKit tools (`tool_choice: required`, one action per turn), Shadow Agent on each decision |
+| For other agents | Payrun Check on OpenServ's x402 market |
 | Controls | Raw mode (`x-openserv-disable-braid`) as the comparison arm for every measurement |
 
 ## Measured, not claimed

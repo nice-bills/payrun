@@ -9,9 +9,14 @@ export const dynamic = "force-dynamic";
 export default function PayoutsPage() {
   const data = loadDesk();
   const name = (id: string | null | undefined) => data.contractors.find((c) => c.id === id)?.name ?? "Unknown";
-  const due = data.items
-    .filter((i) => i.decision?.finalVerdict === "PAY" && i.paid?.status !== "sent")
-    .map((i) => ({ invoiceId: i.invoice.id, name: name(i.decision?.contractorId), amountUsdc: i.decision!.payAmountUsdc }));
+  // Every invoice without a sent payment is open: the agent works through all of them.
+  const open = data.items
+    .filter((i) => i.paid?.status !== "sent")
+    .map((i) => ({
+      invoiceId: i.invoice.id,
+      name: name(i.decision?.contractorId) === "Unknown" ? i.invoice.id.replace(/^\d+-/, "") : name(i.decision?.contractorId),
+      amountUsdc: i.decision?.fields?.totalUsdc ?? null,
+    }));
   // Latest payment per invoice, newest first.
   const seen = new Set<string>();
   const paid = [...data.payments]
@@ -26,5 +31,5 @@ export default function PayoutsPage() {
     maxUsdc: agreementMaxUsdc(c),
     maxSettled: toSettled(agreementMaxUsdc(c), scale),
   }));
-  return <PayoutsBoard due={due} paid={paid} tags={tags} payer={process.env.PAYRUN_WALLET_ADDRESS ?? null} owner={new Store(dbPath(), { readOnly: isDemo() }).setting("owner_wallet")} scale={scale} />;
+  return <PayoutsBoard open={open} paid={paid} tags={tags} payer={process.env.PAYRUN_WALLET_ADDRESS ?? null} owner={new Store(dbPath(), { readOnly: isDemo() }).setting("owner_wallet")} scale={scale} />;
 }

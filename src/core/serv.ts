@@ -16,6 +16,25 @@ const PRICES: Record<string, { in: number; out: number }> = {
 
 export type ServFeature = "kronos" | "multipath";
 
+/** An application tool: a function our code runs when the model calls it. SERV forwards these to the model unchanged. */
+export interface AppTool {
+  name: string;
+  description: string;
+  parameters: Record<string, unknown>;
+}
+
+export interface ToolCall {
+  id: string;
+  name: string;
+  /** Raw JSON arguments as the model wrote them; parse and validate before acting. */
+  arguments: string;
+}
+
+/** Turns after the first user message: the model's tool calls and our tool results. */
+export type ChatTurn =
+  | { role: "assistant"; content: string | null; tool_calls: { id: string; type: "function"; function: { name: string; arguments: string } }[] }
+  | { role: "tool"; tool_call_id: string; content: string };
+
 export interface ServCall {
   /** Base catalog model id, e.g. "gpt-5.4-nano". Feature suffixes are added here. */
   model: string;
@@ -35,6 +54,11 @@ export interface ServCall {
   maxCompletionTokens?: number;
   /** Force SERV to regenerate the reasoning prompt instead of using its cache. */
   noCache?: boolean;
+  /** Application tools the model may call (alongside SERV's own marker tools). */
+  appTools?: AppTool[];
+  toolChoice?: "auto" | "required";
+  /** The conversation so far after the first user message (tool calls and results). */
+  turns?: ChatTurn[];
   /** Used to name the trace file. */
   label: string;
   /**
@@ -54,6 +78,7 @@ export type CassetteMode = "off" | "record" | "replay" | "auto";
 
 export interface ServResult<T = unknown> {
   content: string;
+  toolCalls: ToolCall[];
   parsed: T | null;
   meta: CallMeta;
   response: unknown;
@@ -147,14 +172,21 @@ export class ServClient {
         },
       });
     }
+    for (const t of c.appTools ?? []) tools.push({ type: "function", function: { name: t.name, description: t.description, parameters: t.parameters, strict: true } });
     const body: Record<string, unknown> = {
       model,
       messages: [
         { role: "system", content: c.system },
         { role: "user", content: c.user },
+        ...(c.turns ?? []),
       ],
     };
     if (tools.length) body.tools = tools;
+    if (c.appTools?.length) {
+      body.tool_choice = c.toolChoice ?? "auto";
+      // One action at a time: every side effect gets its own result before the next decision.
+      body.parallel_tool_calls = false;
+    }
     if (c.schema) {
       body.response_format = {
         type: "json_schema",
@@ -197,6 +229,9 @@ export class ServClient {
 
     const choice = json?.choices?.[0];
     const content: string = choice?.message?.content ?? "";
+    const toolCalls: ToolCall[] = (choice?.message?.tool_calls ?? [])
+      .filter((t: any) => t?.function?.name)
+      .map((t: any) => ({ id: String(t.id), name: String(t.function.name), arguments: String(t.function.arguments ?? "{}") }));
     const guardBlocked = !c.raw && !!c.guard && looksLikeGuardRefusal(choice, json?.usage);
     let parsed: T | null = null;
     if (c.schema && !guardBlocked) {
@@ -212,6 +247,7 @@ export class ServClient {
 
     return {
       content,
+      toolCalls,
       parsed,
       response: json,
       servHeaders,

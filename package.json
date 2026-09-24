@@ -12,11 +12,14 @@
     "build": "next build",
     "start": "next start --port 3100",
     "demo:snapshot": "tsx scripts/demo-snapshot.ts",
-    "demo:serve": "PAYRUN_DEMO=1 next dev --port 3200"
+    "demo:serve": "PAYRUN_DEMO=1 next dev --port 3200",
+    "openserv": "tsx openserv/agent.ts"
   },
   "dependencies": {
     "@coinbase/agentkit": "^0.10.4",
     "@coinbase/cdp-sdk": "^1.56.0",
+    "@openserv-labs/client": "^2.5.3",
+    "@openserv-labs/sdk": "^2.4.1",
     "dotenv": "^18.0.3",
     "graphql": "^17.0.2",
     "motion": "^13.4.2",

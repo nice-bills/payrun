@@ -158,6 +158,18 @@ async function main() {
       if (sub === "apply") console.log(`Applied CDP policy ${await payer.applyPolicy(requirePolicy(), store.contractors(), store.setting("owner_wallet"))} to ${payer.address}`);
       break;
     }
+    case "payroll": {
+      // The SERV agent pays the unpaid pile itself through AgentKit tools. --dry: no wallet, nothing moves.
+      const { runPayroll } = await import("./core/payroll");
+      const wallet = args.includes("--dry") ? null : await (await payments()).createAgentKitPayer();
+      const report = await runPayroll(serv, store, wallet, (e) => {
+        if (e.type === "start") console.log(`\n${e.invoiceId}`);
+        if (e.type === "step") console.log(`  ${e.step.actor.padEnd(8)} ${e.step.ok === false ? "✗" : e.step.ok ? "✓" : "·"} ${e.step.title} — ${e.step.detail}`);
+        if (e.type === "done") console.log(`  → ${e.verdict}`);
+      });
+      console.log(`\n${report.runs.length} invoices, ${report.runs.filter((r) => r.payment?.status === "sent").length} paid. SERV requests: ${serv.stats.live} live, ${serv.stats.replayed} replayed.`);
+      break;
+    }
     case "pay": {
       const { createAgentKitPayer, payApproved } = await payments();
       const payer = await createAgentKitPayer();

@@ -122,6 +122,34 @@ export async function payApproved(): Promise<ActionResult<import("@/src/core/pay
   }
 }
 
+/**
+ * The pay run as an agent: SERV works through the unpaid pile with the payroll
+ * wallet in hand (AgentKit tools), in the background; poll with jobStatus.
+ * Each progress line is a JSON PayrollEvent. The hosted demo hands back the
+ * last recorded run for the browser to replay, with no model and no wallet.
+ */
+export async function runPayrollAgent(): Promise<ActionResult<{ jobId: string } | { replay: import("@/src/core/payroll").PayrollReport }>> {
+  try {
+    const s = store();
+    if (isDemo()) {
+      // Serverless instances don't share memory, so the browser plays the recording.
+      const last = s.latestReport<import("@/src/core/payroll").PayrollReport>("payroll");
+      return last ? { ok: true, value: { replay: last } } : demoRefusal();
+    }
+    const { startJob } = await import("@/lib/jobs");
+    const { createAgentKitPayer } = await import("@/src/core/pay");
+    const { runPayroll } = await import("@/src/core/payroll");
+    const wallet = await createAgentKitPayer();
+    const job = startJob("payroll", async (log) => {
+      await runPayroll(new ServClient(), s, wallet, (e) => log(JSON.stringify(e)));
+      revalidatePath("/", "layout");
+    });
+    return { ok: true, value: { jobId: job.id } };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
 /** Skip every Payrun check and ask the wallet itself to pay the scammer. The signer should refuse. */
 export async function tryScammerTransfer(): Promise<ActionResult<{ refused: boolean; message: string }>> {
   try {
