@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { payApproved, tryScammerTransfer } from "@/app/actions";
 import { Stamp } from "@/components/Stamp";
+import { FundPayer } from "./FundPayer";
 import { shortHash, usdc } from "@/lib/format";
 import type { PaymentResult } from "@/src/core/pay";
 
@@ -73,7 +74,8 @@ export function PayoutsBoard({
       {/* The pay run */}
       <main className="px-4 pb-12 pt-6 sm:px-8 lg:scroll-y lg:min-h-0">
         <div className="mx-auto max-w-[720px]">
-          <h1 className="text-[2.6rem] font-black leading-none tracking-[-0.045em] text-ink">
+          <FundPayer />
+          <h1 className="mt-10 text-[2.6rem] font-black leading-none tracking-[-0.045em] text-ink">
             {due.length ? `${due.length} to pay` : "Nothing left to pay"}
           </h1>
           <p className="mt-2 text-ink">

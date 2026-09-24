@@ -175,3 +175,22 @@ export async function jobStatus(id: string): Promise<ActionResult<import("@/lib/
   const job = getJob(id);
   return job ? { ok: true, value: { ...job, progress: [...job.progress] } } : { ok: false, error: "That job is gone (the server restarted)." };
 }
+
+/** Live balance of the paying wallet on Base Sepolia. */
+export async function payerBalance(): Promise<ActionResult<{ address: string; usdc: number; eth: number }>> {
+  try {
+    const address = process.env.PAYRUN_WALLET_ADDRESS as `0x${string}` | undefined;
+    if (!address) return { ok: false, error: "No paying wallet yet. Run the wallet address command once." };
+    const { createPublicClient, erc20Abi, formatUnits, http } = await import("viem");
+    const { baseSepolia } = await import("viem/chains");
+    const { USDC_BASE_SEPOLIA } = await import("@/src/core/walletPolicy");
+    const client = createPublicClient({ chain: baseSepolia, transport: http() });
+    const [usdc, eth] = await Promise.all([
+      client.readContract({ address: USDC_BASE_SEPOLIA as `0x${string}`, abi: erc20Abi, functionName: "balanceOf", args: [address] }),
+      client.getBalance({ address }),
+    ]);
+    return { ok: true, value: { address, usdc: Number(formatUnits(usdc, 6)), eth: Number(formatUnits(eth, 18)) } };
+  } catch (e) {
+    return fail(e);
+  }
+}
