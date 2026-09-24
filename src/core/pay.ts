@@ -29,6 +29,8 @@ export interface Payer {
   /** Apply the compiled CDP policy to the paying account. Returns the policy id. */
   applyPolicy(policy: PolicyVersion, contractors: Contractor[]): Promise<string>;
   transfer(to: string, amountUsdc: number): Promise<{ ok: boolean; txHash: string | null; message: string }>;
+  /** Policy ids currently attached to the paying account. */
+  attachedPolicies(): Promise<string[]>;
   fundFromFaucet(): Promise<string[]>;
 }
 
@@ -67,6 +69,10 @@ export async function createAgentKitPayer(): Promise<Payer> {
       });
       const hash = /0x[0-9a-fA-F]{64}/.exec(message)?.[0] ?? null;
       return { ok: !message.startsWith("Error") && !!hash, txHash: hash, message };
+    },
+    async attachedPolicies() {
+      const account = await cdp.evm.getAccount({ address: address as `0x${string}` });
+      return account.policies ?? [];
     },
     async fundFromFaucet() {
       const hashes: string[] = [];

@@ -184,12 +184,21 @@ describe("wallet policy", () => {
   it("allows USDC transfer only to each contractor, capped at their scaled agreement max", () => {
     const wp = compileWalletPolicy(contractors, policy, 0.001);
     expect(wp.scope).toBe("account");
-    expect(wp.rules).toHaveLength(contractors.length * 2);
+    expect(wp.rules).toHaveLength(contractors.length);
+    expect(wp.description).toMatch(/^[A-Za-z0-9 ,.]{1,50}$/);
     const rule: any = wp.rules[0];
     expect(rule.criteria.find((c: any) => c.type === "evmAddress").addresses).toEqual([USDC_BASE_SEPOLIA]);
     const params = rule.criteria.find((c: any) => c.type === "evmData").conditions[0].params;
     expect(params[0].values).toEqual([ama.wallet]);
     expect(params[1].value).toBe(String(toSettled(350 * 15, 0.001) * 1e6)); // 5.25 USDC → 5250000
+  });
+  it("stays within CDP's 10-rule limit for large address books", () => {
+    const many = Array.from({ length: 14 }, (_, i) => ({ ...ama, id: `c${i}`, wallet: `0x${String(i).padStart(40, "0")}` as `0x${string}`, dayRateUsdc: 100 + i }));
+    const wp = compileWalletPolicy(many, policy, 0.001);
+    expect(wp.rules).toHaveLength(1);
+    const params = (wp.rules[0] as any).criteria[2].conditions[0].params;
+    expect(params[0].values).toHaveLength(14);
+    expect(params[1].value).toBe(String(Math.round(113 * 15 * 0.001 * 1e6)));
   });
 });
 

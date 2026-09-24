@@ -162,6 +162,10 @@ async function main() {
       // Bypass every Payrun check and ask the wallet directly to pay the attacker.
       const to = opt("to") ?? "0x94e672298C44c94b0606740cBEfa6963fA3409C6";
       const payer = await createAgentKitPayer();
+      // Only meaningful with the wallet policy attached; without it this is just a transfer.
+      const attached = await payer.attachedPolicies();
+      if (attached.length === 0) throw new Error("No CDP policy is attached to the payer wallet. Run `wallet apply` first.");
+      console.log(`Payer ${payer.address} has policy ${attached.join(", ")}. Asking it to pay ${to} directly…`);
       const r = await payer.transfer(to, Number(opt("amount") ?? "1"));
       console.log(r.ok ? `!! Transfer went through: ${r.txHash}` : `Wallet refused: ${r.message}`);
       break;

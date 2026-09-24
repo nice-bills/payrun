@@ -25,40 +25,54 @@ export function agreementMaxUsdc(c: Contractor): number {
   return c.dayRateUsdc * c.monthlyDayCap;
 }
 
+/** CDP accepts at most 10 rules per policy. */
+export const MAX_POLICY_RULES = 10;
+
 /**
  * Compile the hard invariants into a CDP account policy, enforced by Coinbase's
  * signer rather than by our code or any model:
- *   - the wallet can only call `transfer` on USDC,
+ *   - the wallet can only call `transfer` on USDC, on Base Sepolia,
  *   - only to a wallet in the address book,
- *   - for at most that contractor's agreement maximum (at the settlement scale),
- *   - only on Base Sepolia.
- * Anything that matches no accept rule is rejected by the signer.
+ *   - for at most that contractor's agreement maximum (at the settlement scale).
+ * A transaction that matches no accept rule is rejected by the signer.
+ *
+ * AgentKit's transfer goes through `sendEvmTransaction`, so that is the only
+ * operation accepted. With more contractors than CDP's rule limit, the per-
+ * contractor caps collapse into one rule: any address-book wallet, largest cap.
  */
 export function compileWalletPolicy(contractors: Contractor[], policy: PolicyVersion, scale = settlementScale()): CreatePolicyBody {
   const usdc = { type: "evmAddress" as const, addresses: [USDC_BASE_SEPOLIA as `0x${string}`], operator: "in" as const };
   const baseSepolia = { type: "evmNetwork" as const, networks: ["base-sepolia" as const], operator: "in" as const };
-  const rules: CreatePolicyBody["rules"] = contractors.flatMap((c) => {
-    const transferToContractor = {
-      type: "evmData" as const,
-      abi: "erc20" as const,
-      conditions: [
-        {
-          function: "transfer",
-          params: [
-            { name: "to", operator: "in" as const, values: [c.wallet] },
-            { name: "value", operator: "<=" as const, value: parseUnits(String(toSettled(agreementMaxUsdc(c), scale)), USDC_DECIMALS).toString() },
-          ],
-        },
-      ],
-    };
-    return [
-      { action: "accept" as const, operation: "sendEvmTransaction" as const, criteria: [baseSepolia, usdc, transferToContractor] },
-      { action: "accept" as const, operation: "signEvmTransaction" as const, criteria: [usdc, transferToContractor] },
-    ];
+  const units = (usdcAmount: number) => parseUnits(String(toSettled(usdcAmount, scale)), USDC_DECIMALS).toString();
+  const rule = (wallets: string[], maxUsdc: number) => ({
+    action: "accept" as const,
+    operation: "sendEvmTransaction" as const,
+    criteria: [
+      baseSepolia,
+      usdc,
+      {
+        type: "evmData" as const,
+        abi: "erc20" as const,
+        conditions: [
+          {
+            function: "transfer",
+            params: [
+              { name: "to", operator: "in" as const, values: wallets },
+              { name: "value", operator: "<=" as const, value: units(maxUsdc) },
+            ],
+          },
+        ],
+      },
+    ],
   });
+  const rules: CreatePolicyBody["rules"] =
+    contractors.length <= MAX_POLICY_RULES
+      ? contractors.map((c) => rule([c.wallet], agreementMaxUsdc(c)))
+      : [rule(contractors.map((c) => c.wallet), Math.max(...contractors.map(agreementMaxUsdc)))];
   return {
     scope: "account",
-    description: `Payrun policy v${policy.version} (${policy.hash.slice(0, 12)}): USDC to address book only, capped per agreement`,
+    // CDP allows 50 chars of [A-Za-z0-9 ,.]
+    description: `Payrun policy v${policy.version} ${policy.hash.slice(0, 12)}`,
     rules,
   };
 }
