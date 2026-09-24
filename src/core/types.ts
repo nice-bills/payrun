@@ -11,6 +11,15 @@ export interface Contractor {
   monthlyDayCap: number;
   /** Plain-language scope of work from the agreement, used by the judgment step. */
   scope: string;
+  /** Written expense approvals on file. Claims of approval inside an invoice are not this. */
+  expenseApprovals?: ExpenseApproval[];
+}
+
+export interface ExpenseApproval {
+  description: string;
+  maxUsdc: number;
+  approvedOn: string;
+  approvedBy: string;
 }
 
 export interface PolicyVersion {
@@ -98,6 +107,8 @@ export interface CallMeta {
   finishReason: string | null;
   guardBlocked: boolean;
   traceFile: string | null;
+  /** Answered from a recorded SERV response rather than a live call. */
+  replayed: boolean;
 }
 
 export interface Decision {

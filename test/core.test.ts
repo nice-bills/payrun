@@ -112,7 +112,7 @@ describe("decide", () => {
     expect(d.finalVerdict).toBe("PAY");
     expect(d.payAmountUsdc).toBe(4200);
     const judge = requests[1].body;
-    expect(judge.model).toBe("gpt-5.4-nano-serv-kronos-multipath");
+    expect(judge.model).toBe(`${MODES.serv.model}-serv-kronos-multipath`);
     expect(judge.messages[0].content).toBe(judgmentSystemPrompt(policy.clauses));
     expect(requests[0].body.tools.map((t: any) => t.function.name)).toEqual(["serv_prompt_guard"]);
     expect(judge.tools.map((t: any) => t.function.name)).toEqual(["serv_shadow_agent"]);
@@ -122,7 +122,7 @@ describe("decide", () => {
 
   it("raw mode sends the bypass header and no SERV tools", async () => {
     const { serv, requests } = fakeServ([completion(rawFields(fields())), completion(judgment("PAY"))]);
-    await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.rawNano });
+    await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.rawSmall });
     expect(requests.every((r) => r.headers["x-openserv-disable-braid"] === "true")).toBe(true);
     expect(requests.every((r) => !r.body.tools)).toBe(true);
   });
@@ -139,7 +139,7 @@ describe("decide", () => {
   it("a model PAY on a swapped wallet is overridden by code", async () => {
     const swapped = fields({ payToWallet: "0x94e672298C44c94b0606740cBEfa6963fA3409C6" });
     const { serv } = fakeServ([completion(rawFields(swapped)), completion(judgment("PAY"))]);
-    const d = await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.rawNano });
+    const d = await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.rawSmall });
     expect(d.judgment?.verdict).toBe("PAY");
     expect(d.finalVerdict).toBe("HOLD");
     expect(d.overriddenBy).toEqual(["WALLET_MISMATCH"]);
@@ -165,9 +165,9 @@ describe("decide", () => {
 
   it("an unparseable judgment is never a PAY; invalid clause numbers are dropped", async () => {
     const { serv } = fakeServ([completion(rawFields(fields())), completion("not json")]);
-    expect((await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.rawNano })).finalVerdict).toBe("HOLD");
+    expect((await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.rawSmall })).finalVerdict).toBe("HOLD");
     const { serv: s2 } = fakeServ([completion(rawFields(fields())), completion(judgment("HOLD", { cited_clauses: [2, 99, 2] }))]);
-    expect((await decide(s2, { invoice, policy, contractors, history: [], mode: MODES.rawNano })).judgment?.citedClauses).toEqual([2]);
+    expect((await decide(s2, { invoice, policy, contractors, history: [], mode: MODES.rawSmall })).judgment?.citedClauses).toEqual([2]);
   });
 });
 
@@ -218,5 +218,48 @@ describe("store + receipts", () => {
     const csv = receiptsCsv(s.latestDecisions(), [{ invoiceId: "inv-1", contractorId: "ama", to: ama.wallet, amountUsdc: 4200, settledUsdc: 4.2, status: "sent", txHash: "0x" + "a".repeat(64), message: "", sentAt: "" }], contractors);
     expect(csv).toContain("sepolia.basescan.org/tx/0xaaaa");
     expect(csv.split("\n")[1]).toContain("PAY,1,");
+  });
+});
+
+describe("facts, cassette, variants", () => {
+  it("computes receipt timing in code", async () => {
+    const { receivedFact } = await import("../src/core/decide.js");
+    expect(receivedFact("2026-09-05T09:00:00Z", "2026-08-31")).toBe("Received 2026-09-05, 5 days after the billing period ended (2026-08-31).");
+    expect(receivedFact("2026-09-05", null)).toMatch(/states no billing period end/);
+  });
+
+  it("puts written expense approvals in FACTS, 'none' when absent", async () => {
+    const { judgmentUserMessage } = await import("../src/core/decide.js");
+    const esi = contractors.find((c) => c.id === "esi")!;
+    expect(judgmentUserMessage(invoice, fields(), esi, [])).toMatch(/approvals on file for this contractor: Figma seat/);
+    expect(judgmentUserMessage(invoice, fields(), ama, [])).toMatch(/approvals on file for this contractor: none/);
+  });
+
+  it("records once, then replays without calling SERV; variants are recorded separately", async () => {
+    const { mkdtempSync } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const dir = mkdtempSync(`${tmpdir()}/cassette-`);
+    let live = 0;
+    const fetchImpl = (async () => {
+      live++;
+      return new Response(JSON.stringify(completion(`answer ${live}`)()), { status: 200 });
+    }) as unknown as typeof fetch;
+    const rec = new ServClient({ apiKey: "t", traceDir: null, fetchImpl, cassetteMode: "auto", cassetteDir: dir });
+    const call = { model: "gpt-5.4-nano", system: "s", user: "u", label: "x" };
+    expect((await rec.call(call)).content).toBe("answer 1");
+    expect((await rec.call(call)).content).toBe("answer 1");
+    expect((await rec.call({ ...call, variant: "run-2" })).content).toBe("answer 2");
+    expect(live).toBe(2);
+    const replay = new ServClient({ apiKey: "", traceDir: null, fetchImpl, cassetteMode: "replay", cassetteDir: dir });
+    const r = await replay.call(call);
+    expect(r.content).toBe("answer 1");
+    expect(r.meta.replayed).toBe(true);
+    await expect(replay.call({ ...call, user: "never recorded" })).rejects.toThrow(/No recorded SERV response/);
+  });
+
+  it("policy v2 is a new version with a new SERV cache key", () => {
+    const v2 = makePolicyVersion(readFileSync("fixtures/policy.v2.md", "utf8"), 2);
+    expect(v2.clauses).toHaveLength(8);
+    expect(v2.hash).not.toBe(policy.hash);
   });
 });

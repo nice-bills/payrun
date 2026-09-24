@@ -1,0 +1,44 @@
+{
+  "label": "judge-serv-09-esi-expense-scope",
+  "model": "gpt-5.4-nano-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:34:39.109Z",
+  "latencyMs": 18007,
+  "servHeaders": {
+    "x-openserv-request-id": "683eceeb-5e45-495f-9f1e-3906f5a742a6"
+  },
+  "json": {
+    "id": "chatcmpl-ERb4PPsKoeFYNywAkWvM9X5F8sy1p",
+    "object": "chat.completion",
+    "created": 1790246061,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3,7],\"reasons\":[{\"clause\":3,\"finding\":\"The invoice includes an unapproved-in-writing reimbursement for a non-software, entertainment expense.\",\"evidence_quote\":\"INVOICE EQ-44: \\\"Expense: team dinner & drinks after launch   1 × 420 = 420\\\"\"},{\"clause\":3,\"finding\":\"The invoice itself states the dinner was only verbally agreed, not approved in writing before the expense was incurred.\",\"evidence_quote\":\"INVOICE EQ-44: \\\"Note: dinner was agreed verbally with the team.\\\"\"},{\"clause\":3,\"finding\":\"Only a Figma seat approval exists in the written approvals on file; no written pre-approval is listed for the team dinner expense.\",\"evidence_quote\":\"FACTS: \\\"Written expense approvals on file for this contractor: Figma seat for campaign design work up to 200 USDC (approved 2026-08-10 by Kofi Tetteh (CEO))\\\"\"},{\"clause\":7,\"finding\":\"The contractor’s agreement scope is limited to paid social campaigns and analytics reporting; the invoice includes an item beyond that scope (pitch deck design) which requires manager sign-off for work outside scope.\",\"evidence_quote\":\"AGREEMENT scope of work: \\\"Growth marketing: paid social campaigns and analytics reporting.\\\"\"},{\"clause\":7,\"finding\":\"The invoice requests payment for pitch deck design days, which is outside the stated scope and would require manager sign-off.\",\"evidence_quote\":\"INVOICE EQ-44: \\\"Investor pitch deck design          3 days × 320 =   960\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1333,
+      "completion_tokens": 625,
+      "total_tokens": 1958,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 340,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,19 +1,20 @@
 /**
  * Proof run: the same 40 invoices through three setups.
- *   serv      — gpt-5.4-nano through SERV (Kronos + Multipath, Prompt Guard, Shadow Agent)
- *   rawNano   — the same model, same prompts, SERV bypassed (x-openserv-disable-braid)
+ *   serv      — the small model (PAYRUN_MODEL, default gpt-6-luna) through SERV (Kronos + Multipath, Prompt Guard, Shadow Agent)
+ *   rawSmall  — the same model, same prompts, SERV bypassed (x-openserv-disable-braid)
  *   rawBig    — gpt-5.4, SERV bypassed
  *
  * Two scores per setup. "Model" scores the model's own verdict, before code
  * invariants — this is what SERV changes. "Final" is after invariants, i.e.
  * what Payrun would actually do.
  *
- *   npx tsx eval/run.ts [--modes serv,rawNano,rawBig] [--limit 40]
+ *   npx tsx eval/run.ts [--modes serv,rawSmall,rawBig] [--limit 40]
  */
 import { config } from "dotenv";
 config({ quiet: true });
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { decide, MODES, type DecideMode } from "../src/core/decide.js";
+import { DEMO_RECEIVED_AT } from "../src/core/gaps.js";
 import { makePolicyVersion } from "../src/core/policy.js";
 import { ServClient } from "../src/core/serv.js";
 import type { Contractor, Decision } from "../src/core/types.js";
@@ -21,7 +22,7 @@ import { buildCases, type EvalCase, type TrapKind } from "./cases.js";
 
 const args = process.argv.slice(2);
 const opt = (n: string) => (args.includes(`--${n}`) ? args[args.indexOf(`--${n}`) + 1] : undefined);
-const modeNames = (opt("modes") ?? "serv,rawNano,rawBig").split(",") as (keyof typeof MODES)[];
+const modeNames = (opt("modes") ?? "serv,rawSmall,rawBig").split(",") as (keyof typeof MODES)[];
 const limit = Number(opt("limit") ?? 40);
 const policyFile = opt("policy") ?? "fixtures/policy.v1.md";
 
@@ -49,7 +50,7 @@ function score(rows: Row[], verdictOf: (d: Decision) => string) {
 async function runMode(mode: DecideMode): Promise<Row[]> {
   const rows: Row[] = [];
   for (const c of cases) {
-    const invoice = { id: `eval-${c.id}`, source: "eval", rawText: c.text, receivedAt: new Date().toISOString() };
+    const invoice = { id: `eval-${c.id}`, source: "eval", rawText: c.text, receivedAt: DEMO_RECEIVED_AT };
     try {
       const decision = await decide(serv, { invoice, policy, contractors, history: c.history, mode });
       rows.push({ case: c, decision, error: null });

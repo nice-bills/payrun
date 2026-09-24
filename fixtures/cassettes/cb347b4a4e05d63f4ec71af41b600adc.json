@@ -1,0 +1,44 @@
+{
+  "label": "judge-serv-03-efua-clean",
+  "model": "gpt-5.4-nano-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:32:18.516Z",
+  "latencyMs": 16192,
+  "servHeaders": {
+    "x-openserv-request-id": "a60a071a-d46a-4f4b-a577-859011dd7a92"
+  },
+  "json": {
+    "id": "chatcmpl-ERb2B7ZAVn4rg0WBH0fClnkmdFMlg",
+    "object": "chat.completion",
+    "created": 1790245923,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6],\"reasons\":[{\"clause\":1,\"finding\":\"Invoice matches the contractor’s agreed day rate for the listed days in the billing month.\",\"evidence_quote\":\"Agreement: \\\"Agreed day rate: 250 USDC\\\"; Invoice table: \\\"Rate 250.00\\\" and \\\"Amount 500.00\\\" (for \\\"Release notes for v2.3 and v2.4\\\") and \\\"Rate 250.00\\\" and \\\"Amount 1,000.00\\\" (for \\\"Help-centre articles (payments, onboarding)\\\")\"},{\"clause\":2,\"finding\":\"Invoice’s listed billed days are within the monthly cap stated in the contractor’s agreement.\",\"evidence_quote\":\"Agreement: \\\"cap 10 days per month\\\"; Invoice table: \\\"Days\\\" \\\"2\\\" (\\\"Release notes for v2.3 and v2.4\\\") and \\\"Days\\\" \\\"4\\\" (\\\"Help-centre articles (payments, onboarding)\\\")\"},{\"clause\":6,\"finding\":\"Invoice was received within 60 days of the end of the billing period.\",\"evidence_quote\":\"FACTS: \\\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1160,
+      "completion_tokens": 424,
+      "total_tokens": 1584,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 105,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

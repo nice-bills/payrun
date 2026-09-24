@@ -1,0 +1,44 @@
+{
+  "label": "extract-serv-07-kofi-over-cap",
+  "model": "gpt-5.4-nano",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:33:32.468Z",
+  "latencyMs": 4104,
+  "servHeaders": {
+    "x-openserv-request-id": "8086d94f-a397-41ff-809e-d89f02c994ec"
+  },
+  "json": {
+    "id": "chatcmpl-ERb3btCzcxzJawd1LtQQAvKEkni7q",
+    "object": "chat.completion",
+    "created": 1790246011,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"KA-117\",\"contractor_name\":\"Kofi Adjei\",\"contractor_email\":\"kofi@adjei.studio\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Dashboard redesign (React)\",\"quantity\":18,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":5400},{\"description\":\"Weekend crunch before launch\",\"quantity\":6,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":1800}],\"total_usdc\":7200,\"pay_to_wallet\":\"0x7D3338B5dab0C0feEdd9C83E17Bcf5F3B926B633\",\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 755,
+      "completion_tokens": 172,
+      "total_tokens": 927,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

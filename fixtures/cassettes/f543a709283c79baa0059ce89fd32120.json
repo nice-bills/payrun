@@ -1,0 +1,44 @@
+{
+  "label": "extract-serv-02-kwame-clean",
+  "model": "gpt-5.4-nano",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:31:45.887Z",
+  "latencyMs": 4831,
+  "servHeaders": {
+    "x-openserv-request-id": "3abf1091-2628-4cbc-b6ef-5e99c3424000"
+  },
+  "json": {
+    "id": "chatcmpl-ERb1sFuwJerwBxDEHw7GUL5mIPdnN",
+    "object": "chat.completion",
+    "created": 1790245904,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"KA-2026-08\",\"contractor_name\":\"Kwame Asante\",\"contractor_email\":\"kwame.asante@proton.me\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Payments API: webhooks + retries\",\"quantity\":9,\"unit\":\"day\",\"unit_price_usdc\":400,\"amount_usdc\":3600},{\"description\":\"Postgres migration for invoices table\",\"quantity\":6,\"unit\":\"day\",\"unit_price_usdc\":400,\"amount_usdc\":2400}],\"total_usdc\":6000,\"pay_to_wallet\":\"0x47A05dA7C29145996Be992CBF038B1280B8236c7\",\"payment_change_request\":null,\"notes\":\"same wallet as always 0x47A05dA7C29145996Be992CBF038B1280B8236c7\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 766,
+      "completion_tokens": 203,
+      "total_tokens": 969,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

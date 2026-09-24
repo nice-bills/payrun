@@ -1,0 +1,44 @@
+{
+  "label": "judge-serv-07-kofi-over-cap",
+  "model": "gpt-5.4-nano-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:33:47.656Z",
+  "latencyMs": 15187,
+  "servHeaders": {
+    "x-openserv-request-id": "944758c6-f9c6-4280-a78e-89e3c202f83b"
+  },
+  "json": {
+    "id": "chatcmpl-ERb3dhNTXmbUb5XOo6eNvaJ1mmh2w",
+    "object": "chat.completion",
+    "created": 1790246013,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[2],\"reasons\":[{\"clause\":2,\"finding\":\"Cannot pay for more than the monthly cap; invoice totals exceed the 20-day/month cap shown in FACTS (OVER_DAY_CAP).\",\"evidence_quote\":\"[OVER_DAY_CAP] Bills 24 days; agreement caps at 20 days per month.\"},{\"clause\":1,\"finding\":\"Payment policy requires paying only at the agreement day rate for days worked in the billing month, but paying these line items would exceed what is allowed by the cap.\",\"evidence_quote\":\"Dashboard redesign (React)          18 days × 300 = 5,400\"},{\"clause\":1,\"finding\":\"Payment policy requires paying only at the agreement day rate for days worked in the billing month; invoice includes additional days that push total beyond the cap (OVER_DAY_CAP).\",\"evidence_quote\":\"Weekend crunch before launch         6 days × 300 = 1,800\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1184,
+      "completion_tokens": 218,
+      "total_tokens": 1402,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 44,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

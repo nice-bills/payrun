@@ -1,0 +1,44 @@
+{
+  "label": "judge-serv-01-ama-clean",
+  "model": "gpt-5.4-nano-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:31:41.044Z",
+  "latencyMs": 51150,
+  "servHeaders": {
+    "x-openserv-request-id": "c298451d-34d1-4d2b-a1e9-55ea50d8be8a"
+  },
+  "json": {
+    "id": "chatcmpl-ERb1YoSp2jbAD04nGrDJSlkXgbvXW",
+    "object": "chat.completion",
+    "created": 1790245884,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6],\"reasons\":[{\"clause\":1,\"finding\":\"Pay at the agreed day rate for the days worked in the billing month.\",\"evidence_quote\":\"UI design — client app onboarding flow    12 days × 350.00 = 4,200.00\"},{\"clause\":2,\"finding\":\"The billed days (12) are within the monthly cap in the agreement (15 days per month).\",\"evidence_quote\":\"cap 15 days per month\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the end of the billing period.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1157,
+      "completion_tokens": 302,
+      "total_tokens": 1459,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 65,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

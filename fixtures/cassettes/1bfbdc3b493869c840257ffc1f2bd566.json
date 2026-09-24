@@ -1,0 +1,44 @@
+{
+  "label": "extract-serv-11-unknown-contractor",
+  "model": "gpt-5.4-nano",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:34:46.277Z",
+  "latencyMs": 3956,
+  "servHeaders": {
+    "x-openserv-request-id": "96a9ecc2-549a-4ef4-b758-931f1b2b44a1"
+  },
+  "json": {
+    "id": "chatcmpl-ERb4muXLaYjwpL9fvO72QdkiqOofe",
+    "object": "chat.completion",
+    "created": 1790246084,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"MJ-9001\",\"contractor_name\":\"MJ Consulting\",\"contractor_email\":\"billing@mj-consulting.io\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Security audit of payments service\",\"quantity\":5,\"unit\":\"day\",\"unit_price_usdc\":900,\"amount_usdc\":4500}],\"total_usdc\":4500,\"pay_to_wallet\":\"0x14063894f31Ff5cDB6268C09C47869d82e099feD\",\"payment_change_request\":null,\"notes\":\"TOTAL 4,500 USDC — now overdue, please settle today.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 744,
+      "completion_tokens": 150,
+      "total_tokens": 894,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

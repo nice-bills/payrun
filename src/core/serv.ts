@@ -1,4 +1,5 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import type { CallMeta } from "./types.js";
 
@@ -9,6 +10,7 @@ const PRICES: Record<string, { in: number; out: number }> = {
   "gpt-5.4": { in: 3.25, out: 20.0 },
   "gpt-5.6-luna": { in: 0.25, out: 1.5 },
   "gpt-6-luna": { in: 0.13, out: 0.65 },
+  "gpt-6-sol": { in: 2.6, out: 13.0 },
   "claude-haiku-4.5": { in: 1.25, out: 6.5 },
 };
 
@@ -35,7 +37,20 @@ export interface ServCall {
   noCache?: boolean;
   /** Used to name the trace file. */
   label: string;
+  /**
+   * Distinguishes deliberately repeated identical requests (e.g. the gap finder
+   * judging one probe three times) so the cassette records each one separately.
+   */
+  variant?: string;
 }
+
+/**
+ * off     — always call SERV.
+ * record  — call SERV and save every response.
+ * replay  — never call SERV; fail if a response was not recorded.
+ * auto    — replay when recorded, otherwise call SERV and record.
+ */
+export type CassetteMode = "off" | "record" | "replay" | "auto";
 
 export interface ServResult<T = unknown> {
   content: string;
@@ -52,12 +67,24 @@ export interface ServClientOptions {
   traceDir?: string | null;
   fetchImpl?: typeof fetch;
   maxRetries?: number;
+  cassetteMode?: CassetteMode;
+  cassetteDir?: string;
 }
 
 export function modelId(model: string, features: ServFeature[] = [], raw = false): string {
   if (raw || features.length === 0) return model;
   const order: ServFeature[] = ["kronos", "multipath"];
   return `${model}-serv-${order.filter((f) => features.includes(f)).join("-")}`;
+}
+
+/**
+ * What one SERV request actually costs, from the console (24 Sep 2026: $0.26 over
+ * 32 requests). Returned token counts exclude SERV's own feature calls, so for
+ * SERV-mode requests this calibrated figure is used instead of tokens × price.
+ */
+export function servCostPerRequest(): number {
+  const v = Number(process.env.SERV_COST_PER_REQUEST_USD ?? "0.0081");
+  return Number.isFinite(v) && v >= 0 ? v : 0.0081;
 }
 
 export function estimateCost(model: string, promptTokens: number, completionTokens: number): number {
@@ -86,6 +113,10 @@ export class ServClient {
   private traceDir: string | null;
   private fetchImpl: typeof fetch;
   private maxRetries: number;
+  private cassetteMode: CassetteMode;
+  private cassetteDir: string;
+  /** Requests answered from the cassette vs sent to SERV in this process. */
+  readonly stats = { replayed: 0, live: 0 };
 
   constructor(opts: ServClientOptions = {}) {
     this.apiKey = opts.apiKey ?? process.env.SERV_API_KEY ?? "";
@@ -93,10 +124,11 @@ export class ServClient {
     this.traceDir = opts.traceDir === undefined ? "data/traces" : opts.traceDir;
     this.fetchImpl = opts.fetchImpl ?? fetch;
     this.maxRetries = opts.maxRetries ?? 2;
+    this.cassetteMode = opts.cassetteMode ?? ((process.env.PAYRUN_SERV_CASSETTE as CassetteMode) || "off");
+    this.cassetteDir = opts.cassetteDir ?? process.env.PAYRUN_CASSETTE_DIR ?? "fixtures/cassettes";
   }
 
   async call<T = unknown>(c: ServCall): Promise<ServResult<T>> {
-    if (!this.apiKey) throw new Error("SERV_API_KEY is not set");
     const model = modelId(c.model, c.features, c.raw);
     const tools: unknown[] = [];
     if (!c.raw && c.guard) tools.push({ type: "function", function: { name: "serv_prompt_guard" } });
@@ -139,9 +171,29 @@ export class ServClient {
     };
     if (c.raw) headers["x-openserv-disable-braid"] = "true";
 
-    const started = Date.now();
-    const { json, servHeaders } = await this.post(`${this.baseUrl}/chat/completions`, headers, body);
-    const latencyMs = Date.now() - started;
+    const key = createHash("sha256").update(JSON.stringify({ raw: !!c.raw, body, variant: c.variant ?? "" })).digest("hex").slice(0, 32);
+    const cassetteFile = join(this.cassetteDir, `${key}.json`);
+    let json: any;
+    let servHeaders: Record<string, string>;
+    let latencyMs: number;
+    let replayed = false;
+    const canReplay = (this.cassetteMode === "replay" || this.cassetteMode === "auto") && existsSync(cassetteFile);
+    if (canReplay) {
+      ({ json, servHeaders, latencyMs } = JSON.parse(readFileSync(cassetteFile, "utf8")));
+      replayed = true;
+      this.stats.replayed++;
+    } else {
+      if (this.cassetteMode === "replay") throw new Error(`No recorded SERV response for ${c.label} (${key}); run with PAYRUN_SERV_CASSETTE=auto to record it`);
+      if (!this.apiKey) throw new Error("SERV_API_KEY is not set");
+      const started = Date.now();
+      ({ json, servHeaders } = await this.post(`${this.baseUrl}/chat/completions`, headers, body));
+      latencyMs = Date.now() - started;
+      this.stats.live++;
+      if (this.cassetteMode === "record" || this.cassetteMode === "auto") {
+        mkdirSync(this.cassetteDir, { recursive: true });
+        writeFileSync(cassetteFile, JSON.stringify({ label: c.label, model, raw: !!c.raw, recordedAt: new Date().toISOString(), latencyMs, servHeaders, json }, null, 2));
+      }
+    }
 
     const choice = json?.choices?.[0];
     const content: string = choice?.message?.content ?? "";
@@ -156,7 +208,7 @@ export class ServClient {
     }
     const promptTokens = json?.usage?.prompt_tokens ?? 0;
     const completionTokens = json?.usage?.completion_tokens ?? 0;
-    const traceFile = this.trace(c.label, { model, raw: !!c.raw, body, latencyMs, servHeaders, response: json });
+    const traceFile = replayed ? null : this.trace(c.label, { model, raw: !!c.raw, body, latencyMs, servHeaders, response: json });
 
     return {
       content,
@@ -169,10 +221,11 @@ export class ServClient {
         latencyMs,
         promptTokens,
         completionTokens,
-        costUsd: estimateCost(c.model, promptTokens, completionTokens),
+        costUsd: c.raw ? estimateCost(c.model, promptTokens, completionTokens) : servCostPerRequest(),
         finishReason: choice?.finish_reason ?? null,
         guardBlocked,
         traceFile,
+        replayed,
       },
     };
   }

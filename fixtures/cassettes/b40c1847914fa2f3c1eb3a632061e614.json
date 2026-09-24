@@ -1,0 +1,44 @@
+{
+  "label": "extract-serv-08-nana-arithmetic",
+  "model": "gpt-5.4-nano",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:33:51.834Z",
+  "latencyMs": 4168,
+  "servHeaders": {
+    "x-openserv-request-id": "41ea4463-0e94-4bb8-ab40-b1b0f8d4cfe8"
+  },
+  "json": {
+    "id": "chatcmpl-ERb3u5iY7hhsEzCNo6IjV7HuoQj3P",
+    "object": "chat.completion",
+    "created": 1790246030,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"NY-2026-08\",\"contractor_name\":\"Nana Yeboah — QA\",\"contractor_email\":\"nana.yeboah@outlook.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Regression testing, releases 2.3 and 2.4\",\"quantity\":10,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":3300}],\"total_usdc\":3300,\"pay_to_wallet\":null,\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 714,
+      "completion_tokens": 129,
+      "total_tokens": 843,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

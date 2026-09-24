@@ -1,0 +1,44 @@
+{
+  "label": "judge-serv-02-kwame-clean",
+  "model": "gpt-5.4-nano-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:31:57.119Z",
+  "latencyMs": 11230,
+  "servHeaders": {
+    "x-openserv-request-id": "c5dbd82c-2349-4a1a-9a19-3b8d83f984f9"
+  },
+  "json": {
+    "id": "chatcmpl-ERb1u3EFRw9lSTUoljN4pEYdBtwI8",
+    "object": "chat.completion",
+    "created": 1790245906,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6],\"reasons\":[{\"clause\":1,\"finding\":\"Invoice line items match the agreed day rate (400 USDC) for days worked in the billing month.\",\"evidence_quote\":\"Agreed day rate: 400 USDC; cap 20 days per month\"},{\"clause\":2,\"finding\":\"Total billed days (9 + 6 = 15) do not exceed the monthly cap of 20 days.\",\"evidence_quote\":\"- Payments API: webhooks + retries, 9 days @ 400 = 3600\\n- Postgres migration for invoices table, 6 days @ 400 = 2400\\nAgreed day rate: 400 USDC; cap 20 days per month\"},{\"clause\":6,\"finding\":\"Invoice was received within 60 days of the end of the billing period.\",\"evidence_quote\":\"FACTS\\n- Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1209,
+      "completion_tokens": 338,
+      "total_tokens": 1547,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 91,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

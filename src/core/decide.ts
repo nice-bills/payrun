@@ -15,9 +15,12 @@ export interface DecideMode {
   reasoningEffort?: "low" | "medium" | "high";
 }
 
+/** The small model SERV runs the policy on. One setting so the SERV run and its raw control always match. */
+export const SMALL_MODEL = process.env.PAYRUN_MODEL || "gpt-6-luna";
+
 export const MODES = {
-  serv: { name: "serv", model: "gpt-5.4-nano", features: ["kronos", "multipath"], guard: true, shadow: true, raw: false, reasoningEffort: "low" },
-  rawNano: { name: "raw-nano", model: "gpt-5.4-nano", features: [], guard: false, shadow: false, raw: true, reasoningEffort: "low" },
+  serv: { name: "serv", model: SMALL_MODEL, features: ["kronos", "multipath"], guard: true, shadow: true, raw: false, reasoningEffort: "low" },
+  rawSmall: { name: "raw-small", model: SMALL_MODEL, features: [], guard: false, shadow: false, raw: true, reasoningEffort: "low" },
   rawBig: { name: "raw-gpt-5.4", model: "gpt-5.4", features: [], guard: false, shadow: false, raw: true, reasoningEffort: "low" },
 } satisfies Record<string, DecideMode>;
 
@@ -75,12 +78,17 @@ export function judgmentUserMessage(invoice: Invoice, fields: InvoiceFields, con
       ].join("\n")
     : "Contractor on file: NONE MATCHED";
   const facts = findings.length ? findings.map((f) => `- [${f.code}] ${f.detail}`).join("\n") : "- No issues found by code checks.";
+  const approvals = contractor?.expenseApprovals?.length
+    ? contractor.expenseApprovals.map((a) => `${a.description} up to ${a.maxUsdc} USDC (approved ${a.approvedOn} by ${a.approvedBy})`).join("; ")
+    : "none";
   return [
     "AGREEMENT",
     agreement,
     "",
     "FACTS",
     `- Invoice total: ${fields.totalUsdc ?? "missing"} USDC`,
+    `- ${receivedFact(invoice.receivedAt, fields.periodEnd)}`,
+    `- Written expense approvals on file for this contractor: ${approvals}`,
     facts,
     "",
     "EXTRACTED",
@@ -90,6 +98,17 @@ export function judgmentUserMessage(invoice: Invoice, fields: InvoiceFields, con
     invoice.rawText,
     "</invoice>",
   ].join("\n");
+}
+
+/** Days between the end of the billing period and receipt, computed here so the model never does date maths. */
+export function receivedFact(receivedAt: string, periodEnd: string | null): string {
+  const received = receivedAt.slice(0, 10);
+  if (!periodEnd) return `Received ${received}; the invoice states no billing period end.`;
+  const days = Math.round((Date.parse(received) - Date.parse(periodEnd)) / 86_400_000);
+  if (!Number.isFinite(days)) return `Received ${received}.`;
+  return days >= 0
+    ? `Received ${received}, ${days} days after the billing period ended (${periodEnd}).`
+    : `Received ${received}, ${-days} days before the billing period ends (${periodEnd}).`;
 }
 
 /**
@@ -114,6 +133,8 @@ export interface DecideInput {
   mode: DecideMode;
   /** Skip extraction when fields are already known (replay, eval). */
   fields?: InvoiceFields;
+  /** Marks deliberately repeated identical judgments so each is recorded separately. */
+  variant?: string;
 }
 
 export async function decide(serv: ServClient, input: DecideInput): Promise<Decision> {
@@ -161,6 +182,7 @@ export async function decide(serv: ServClient, input: DecideInput): Promise<Deci
     user: judgmentUserMessage(invoice, fields, contractor, findings),
     schema: { name: "payment_judgment", schema: JUDGMENT_SCHEMA },
     label: `judge-${mode.name}-${invoice.id}`,
+    variant: input.variant,
   });
   calls.push(res.meta);
 

@@ -1,0 +1,44 @@
+{
+  "label": "extract-serv-04-yaw-original",
+  "model": "gpt-5.4-nano",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:32:22.800Z",
+  "latencyMs": 4273,
+  "servHeaders": {
+    "x-openserv-request-id": "6a6e4814-c528-474f-8757-4e81d619f1e1"
+  },
+  "json": {
+    "id": "chatcmpl-ERb2T18FI23QEdaX0q5hgpRjq7ufQ",
+    "object": "chat.completion",
+    "created": 1790245941,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"INV-031\",\"contractor_name\":\"Yaw Owusu — DevOps\",\"contractor_email\":\"yaw@owusu.dev\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"CI pipeline migration to GitHub Actions\",\"quantity\":6,\"unit\":\"day\",\"unit_price_usdc\":450,\"amount_usdc\":2700},{\"description\":\"On-call support (Aug 15–31)\",\"quantity\":4,\"unit\":\"day\",\"unit_price_usdc\":450,\"amount_usdc\":1800}],\"total_usdc\":4500,\"pay_to_wallet\":\"0xfeBFb1c4778fecf570C433C9EA315154C47eB9Ee\",\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 764,
+      "completion_tokens": 173,
+      "total_tokens": 937,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "label": "probe-extract-1",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:37:32.417Z",
+  "latencyMs": 4138,
+  "servHeaders": {
+    "x-openserv-request-id": "ead5ec35-9aaa-49c2-aaad-b929911606ac"
+  },
+  "json": {
+    "id": "chatcmpl-ERb7R7S9GnQO0foPqMOsAPkLOdmff",
+    "object": "chat.completion",
+    "created": 1790246249,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AMA-2026-08-014\",\"contractor_name\":\"Ama Mensah\",\"contractor_email\":\"ama@mensah.design\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Product UI design\",\"quantity\":10,\"unit\":\"day\",\"unit_price_usdc\":350,\"amount_usdc\":3500},{\"description\":\"Figma Organization annual subscription\",\"quantity\":1,\"unit\":\"item\",\"unit_price_usdc\":240,\"amount_usdc\":240}],\"total_usdc\":3740,\"pay_to_wallet\":null,\"payment_change_request\":null,\"notes\":\"Approval note: On August 3, the client project lead emailed, “Approved—please use Figma for the app design work this month.” The annual subscription was purchased August 4.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 772,
+      "completion_tokens": 292,
+      "total_tokens": 1064,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 107,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

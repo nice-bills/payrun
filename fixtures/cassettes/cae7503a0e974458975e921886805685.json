@@ -1,0 +1,44 @@
+{
+  "label": "judge-serv-05-yaw-resend",
+  "model": "gpt-5.4-nano-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:32:59.577Z",
+  "latencyMs": 15163,
+  "servHeaders": {
+    "x-openserv-request-id": "1af630f6-8331-4384-afd8-794ed0a70daf"
+  },
+  "json": {
+    "id": "chatcmpl-ERb2qYoitJA0BvzMTMBDlPxDYOCTm",
+    "object": "chat.completion",
+    "created": 1790245964,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"Duplicate invoice/duplicate work: the billing period for this invoice overlaps work already billed for the same contractor and amount.\",\"evidence_quote\":\"FACTS: \\\"[SAME_PERIOD_ALREADY_BILLED] Period 2026-08-01–2026-08-31 overlaps approved invoice INV-031 (2026-08-01–2026-08-31, 4500 USDC).\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1277,
+      "completion_tokens": 197,
+      "total_tokens": 1474,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 68,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

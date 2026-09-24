@@ -1,4 +1,4 @@
-import { decide, MODES, type DecideMode } from "./decide.js";
+import { decide, MODES, SMALL_MODEL, type DecideMode } from "./decide.js";
 import { extractFields } from "./extract.js";
 import type { ServClient } from "./serv.js";
 import type { CallMeta, Contractor, Decision, Invoice, PolicyVersion, Verdict } from "./types.js";
@@ -10,6 +10,9 @@ import type { CallMeta, Contractor, Decision, Invoice, PolicyVersion, Verdict } 
  * policy; any case that flips, cites nothing, or that the model says the policy
  * does not cover is a gap the finance lead has to close in writing.
  */
+
+/** The demo's "today": invoices for August arrive in early September. */
+export const DEMO_RECEIVED_AT = "2026-09-05T09:00:00.000Z";
 
 export const PROBE_SYSTEM = [
   "You write test invoices that probe the edges of a contractor payment policy.",
@@ -107,6 +110,8 @@ export interface FindGapsOptions {
   runsPerProbe?: number;
   generatorModel?: string;
   mode?: DecideMode;
+  /** Receipt date stamped on probes; fixed so runs are reproducible and replayable. */
+  receivedAt?: string;
   onProgress?: (msg: string) => void;
 }
 
@@ -124,11 +129,12 @@ export async function findGaps(
 
   log(`Writing ${n} boundary probes for policy v${policy.version}`);
   const gen = await serv.call<{ probes: { title: string; contractor_id: string; invoice_text: string; target_clauses: number[]; why_ambiguous: string }[] }>({
-    model: opts.generatorModel ?? "gpt-5.4-mini",
+    model: opts.generatorModel ?? SMALL_MODEL,
     features: ["kronos"],
     system: PROBE_SYSTEM,
     user: `POLICY\n${policyBlock(policy)}\n\nCONTRACTORS\n${contractorBlock(contractors)}\n\nWrite ${n} probes.`,
     schema: { name: "policy_probes", schema: PROBE_SCHEMA },
+    maxCompletionTokens: 4000,
     label: `probes-v${policy.version}`,
   });
   calls.push(gen.meta);
@@ -142,7 +148,7 @@ export async function findGaps(
 
   const results: ProbeResult[] = [];
   for (const [i, probe] of probes.entries()) {
-    const invoice: Invoice = { id: `probe-${i + 1}`, source: "gap-probe", rawText: probe.invoiceText, receivedAt: new Date().toISOString() };
+    const invoice: Invoice = { id: `probe-${i + 1}`, source: "gap-probe", rawText: probe.invoiceText, receivedAt: opts.receivedAt ?? DEMO_RECEIVED_AT };
     log(`Probe ${i + 1}/${probes.length}: ${probe.title}`);
     // Extract once, then judge repeatedly: we are measuring the policy, not extraction noise.
     const ex = await extractFields(serv, invoice.rawText, { model: mode.model, raw: mode.raw, guard: false }, `probe-extract-${i + 1}`);
@@ -150,7 +156,7 @@ export async function findGaps(
     if (!ex.fields) continue;
     const decisions: Decision[] = [];
     for (let r = 0; r < runs; r++) {
-      const d = await decide(serv, { invoice, policy, contractors, history: [], mode: { ...mode, guard: false, shadow: false }, fields: ex.fields });
+      const d = await decide(serv, { invoice, policy, contractors, history: [], mode: { ...mode, guard: false, shadow: false }, fields: ex.fields, variant: `run-${r + 1}` });
       decisions.push(d);
       calls.push(...d.calls);
     }
@@ -161,7 +167,7 @@ export async function findGaps(
   for (const g of gaps) {
     log(`Drafting a clause for: ${g.probe.title}`);
     const s = await serv.call<{ clause: string; decides_as: Verdict }>({
-      model: opts.generatorModel ?? "gpt-5.4-mini",
+      model: opts.generatorModel ?? SMALL_MODEL,
       system: SUGGEST_SYSTEM,
       user: [
         `POLICY\n${policyBlock(policy)}`,
@@ -170,6 +176,7 @@ export async function findGaps(
         `OBSERVED VERDICTS ACROSS ${runs} RUNS: ${g.verdicts.join(", ")}`,
       ].join("\n\n"),
       schema: { name: "policy_clause", schema: SUGGEST_SCHEMA },
+      maxCompletionTokens: 600,
       label: `suggest-v${policy.version}`,
     });
     calls.push(s.meta);

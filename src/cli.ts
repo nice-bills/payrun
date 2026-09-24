@@ -4,7 +4,7 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { decide, MODES, type DecideMode } from "./core/decide.js";
 import { readInvoiceText } from "./core/extract.js";
-import { findGaps } from "./core/gaps.js";
+import { DEMO_RECEIVED_AT, findGaps } from "./core/gaps.js";
 import { createAgentKitPayer, payApproved } from "./core/pay.js";
 import { receiptsCsv } from "./core/receipts.js";
 import { replay } from "./core/replay.js";
@@ -75,11 +75,13 @@ async function main() {
       break;
     }
     case "ingest": {
-      const dir = args[0] ?? "fixtures/invoices";
+      const dir = args[0] && !args[0].startsWith("--") ? args[0] : "fixtures/invoices";
+      // A fixed receipt date keeps the demo (and its recorded SERV responses) reproducible.
+      const receivedAt = opt("received") ?? DEMO_RECEIVED_AT;
       const files = readdirSync(dir).filter((f) => /\.(txt|eml|pdf|md)$/i.test(f)).sort();
       for (const f of files) {
         const id = basename(f).replace(/\.[^.]+$/, "");
-        store.upsertInvoice({ id, source: f, rawText: await readInvoiceText(join(dir, f)), receivedAt: new Date().toISOString() });
+        store.upsertInvoice({ id, source: f, rawText: await readInvoiceText(join(dir, f)), receivedAt });
       }
       console.log(`Ingested ${files.length} invoices from ${dir}.`);
       break;
@@ -177,7 +179,7 @@ async function main() {
       break;
     }
     default:
-      console.log("Usage: npm run cli -- <init|policy [add <file>]|ingest [dir]|run [--mode serv|rawNano|rawBig] [--only id]|decisions|gaps|replay [--from v]|wallet [address|fund|policy|apply]|pay|attack|receipts>");
+      console.log("Usage: npm run cli -- <init|policy [add <file>]|ingest [dir]|run [--mode serv|rawSmall|rawBig] [--only id]|decisions|gaps|replay [--from v]|wallet [address|fund|policy|apply]|pay|attack|receipts>");
   }
 }
 

@@ -1,0 +1,44 @@
+{
+  "label": "judge-serv-04-yaw-original",
+  "model": "gpt-5.4-nano-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:32:40.504Z",
+  "latencyMs": 17702,
+  "servHeaders": {
+    "x-openserv-request-id": "be417869-7679-4d85-93d9-457b08468084"
+  },
+  "json": {
+    "id": "chatcmpl-ERb2VWGHtZNLHr3XWUvFhD8Iye820",
+    "object": "chat.completion",
+    "created": 1790245943,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,6],\"reasons\":[{\"clause\":1,\"finding\":\"Pay at the day rate in the agreement for days worked in the billing month (the invoice lines use 450 USDC/day for the stated quantities).\",\"evidence_quote\":\"\\\"unitPriceUsdc\\\":450\"},{\"clause\":6,\"finding\":\"Invoice was received within 60 days of the end of the billing period.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1201,
+      "completion_tokens": 331,
+      "total_tokens": 1532,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 110,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

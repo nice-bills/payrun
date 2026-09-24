@@ -37,7 +37,15 @@
     "network": "base-sepolia",
     "dayRateUsdc": 450,
     "monthlyDayCap": 12,
-    "scope": "DevOps: CI pipelines, cloud infrastructure and on-call support."
+    "scope": "DevOps: CI pipelines, cloud infrastructure and on-call support.",
+    "expenseApprovals": [
+      {
+        "description": "Cloud load-testing credits",
+        "maxUsdc": 300,
+        "approvedOn": "2026-07-28",
+        "approvedBy": "Kofi Tetteh (CEO)"
+      }
+    ]
   },
   {
     "id": "akosua",
@@ -77,6 +85,14 @@
     "network": "base-sepolia",
     "dayRateUsdc": 320,
     "monthlyDayCap": 10,
-    "scope": "Growth marketing: paid social campaigns and analytics reporting."
+    "scope": "Growth marketing: paid social campaigns and analytics reporting.",
+    "expenseApprovals": [
+      {
+        "description": "Figma seat for campaign design work",
+        "maxUsdc": 200,
+        "approvedOn": "2026-08-10",
+        "approvedBy": "Kofi Tetteh (CEO)"
+      }
+    ]
   }
 ]

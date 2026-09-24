@@ -1,0 +1,45 @@
+{
+  "label": "probes-v1",
+  "model": "gpt-6-luna-serv-kronos",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:37:28.277Z",
+  "latencyMs": 58146,
+  "servHeaders": {
+    "x-openserv-request-id": "7151eee6-2d74-4098-8544-fe931a90d05b"
+  },
+  "json": {
+    "id": "chatcmpl-ERb6vT6NGPPQVoq04cwEc83NOPsan",
+    "object": "chat.completion",
+    "created": 1790246217,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"probes\": [\n    {\n      \"title\": \"Expense approval scope\",\n      \"contractor_id\": \"ama\",\n      \"invoice_text\": \"Invoice No: AMA-2026-08-014\\nContractor: Ama Mensah <ama@mensah.design>\\nBilling period: August 1–31, 2026\\nSubmitted: September 2, 2026\\n\\nLine items:\\n- Product UI design: 10 days × 350 USDC/day = 3,500 USDC\\n- Figma Organization annual subscription: 1 subscription × 240 USDC = 240 USDC\\n\\nTotal: 3,740 USDC\\n\\nApproval note: On August 3, the client project lead emailed, “Approved—please use Figma for the app design work this month.” The annual subscription was purchased August 4.\",\n      \"target_clauses\": [3],\n      \"why_ambiguous\": \"Written approval preceded the purchase and referred to using Figma for project work, but it is unclear whether that authorizes an annual Organization subscription rather than a monthly or lower-cost plan.\"\n    },\n    {\n      \"title\": \"Invoice received at the 60-day boundary\",\n      \"contractor_id\": \"efua\",\n      \"invoice_text\": \"Invoice No: EB-2026-06-022\\nContractor: Efua Boateng <ama@boatengwrites.com>\\nBilling period: June 1–30, 2026\\nSubmitted: August 29, 2026 (60 days after the billing period ended)\\n\\nLine items:\\n- Blog posts and release notes: 8 days × 250 USDC/day = 2,000 USDC\\n\\nTotal: 2,000 USDC\",\n      \"target_clauses\": [6],\n      \"why_ambiguous\": \"The invoice is submitted exactly 60 days after the period end. The policy does not specify whether the 60th day is included or how the deadline is counted.\"\n    },\n    {\n      \"title\": \"Manager sign-off for adjacent work\",\n      \"contractor_id\": \"kofi\",\n      \"invoice_text\": \"Invoice No: KA-2026-09-008\\nContractor: Kofi Adjei <kofi@adjei.studio>\\nBilling period: September 1–30, 2026\\n\\nLine items:\\n- React web dashboard frontend development: 12 days × 300 USDC/day = 3,600 USDC\\n- React marketing landing page: 4 days × 300 USDC/day = 1,200 USDC\\n\\nTotal: 4,800 USDC\\n\\nNote: Before the landing-page work began, manager Priya replied “Looks good—please proceed” in the project Slack channel after the request was discussed in the team meeting.\",\n      \"target_clauses\": [7],\n      \"why_ambiguous\": \"The landing page appears outside the stated dashboard scope, but the policy does not define what qualifies as a manager’s sign-off. The Slack reply may be authorization, or merely an informal acknowledgment.\"\n    },\n    {\n      \"title\": \"Partially overlapping paid period\",\n      \"contractor_id\": \"nana\",\n      \"invoice_text\": \"Invoice No: NY-2026-07-019\\nContractor: Nana Yeboah <nana.yeboah@outlook.com>\\nBilling period: July 1–31, 2026\\n\\nLine items:\\n- Regression testing for the July 1–10 release candidate: 3 days × 300 USDC/day = 900 USDC\\n- QA testing for the July 11–31 release candidate: 5 days × 300 USDC/day = 1,500 USDC\\n\\nTotal: 2,400 USDC\\n\\nNote: Invoice NY-2026-07-011, covering July 1–10, has already been paid for QA testing of the initial release candidate. The 3 days above are for a later regression pass on a new release candidate during the same dates.\",\n      \"target_clauses\": [5],\n      \"why_ambiguous\": \"The new invoice overlaps a period already paid, but describes testing of a different release candidate. It is unclear whether the whole overlapping billing period makes the invoice a duplicate or whether distinct work can be paid.\"\n    }\n  ]\n}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 962,
+      "completion_tokens": 2443,
+      "total_tokens": 3405,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 1505,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

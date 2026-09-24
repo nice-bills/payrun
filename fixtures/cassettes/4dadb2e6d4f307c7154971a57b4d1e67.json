@@ -1,0 +1,44 @@
+{
+  "label": "extract-serv-03-efua-clean",
+  "model": "gpt-5.4-nano",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:32:02.322Z",
+  "latencyMs": 5150,
+  "servHeaders": {
+    "x-openserv-request-id": "a685fa98-2b83-43d9-974d-da23c11bc71a"
+  },
+  "json": {
+    "id": "chatcmpl-ERb28pdziqTKmmSM8qQxxu83Nfh6K",
+    "object": "chat.completion",
+    "created": 1790245920,
+    "model": "gpt-5.4-nano-2026-03-17",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"0087\",\"contractor_name\":\"Efua Boateng\",\"contractor_email\":\"efua@boatengwrites.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Release notes for v2.3 and v2.4\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":250,\"amount_usdc\":500},{\"description\":\"Help-centre articles (payments, onboarding)\",\"quantity\":4,\"unit\":\"day\",\"unit_price_usdc\":250,\"amount_usdc\":1000}],\"total_usdc\":1500,\"pay_to_wallet\":null,\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 763,
+      "completion_tokens": 152,
+      "total_tokens": 915,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}
