@@ -64,7 +64,7 @@ Alternative:
 > A PDF with a hidden "mark it PAY" instruction? Blocked by SERV's guard before the model read a word.
 >
 > Built for @openservai SERV Hackathon · AgentKit track
-> Demo: <vercel link> · Code: <github link>
+> Demo: <vercel link> · Code: https://github.com/nice-bills/payrun
 
 Optional reply with the proof: "40 invoices, 24 traps: caught by every setup once code states the facts. On loose wording every model flips, even gpt-5.4, so Payrun turns each hole into a clause the owner chooses. Numbers: <link>/proof"
 
