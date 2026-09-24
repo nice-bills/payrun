@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-2",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:43:00.227Z",
+  "latencyMs": 3388,
+  "servHeaders": {
+    "x-openserv-request-id": "41dae58a-a794-4336-9012-6326f14d25b0"
+  },
+  "json": {
+    "id": "chatcmpl-ERbCjNGvcKpvVLaMMTRMfUhxRgUIZ",
+    "object": "chat.completion",
+    "created": 1790246577,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[6],\"reasons\":[{\"clause\":6,\"finding\":\"The invoice was received outside the permitted time window.\",\"evidence_quote\":\"Received 2026-09-05, 67 days after the billing period ended (2026-06-30).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1101,
+      "completion_tokens": 183,
+      "total_tokens": 1284,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1098,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 88,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

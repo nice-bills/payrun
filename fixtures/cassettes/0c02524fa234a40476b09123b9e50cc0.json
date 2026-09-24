@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:42:53.058Z",
+  "latencyMs": 7941,
+  "servHeaders": {
+    "x-openserv-request-id": "5ba4c6a4-9593-4f08-842b-d05cfdd713ca"
+  },
+  "json": {
+    "id": "chatcmpl-ERbCYFqKPr8S03I6Q04jQ7A83bXoR",
+    "object": "chat.completion",
+    "created": 1790246566,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The invoice includes a software expense, but there is no confirmed written approval on file; the expense is not reimbursable under the policy.\",\"evidence_quote\":\"Written expense approvals on file for this contractor: none\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1189,
+      "completion_tokens": 440,
+      "total_tokens": 1629,
+      "prompt_tokens_details": {
+        "cached_tokens": 1186,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 342,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

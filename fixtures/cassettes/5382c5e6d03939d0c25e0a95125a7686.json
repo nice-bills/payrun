@@ -1,0 +1,45 @@
+{
+  "label": "probe-extract-2",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:42:56.837Z",
+  "latencyMs": 3777,
+  "servHeaders": {
+    "x-openserv-request-id": "3c7f5afb-b7d5-4a58-a793-02fcbfa2259d"
+  },
+  "json": {
+    "id": "chatcmpl-ERbCf2ry38wFzcLZjz7j9gxFUr7wu",
+    "object": "chat.completion",
+    "created": 1790246573,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"EB-2026-06-022\",\"contractor_name\":\"Efua Boateng\",\"contractor_email\":\"ama@boatengwrites.com\",\"period_start\":\"2026-06-01\",\"period_end\":\"2026-06-30\",\"lines\":[{\"description\":\"Blog posts and release notes\",\"quantity\":8,\"unit\":\"day\",\"unit_price_usdc\":250,\"amount_usdc\":2000}],\"total_usdc\":2000,\"pay_to_wallet\":null,\"payment_change_request\":null,\"notes\":\"Submitted: August 29, 2026 (60 days after the billing period ended)\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 725,
+      "completion_tokens": 241,
+      "total_tokens": 966,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 101,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "label": "extract-serv-eval-clean-3",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:44:01.585Z",
+  "latencyMs": 4677,
+  "servHeaders": {
+    "x-openserv-request-id": "1fdd51ab-71e9-409a-ab91-51a65dc9ac3c"
+  },
+  "json": {
+    "id": "chatcmpl-ERbDjKi7cbDhHiLCj1HVh5VdvxOjH",
+    "object": "chat.completion",
+    "created": 1790246639,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AKOSUA-202\",\"contractor_name\":\"Akosua Darko\",\"contractor_email\":\"akosua.darko@gmail.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Push notifications\",\"quantity\":5,\"unit\":\"day\",\"unit_price_usdc\":380.00,\"amount_usdc\":1900.00},{\"description\":\"Push notifications (cont.)\",\"quantity\":5,\"unit\":\"day\",\"unit_price_usdc\":380.00,\"amount_usdc\":1900.00}],\"total_usdc\":3800.00,\"pay_to_wallet\":\"0x4c7C5f70F851D649b353D56981F7898188dA93D4\",\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 783,
+      "completion_tokens": 222,
+      "total_tokens": 1005,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 37,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

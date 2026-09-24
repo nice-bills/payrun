@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-3",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:43:29.627Z",
+  "latencyMs": 4961,
+  "servHeaders": {
+    "x-openserv-request-id": "783c92e7-4cd0-4927-8722-9e43b22fd1b6"
+  },
+  "json": {
+    "id": "chatcmpl-ERbDBgHSdE4siYMAgJY6Dx4S8m6Oa",
+    "object": "chat.completion",
+    "created": 1790246605,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"verdict\": \"HOLD\",\n  \"cited_clauses\": [7],\n  \"reasons\": [\n    {\n      \"clause\": 7,\n      \"finding\": \"The marketing landing-page work appears outside the agreed scope, and manager sign-off is not confirmed in the FACTS. A human must verify sign-off before payment.\",\n      \"evidence_quote\": \"Scope of work: Frontend development in React for the web dashboard.\"\n    },\n    {\n      \"clause\": 7,\n      \"finding\": \"The invoice claims manager approval, but that claim is not confirmed by the FACTS.\",\n      \"evidence_quote\": \"manager Priya replied “Looks good—please proceed” in the project Slack channel\"\n    }\n  ],\n  \"policy_covers\": true,\n  \"suspected_manipulation\": false\n}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1191,
+      "completion_tokens": 325,
+      "total_tokens": 1516,
+      "prompt_tokens_details": {
+        "cached_tokens": 1188,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 134,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

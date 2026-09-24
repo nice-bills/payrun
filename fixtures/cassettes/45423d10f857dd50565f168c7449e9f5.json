@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-clean-1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:42:45.055Z",
+  "latencyMs": 12757,
+  "servHeaders": {
+    "x-openserv-request-id": "10e762a6-3c3e-40f5-81da-a036b16188cc"
+  },
+  "json": {
+    "id": "chatcmpl-ERbCL3WrjMRxNRzyVJqE3TeXhEXRu",
+    "object": "chat.completion",
+    "created": 1790246553,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice lists work at the agreed day rate for the billing period.\",\"evidence_quote\":\"Design system tokens                         7 days × 350.00 = 2,450.00\\nCheckout screens                             7 days × 350.00 = 2,450.00\"},{\"clause\":2,\"finding\":\"No cap issue was found by the code checks.\",\"evidence_quote\":\"No issues found by code checks.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the billing period end.\",\"evidence_quote\":\"Received 2026-09-05, 36 days after the billing period ended (2026-07-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1164,
+      "completion_tokens": 557,
+      "total_tokens": 1721,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1161,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 361,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

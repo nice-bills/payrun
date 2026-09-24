@@ -1,0 +1,45 @@
+{
+  "label": "probe-extract-4",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:43:33.298Z",
+  "latencyMs": 3669,
+  "servHeaders": {
+    "x-openserv-request-id": "b6572e97-1ffe-4923-897e-33c3a8cdcec6"
+  },
+  "json": {
+    "id": "chatcmpl-ERbDGb10KyBlGwa54ncS1YwKQp63e",
+    "object": "chat.completion",
+    "created": 1790246610,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"NY-2026-07-019\",\"contractor_name\":\"Nana Yeboah\",\"contractor_email\":\"nana.yeboah@outlook.com\",\"period_start\":\"2026-07-01\",\"period_end\":\"2026-07-31\",\"lines\":[{\"description\":\"Regression testing for the July 1–10 release candidate\",\"quantity\":3,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":900},{\"description\":\"QA testing for the July 11–31 release candidate\",\"quantity\":5,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":1500}],\"total_usdc\":2400,\"pay_to_wallet\":null,\"payment_change_request\":null,\"notes\":\"Invoice NY-2026-07-011, covering July 1–10, has already been paid for QA testing of the initial release candidate. The 3 days above are for a later regression pass on a new release candidate during the same dates.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 797,
+      "completion_tokens": 261,
+      "total_tokens": 1058,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 43,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

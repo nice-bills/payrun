@@ -121,6 +121,7 @@ async function main() {
       for (const g of report.gaps) {
         console.log(`■ ${g.probe.title}  [${g.gap.join(", ")}]  verdicts: ${g.verdicts.join(" / ")}`);
         console.log(`  why open: ${g.probe.whyAmbiguous}`);
+        for (const r of g.probe.readings) console.log(`  reading → ${r.verdict}: ${r.reading}${r.reading === g.chosenReading ? "   ← what the reviewer does today" : ""}`);
         if (g.suggestion) console.log(`  suggested clause (${g.suggestion.decidesAs}): ${g.suggestion.clause}`);
       }
       console.log(`\nEstimated cost: $${report.calls.reduce((s, c) => s + c.costUsd, 0).toFixed(4)}`);

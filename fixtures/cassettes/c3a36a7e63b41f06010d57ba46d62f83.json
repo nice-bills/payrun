@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:42:38.799Z",
+  "latencyMs": 6037,
+  "servHeaders": {
+    "x-openserv-request-id": "8ce92a31-1d72-4634-b9a9-756c17c09fce"
+  },
+  "json": {
+    "id": "chatcmpl-ERbCMxQedpFNtBbqF3c4ys5bWSL74",
+    "object": "chat.completion",
+    "created": 1790246554,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The invoice includes a software subscription expense without a written approval listed in FACTS.\",\"evidence_quote\":\"Written expense approvals on file for this contractor: none\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1189,
+      "completion_tokens": 277,
+      "total_tokens": 1466,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1186,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 191,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

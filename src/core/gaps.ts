@@ -1,6 +1,7 @@
 import { decide, MODES, SMALL_MODEL, type DecideMode } from "./decide.js";
 import { extractFields } from "./extract.js";
 import type { ServClient } from "./serv.js";
+import type { HistoryEntry } from "./checks.js";
 import type { CallMeta, Contractor, Decision, Invoice, PolicyVersion, Verdict } from "./types.js";
 
 /**
@@ -20,6 +21,8 @@ export const PROBE_SYSTEM = [
   "Aim every probe at a situation the policy's wording leaves open: two clauses that conflict, a threshold exactly at a boundary, a case no clause mentions, or wording a reviewer could read two ways.",
   "Do not write probes that are obviously fine or obviously fraudulent. Do not include wallet addresses unless the probe is about payment details.",
   "Include invoice number, contractor name and email, billing period, line items with quantity, unit, unit price and amount, and a total. Keep arithmetic correct unless arithmetic is the point.",
+  "For each probe give the date the invoice is received, and, if the probe depends on an earlier invoice having been paid, that earlier invoice; otherwise null.",
+  "For each probe give the two most plausible readings of the policy and the verdict (PAY, HOLD or BLOCK) each reading leads to.",
 ].join("\n");
 
 export const PROBE_SCHEMA = {
@@ -32,13 +35,34 @@ export const PROBE_SCHEMA = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["title", "contractor_id", "invoice_text", "target_clauses", "why_ambiguous"],
+        required: ["title", "contractor_id", "invoice_text", "target_clauses", "why_ambiguous", "received_on", "prior_paid", "readings"],
         properties: {
           title: { type: "string" },
           contractor_id: { type: "string" },
           invoice_text: { type: "string" },
           target_clauses: { type: "array", items: { type: "integer" } },
           why_ambiguous: { type: "string" },
+          received_on: { type: "string", description: "YYYY-MM-DD" },
+          prior_paid: {
+            type: ["object", "null"],
+            additionalProperties: false,
+            required: ["invoice_number", "period_start", "period_end", "total_usdc"],
+            properties: {
+              invoice_number: { type: "string" },
+              period_start: { type: "string" },
+              period_end: { type: "string" },
+              total_usdc: { type: "number" },
+            },
+          },
+          readings: {
+            type: "array",
+            items: {
+              type: "object",
+              additionalProperties: false,
+              required: ["reading", "verdict"],
+              properties: { reading: { type: "string" }, verdict: { type: "string", enum: ["PAY", "HOLD", "BLOCK"] } },
+            },
+          },
         },
       },
     },
@@ -47,7 +71,7 @@ export const PROBE_SCHEMA = {
 
 export const SUGGEST_SYSTEM = [
   "You close gaps in a contractor payment policy.",
-  "Given the policy and a case the policy does not decide consistently, write exactly one new clause of at most 35 words that decides it.",
+  "Given the policy and a case its wording leaves open, write exactly one new clause of at most 35 words that decides it the way the observed verdict did, so the company can confirm or reverse it explicitly.",
   "Write it in the same plain style as the existing clauses. Do not restate existing clauses.",
 ].join("\n");
 
@@ -61,19 +85,38 @@ export const SUGGEST_SCHEMA = {
   },
 } as const;
 
+export interface Reading {
+  reading: string;
+  verdict: Verdict;
+}
+
 export interface Probe {
   title: string;
   contractorId: string;
   invoiceText: string;
   targetClauses: number[];
   whyAmbiguous: string;
+  receivedOn: string;
+  priorPaid: { invoiceNumber: string; periodStart: string; periodEnd: string; totalUsdc: number } | null;
+  readings: Reading[];
 }
 
-export type GapKind = "UNSTABLE" | "NOT_COVERED" | "NO_CLAUSE";
+/**
+ * UNSTABLE      — the same invoice got different verdicts.
+ * NOT_COVERED   — the model said no clause decides it.
+ * NO_CLAUSE     — a verdict cited no clause.
+ * SILENT_CHOICE — verdicts agree, but the policy can be read two ways that lead to
+ *                 different verdicts: the reviewer picked a meaning nobody wrote down.
+ *                 Bounded reasoning makes verdicts consistent, so this is the gap
+ *                 that matters most under SERV.
+ */
+export type GapKind = "UNSTABLE" | "NOT_COVERED" | "NO_CLAUSE" | "SILENT_CHOICE";
 
 export interface ProbeResult {
   probe: Probe;
   verdicts: Verdict[];
+  /** Which stated reading the observed verdict matches, if exactly one does. */
+  chosenReading: string | null;
   decisions: Decision[];
   gap: GapKind[];
   suggestion: { clause: string; decidesAs: Verdict } | null;
@@ -87,11 +130,15 @@ export interface GapReport {
   calls: CallMeta[];
 }
 
-export function classifyGap(decisions: Decision[]): GapKind[] {
+export function classifyGap(decisions: Decision[], readings: Reading[] = []): GapKind[] {
   const kinds: GapKind[] = [];
-  if (new Set(decisions.map((d) => d.finalVerdict)).size > 1) kinds.push("UNSTABLE");
+  const unstable = new Set(decisions.map((d) => d.finalVerdict)).size > 1;
+  if (unstable) kinds.push("UNSTABLE");
   if (decisions.some((d) => d.judgment && !d.judgment.policyCovers)) kinds.push("NOT_COVERED");
   if (decisions.some((d) => d.judgment && d.judgment.citedClauses.length === 0)) kinds.push("NO_CLAUSE");
+  // Only judgment calls count: a verdict forced by a code invariant is not the model choosing a meaning.
+  const byJudgment = decisions.every((d) => d.judgment && d.overriddenBy.length === 0 && !d.blockedByGuard);
+  if (!unstable && byJudgment && new Set(readings.map((r) => r.verdict)).size > 1) kinds.push("SILENT_CHOICE");
   return kinds;
 }
 
@@ -128,7 +175,13 @@ export async function findGaps(
   const calls: CallMeta[] = [];
 
   log(`Writing ${n} boundary probes for policy v${policy.version}`);
-  const gen = await serv.call<{ probes: { title: string; contractor_id: string; invoice_text: string; target_clauses: number[]; why_ambiguous: string }[] }>({
+  const gen = await serv.call<{
+    probes: {
+      title: string; contractor_id: string; invoice_text: string; target_clauses: number[]; why_ambiguous: string;
+      received_on: string; prior_paid: { invoice_number: string; period_start: string; period_end: string; total_usdc: number } | null;
+      readings: Reading[];
+    }[];
+  }>({
     model: opts.generatorModel ?? SMALL_MODEL,
     features: ["kronos"],
     system: PROBE_SYSTEM,
@@ -144,11 +197,21 @@ export async function findGaps(
     invoiceText: p.invoice_text,
     targetClauses: p.target_clauses,
     whyAmbiguous: p.why_ambiguous,
+    receivedOn: p.received_on,
+    priorPaid: p.prior_paid
+      ? { invoiceNumber: p.prior_paid.invoice_number, periodStart: p.prior_paid.period_start, periodEnd: p.prior_paid.period_end, totalUsdc: p.prior_paid.total_usdc }
+      : null,
+    readings: p.readings,
   }));
 
   const results: ProbeResult[] = [];
   for (const [i, probe] of probes.entries()) {
-    const invoice: Invoice = { id: `probe-${i + 1}`, source: "gap-probe", rawText: probe.invoiceText, receivedAt: opts.receivedAt ?? DEMO_RECEIVED_AT };
+    const receivedAt = /^\d{4}-\d{2}-\d{2}/.test(probe.receivedOn) ? `${probe.receivedOn.slice(0, 10)}T09:00:00.000Z` : opts.receivedAt ?? DEMO_RECEIVED_AT;
+    const invoice: Invoice = { id: `probe-${i + 1}`, source: "gap-probe", rawText: probe.invoiceText, receivedAt };
+    const contractorId = contractors.some((c) => c.id === probe.contractorId) ? probe.contractorId : "";
+    const history: HistoryEntry[] = probe.priorPaid && contractorId
+      ? [{ invoiceId: `probe-${i + 1}-prior`, contractorId, invoiceNumber: probe.priorPaid.invoiceNumber, periodStart: probe.priorPaid.periodStart, periodEnd: probe.priorPaid.periodEnd, totalUsdc: probe.priorPaid.totalUsdc, verdict: "PAY" }]
+      : [];
     log(`Probe ${i + 1}/${probes.length}: ${probe.title}`);
     // Extract once, then judge repeatedly: we are measuring the policy, not extraction noise.
     const ex = await extractFields(serv, invoice.rawText, { model: mode.model, raw: mode.raw, guard: false }, `probe-extract-${i + 1}`);
@@ -156,11 +219,20 @@ export async function findGaps(
     if (!ex.fields) continue;
     const decisions: Decision[] = [];
     for (let r = 0; r < runs; r++) {
-      const d = await decide(serv, { invoice, policy, contractors, history: [], mode: { ...mode, guard: false, shadow: false }, fields: ex.fields, variant: `run-${r + 1}` });
+      const d = await decide(serv, { invoice, policy, contractors, history, mode: { ...mode, guard: false, shadow: false }, fields: ex.fields, variant: `run-${r + 1}` });
       decisions.push(d);
       calls.push(...d.calls);
     }
-    results.push({ probe, verdicts: decisions.map((d) => d.finalVerdict), decisions, gap: classifyGap(decisions), suggestion: null });
+    const verdicts = decisions.map((d) => d.finalVerdict);
+    const matching = probe.readings.filter((r) => r.verdict === verdicts[0]);
+    results.push({
+      probe,
+      verdicts,
+      chosenReading: new Set(verdicts).size === 1 && matching.length === 1 ? matching[0].reading : null,
+      decisions,
+      gap: classifyGap(decisions, probe.readings),
+      suggestion: null,
+    });
   }
 
   const gaps = results.filter((r) => r.gap.length > 0);
@@ -173,6 +245,7 @@ export async function findGaps(
         `POLICY\n${policyBlock(policy)}`,
         `CASE\n${g.probe.invoiceText}`,
         `WHY IT IS OPEN\n${g.probe.whyAmbiguous}`,
+        `READINGS\n${g.probe.readings.map((r) => `- ${r.reading} → ${r.verdict}`).join("\n")}`,
         `OBSERVED VERDICTS ACROSS ${runs} RUNS: ${g.verdicts.join(", ")}`,
       ].join("\n\n"),
       schema: { name: "policy_clause", schema: SUGGEST_SCHEMA },

@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-4",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:43:42.616Z",
+  "latencyMs": 9317,
+  "servHeaders": {
+    "x-openserv-request-id": "1e234c89-2193-45de-9e16-4393176df6f5"
+  },
+  "json": {
+    "id": "chatcmpl-ERbDJQSnL4XQSIm6yDXwo2ZxCcBkB",
+    "object": "chat.completion",
+    "created": 1790246613,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,5,6],\"reasons\":[{\"clause\":1,\"finding\":\"The listed work is billed at the agreed day rate.\",\"evidence_quote\":\"Regression testing for the July 1–10 release candidate: 3 days × 300 USDC/day = 900 USDC\"},{\"clause\":5,\"finding\":\"The invoice describes the earlier paid work and this regression pass as different work, so the evidence does not establish a duplicate charge.\",\"evidence_quote\":\"The 3 days above are for a later regression pass on a new release candidate during the same dates.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days after the billing period ended.\",\"evidence_quote\":\"Received 2026-09-05, 36 days after the billing period ended (2026-07-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1249,
+      "completion_tokens": 542,
+      "total_tokens": 1791,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1246,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 332,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-4",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:44:04.409Z",
+  "latencyMs": 12071,
+  "servHeaders": {
+    "x-openserv-request-id": "2826fff7-a7a1-4acf-a350-11ad1543fd55"
+  },
+  "json": {
+    "id": "chatcmpl-ERbDdJEbFHxGNFOGbHnwJJ49ydbgI",
+    "object": "chat.completion",
+    "created": 1790246633,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,5,6],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice requests payment at 300 USDC per day for July work.\",\"evidence_quote\":\"Regression testing for the July 1–10 release candidate: 3 days × 300 USDC/day = 900 USDC\"},{\"clause\":2,\"finding\":\"The invoice lists 8 days total, within the agreement’s 12-day monthly cap.\",\"evidence_quote\":\"QA testing for the July 11–31 release candidate: 5 days × 300 USDC/day = 1,500 USDC\"},{\"clause\":5,\"finding\":\"The invoice says an earlier invoice for the same dates was paid, but describes the present regression pass as work on a new release candidate. The supplied facts do not confirm duplicate payment for the same work.\",\"evidence_quote\":\"The 3 days above are for a later regression pass on a new release candidate during the same dates.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days after the billing period ended.\",\"evidence_quote\":\"Received 2026-09-05, 36 days after the billing period ended (2026-07-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1249,
+      "completion_tokens": 909,
+      "total_tokens": 2158,
+      "prompt_tokens_details": {
+        "cached_tokens": 1246,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 614,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

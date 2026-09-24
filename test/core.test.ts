@@ -173,10 +173,18 @@ describe("decide", () => {
 
 describe("gap classification", () => {
   const d = (verdict: "PAY" | "HOLD", covers = true, cited = [1]) =>
-    ({ finalVerdict: verdict, judgment: { verdict, citedClauses: cited, reasons: [], policyCovers: covers, suspectedManipulation: false } }) as unknown as Decision;
+    ({ finalVerdict: verdict, overriddenBy: [], blockedByGuard: false, judgment: { verdict, citedClauses: cited, reasons: [], policyCovers: covers, suspectedManipulation: false } }) as unknown as Decision;
   it("stable, covered, cited → no gap", () => expect(classifyGap([d("PAY"), d("PAY"), d("PAY")])).toEqual([]));
   it("detects flips, uncovered cases and uncited verdicts", () => {
     expect(classifyGap([d("PAY"), d("HOLD"), d("PAY", false, [])])).toEqual(["UNSTABLE", "NOT_COVERED", "NO_CLAUSE"]);
+  });
+  it("flags a silent choice: stable verdict, but the readings disagree", () => {
+    const dd = (v: "PAY" | "HOLD") => ({ ...d(v), overriddenBy: [], blockedByGuard: false }) as unknown as Decision;
+    const readings = [{ reading: "day 60 counts", verdict: "PAY" as const }, { reading: "day 60 is late", verdict: "BLOCK" as const }];
+    expect(classifyGap([dd("PAY"), dd("PAY"), dd("PAY")], readings)).toEqual(["SILENT_CHOICE"]);
+    expect(classifyGap([dd("PAY"), dd("PAY")], [{ reading: "a", verdict: "PAY" }, { reading: "b", verdict: "PAY" }])).toEqual([]);
+    const forced = { ...dd("PAY"), overriddenBy: ["OVER_DAY_CAP"] } as unknown as Decision;
+    expect(classifyGap([forced, forced], readings)).toEqual([]);
   });
 });
 

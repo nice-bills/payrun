@@ -1,0 +1,45 @@
+{
+  "label": "probe-extract-3",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:43:11.113Z",
+  "latencyMs": 3139,
+  "servHeaders": {
+    "x-openserv-request-id": "b2cb95d3-8dcf-4fe0-92e3-8bc96bbab131"
+  },
+  "json": {
+    "id": "chatcmpl-ERbCu0QcoeadBrxPIrDNQe7lTc2a4",
+    "object": "chat.completion",
+    "created": 1790246588,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"KA-2026-09-008\",\"contractor_name\":\"Kofi Adjei\",\"contractor_email\":\"kofi@adjei.studio\",\"period_start\":\"2026-09-01\",\"period_end\":\"2026-09-30\",\"lines\":[{\"description\":\"React web dashboard frontend development\",\"quantity\":12,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":3600},{\"description\":\"React marketing landing page\",\"quantity\":4,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":1200}],\"total_usdc\":4800,\"pay_to_wallet\":null,\"payment_change_request\":null,\"notes\":\"Before the landing-page work began, manager Priya replied “Looks good—please proceed” in the project Slack channel after the request was discussed in the team meeting.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 768,
+      "completion_tokens": 265,
+      "total_tokens": 1033,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 78,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-3",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:43:17.352Z",
+  "latencyMs": 6237,
+  "servHeaders": {
+    "x-openserv-request-id": "2ce0835e-cf20-4f0b-9095-0c5994ff6778"
+  },
+  "json": {
+    "id": "chatcmpl-ERbCxaIWcXmxBQ2zdkz6km62Ohwdn",
+    "object": "chat.completion",
+    "created": 1790246591,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[7],\"reasons\":[{\"clause\":7,\"finding\":\"The invoice includes landing-page work, while the agreement scope is frontend development for the web dashboard. The invoice says a manager approved the work, but that claim is unverified; a human must confirm sign-off before payment.\",\"evidence_quote\":\"React marketing landing page: 4 days × 300 USDC/day = 1,200 USDC\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1191,
+      "completion_tokens": 394,
+      "total_tokens": 1585,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1188,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 268,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

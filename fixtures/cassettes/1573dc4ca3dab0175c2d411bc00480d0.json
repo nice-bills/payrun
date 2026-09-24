@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-clean-4",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:44:46.149Z",
+  "latencyMs": 9989,
+  "servHeaders": {
+    "x-openserv-request-id": "1fd75e52-377e-41e3-aa5e-06686a22b983"
+  },
+  "json": {
+    "id": "chatcmpl-ERbELNtE53ROOr5AIeFghFZPSjUd6",
+    "object": "chat.completion",
+    "created": 1790246677,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice bills 10 days at the agreed 300 USDC day rate, totaling 3000 USDC.\",\"evidence_quote\":\"Test automation suite                        5 days × 300.00 = 1,500.00\\nTest automation suite (cont.)                5 days × 300.00 = 1,500.00\"},{\"clause\":2,\"finding\":\"The 10 billed days are within the monthly cap of 12 days.\",\"evidence_quote\":\"Agreed day rate: 300 USDC; cap 12 days per month\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the billing period end.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1194,
+      "completion_tokens": 414,
+      "total_tokens": 1608,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1191,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 191,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}
