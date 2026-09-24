@@ -29,7 +29,7 @@ Every refusal goes back to the model as a tool result, and it must hold or block
 
 ## Payrun Check, sold per call on OpenServ
 
-`openserv/agent.ts` publishes the review as an x402 service on OpenServ's agent market: another agent sends its own policy, an invoice and the payee's terms, pays per call in USDC on Base, and gets PAY / HOLD / BLOCK with cited clauses. Same pipeline (`src/core/check.ts`): SERV reads the terms, Prompt Guard screens the invoice, code checks the facts, SERV applies the caller's policy. Set `PAYRUN_EARNINGS_WALLET` to receive payments in your own wallet, then `npm run openserv` (its first run signs up for OpenServ with a new wallet and prints the paywall URL).
+`openserv/agent.ts` publishes the review as an x402 service on OpenServ's agent market: another agent sends its own policy, an invoice and the payee's terms, pays per call in USDC on Base, and gets PAY / HOLD / BLOCK with cited clauses. Same pipeline (`src/core/check.ts`): SERV reads the terms, Prompt Guard screens the invoice, code checks the facts, SERV applies the caller's policy. Set `PAYRUN_EARNINGS_WALLET` to receive payments in your own wallet, then `npm run openserv` (its first run signs up for OpenServ with a new wallet and prints the paywall URL). Live: [Payrun Check paywall](https://platform.openserv.ai/workspace/paywall/274c7b5ee0c745d6afbfa9f35264be85), $0.05 per check.
 
 ## Where SERV sits
 
