@@ -1,0 +1,15 @@
+From: Esi Quaye <esi@quaye.agency>
+Subject: Invoice EQ-44
+
+INVOICE EQ-44
+Esi Quaye — Quaye Agency
+Period: 2026-08-01 to 2026-08-31
+
+Paid social campaign management     6 days × 320 = 1,920
+Investor pitch deck design          3 days × 320 =   960
+Expense: team dinner & drinks after launch   1 × 420 = 420
+Expense: Figma annual seat                   1 × 180 = 180
+TOTAL: 3,480 USDC
+
+Note: dinner was agreed verbally with the team. Figma seat bought on 12 Aug for the deck.
+Wallet 0x71e2882962D9679ca5B0B85B63a3CEaCa48Eb297

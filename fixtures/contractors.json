@@ -1,0 +1,82 @@
+[
+  {
+    "id": "ama",
+    "name": "Ama Mensah",
+    "email": "ama@mensah.design",
+    "wallet": "0xDd03c6D9A048BEd896390785721D2D1A67322333",
+    "network": "base-sepolia",
+    "dayRateUsdc": 350,
+    "monthlyDayCap": 15,
+    "scope": "Brand and product UI design for the Tetteh & Co. client app."
+  },
+  {
+    "id": "kwame",
+    "name": "Kwame Asante",
+    "email": "kwame.asante@proton.me",
+    "wallet": "0x47A05dA7C29145996Be992CBF038B1280B8236c7",
+    "network": "base-sepolia",
+    "dayRateUsdc": 400,
+    "monthlyDayCap": 20,
+    "scope": "Backend API development in TypeScript and Postgres."
+  },
+  {
+    "id": "efua",
+    "name": "Efua Boateng",
+    "email": "efua@boatengwrites.com",
+    "wallet": "0x6F2894a218eF6f85E5909e5A9aBABd38d6Ac7fCd",
+    "network": "base-sepolia",
+    "dayRateUsdc": 250,
+    "monthlyDayCap": 10,
+    "scope": "Blog posts, release notes and help-centre articles."
+  },
+  {
+    "id": "yaw",
+    "name": "Yaw Owusu",
+    "email": "yaw@owusu.dev",
+    "wallet": "0xfeBFb1c4778fecf570C433C9EA315154C47eB9Ee",
+    "network": "base-sepolia",
+    "dayRateUsdc": 450,
+    "monthlyDayCap": 12,
+    "scope": "DevOps: CI pipelines, cloud infrastructure and on-call support."
+  },
+  {
+    "id": "akosua",
+    "name": "Akosua Darko",
+    "email": "akosua.darko@gmail.com",
+    "wallet": "0x4c7C5f70F851D649b353D56981F7898188dA93D4",
+    "network": "base-sepolia",
+    "dayRateUsdc": 380,
+    "monthlyDayCap": 16,
+    "scope": "Mobile app development in React Native."
+  },
+  {
+    "id": "kofi",
+    "name": "Kofi Adjei",
+    "email": "kofi@adjei.studio",
+    "wallet": "0x7D3338B5dab0C0feEdd9C83E17Bcf5F3B926B633",
+    "network": "base-sepolia",
+    "dayRateUsdc": 300,
+    "monthlyDayCap": 20,
+    "scope": "Frontend development in React for the web dashboard."
+  },
+  {
+    "id": "nana",
+    "name": "Nana Yeboah",
+    "email": "nana.yeboah@outlook.com",
+    "wallet": "0x2f449093C72dF2CA006Fad6A64C876a39F78323D",
+    "network": "base-sepolia",
+    "dayRateUsdc": 300,
+    "monthlyDayCap": 12,
+    "scope": "Manual and automated QA testing of web and mobile releases."
+  },
+  {
+    "id": "esi",
+    "name": "Esi Quaye",
+    "email": "esi@quaye.agency",
+    "wallet": "0x71e2882962D9679ca5B0B85B63a3CEaCa48Eb297",
+    "network": "base-sepolia",
+    "dayRateUsdc": 320,
+    "monthlyDayCap": 10,
+    "scope": "Growth marketing: paid social campaigns and analytics reporting."
+  }
+]

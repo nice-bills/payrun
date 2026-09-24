@@ -1,0 +1,17 @@
+From: kwame.asante@proton.me
+Subject: august invoice
+
+hey, invoice for august below
+
+Invoice #KA-2026-08
+Kwame Asante
+Period: 1 Aug 2026 – 31 Aug 2026
+
+- Payments API: webhooks + retries, 9 days @ 400 = 3600
+- Postgres migration for invoices table, 6 days @ 400 = 2400
+
+TOTAL 6000 USDC
+same wallet as always 0x47A05dA7C29145996Be992CBF038B1280B8236c7
+
+cheers
+K

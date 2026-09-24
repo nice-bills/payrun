@@ -1,0 +1,189 @@
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
+import { applyInvariants, runChecks } from "../src/core/checks.js";
+import { decide, MODES } from "../src/core/decide.js";
+import { classifyGap } from "../src/core/gaps.js";
+import { judgmentSystemPrompt, makePolicyVersion, parseClauses } from "../src/core/policy.js";
+import { receiptsCsv } from "../src/core/receipts.js";
+import { modelId, ServClient } from "../src/core/serv.js";
+import { Store } from "../src/core/store.js";
+import { compileWalletPolicy, toSettled, USDC_BASE_SEPOLIA } from "../src/core/walletPolicy.js";
+import type { Contractor, Decision, InvoiceFields } from "../src/core/types.js";
+
+const contractors: Contractor[] = JSON.parse(readFileSync("fixtures/contractors.json", "utf8"));
+const policy = makePolicyVersion(readFileSync("fixtures/policy.v1.md", "utf8"), 1);
+const ama = contractors.find((c) => c.id === "ama")!;
+
+const fields = (over: Partial<InvoiceFields> = {}): InvoiceFields => ({
+  invoiceNumber: "INV-0412",
+  contractorName: "Ama Mensah",
+  contractorEmail: "ama@mensah.design",
+  periodStart: "2026-08-01",
+  periodEnd: "2026-08-31",
+  lines: [{ description: "UI design", quantity: 12, unit: "day", unitPriceUsdc: 350, amountUsdc: 4200 }],
+  totalUsdc: 4200,
+  payToWallet: ama.wallet,
+  paymentChangeRequest: null,
+  notes: null,
+  ...over,
+});
+
+/** Fake SERV endpoint: records requests, answers from a queue. */
+function fakeServ(answers: ((body: any) => any)[]) {
+  const requests: { headers: Record<string, string>; body: any }[] = [];
+  const fetchImpl = (async (_url: string, init: any) => {
+    const body = JSON.parse(init.body);
+    requests.push({ headers: init.headers, body });
+    const next = answers.shift();
+    if (!next) throw new Error("unexpected SERV call");
+    return new Response(JSON.stringify(next(body)), { status: 200 });
+  }) as typeof fetch;
+  return { serv: new ServClient({ apiKey: "test", traceDir: null, fetchImpl }), requests };
+}
+const completion = (content: unknown, finish = "stop") => () => ({
+  choices: [{ message: { role: "assistant", content: typeof content === "string" ? content : JSON.stringify(content) }, finish_reason: finish }],
+  usage: { prompt_tokens: 1000, completion_tokens: 200 },
+});
+const rawFields = (f: InvoiceFields) => ({
+  invoice_number: f.invoiceNumber, contractor_name: f.contractorName, contractor_email: f.contractorEmail,
+  period_start: f.periodStart, period_end: f.periodEnd,
+  lines: f.lines.map((l) => ({ description: l.description, quantity: l.quantity, unit: l.unit, unit_price_usdc: l.unitPriceUsdc, amount_usdc: l.amountUsdc })),
+  total_usdc: f.totalUsdc, pay_to_wallet: f.payToWallet, payment_change_request: f.paymentChangeRequest, notes: f.notes,
+});
+const judgment = (verdict: string, over: object = {}) => ({
+  verdict, cited_clauses: [1], reasons: [{ clause: 1, finding: "ok", evidence_quote: "12 days" }], policy_covers: true, suspected_manipulation: false, ...over,
+});
+const invoice = { id: "inv-1", source: "t.txt", rawText: "INVOICE", receivedAt: "2026-09-02" };
+
+describe("policy", () => {
+  it("parses numbered clauses and continuation lines", () => {
+    expect(parseClauses("1. a\ncontinued\n2) b")).toEqual(["a continued", "b"]);
+    expect(policy.clauses).toHaveLength(7);
+  });
+  it("hash is the SERV cache key: stable for the same clauses, different when a clause changes", () => {
+    expect(makePolicyVersion(policy.text, 9).hash).toBe(policy.hash);
+    expect(makePolicyVersion(policy.text + "\n8. New clause.", 2).hash).not.toBe(policy.hash);
+    expect(judgmentSystemPrompt(policy.clauses)).not.toMatch(/Ama|INV-/);
+  });
+});
+
+describe("checks and invariants", () => {
+  it("clean invoice has no findings", () => {
+    expect(runChecks(fields(), ama, [])).toEqual([]);
+  });
+  it("flags wallet swap, arithmetic, cap, rate", () => {
+    const f = fields({
+      payToWallet: "0x94e672298C44c94b0606740cBEfa6963fA3409C6",
+      lines: [{ description: "x", quantity: 16, unit: "day", unitPriceUsdc: 400, amountUsdc: 6500 }],
+      totalUsdc: 6500,
+    });
+    const codes = runChecks(f, ama, []).map((x) => x.code);
+    expect(codes).toEqual(expect.arrayContaining(["WALLET_MISMATCH", "ARITHMETIC_MISMATCH", "OVER_DAY_CAP", "RATE_MISMATCH"]));
+  });
+  it("exact duplicate ignores formatting; same period is a soft finding", () => {
+    const hist = [{ invoiceId: "a", contractorId: "ama", invoiceNumber: "INV 412", periodStart: "2026-08-01", periodEnd: "2026-08-31", totalUsdc: 4200, verdict: "PAY" as const }];
+    expect(runChecks(fields(), ama, hist).map((x) => x.code)).toEqual(["EXACT_DUPLICATE"]);
+    const soft = runChecks(fields({ invoiceNumber: "INV-0413" }), ama, hist);
+    expect(soft.map((x) => [x.code, x.hard])).toEqual([["SAME_PERIOD_ALREADY_BILLED", false]]);
+  });
+  it("hard findings only ever make a verdict stricter", () => {
+    const f = runChecks(fields({ payToWallet: "0x94e672298C44c94b0606740cBEfa6963fA3409C6" }), ama, []);
+    expect(applyInvariants("PAY", f)).toEqual({ verdict: "HOLD", overriddenBy: ["WALLET_MISMATCH"] });
+    expect(applyInvariants("BLOCK", f).verdict).toBe("BLOCK");
+  });
+});
+
+describe("SERV client", () => {
+  it("builds feature model ids and strips them in raw mode", () => {
+    expect(modelId("gpt-5.4-nano", ["multipath", "kronos"])).toBe("gpt-5.4-nano-serv-kronos-multipath");
+    expect(modelId("gpt-5.4-nano", ["kronos"], true)).toBe("gpt-5.4-nano");
+  });
+});
+
+describe("decide", () => {
+  it("SERV mode arms guard + shadow with a per-invoice hint and keeps the system prompt stable", async () => {
+    const { serv, requests } = fakeServ([completion(rawFields(fields())), completion(judgment("PAY"))]);
+    const d = await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.serv });
+    expect(d.finalVerdict).toBe("PAY");
+    expect(d.payAmountUsdc).toBe(4200);
+    const judge = requests[1].body;
+    expect(judge.model).toBe("gpt-5.4-nano-serv-kronos-multipath");
+    expect(judge.messages[0].content).toBe(judgmentSystemPrompt(policy.clauses));
+    const names = judge.tools.map((t: any) => t.function.name);
+    expect(names).toEqual(["serv_prompt_guard", "serv_shadow_agent"]);
+    expect(judge.tools[1].function.parameters.properties.hint.default).toMatch(/clause numbers 1-7/);
+    expect(requests[1].headers["x-openserv-disable-braid"]).toBeUndefined();
+  });
+
+  it("raw mode sends the bypass header and no SERV tools", async () => {
+    const { serv, requests } = fakeServ([completion(rawFields(fields())), completion(judgment("PAY"))]);
+    await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.rawNano });
+    expect(requests.every((r) => r.headers["x-openserv-disable-braid"] === "true")).toBe(true);
+    expect(requests.every((r) => !r.body.tools)).toBe(true);
+  });
+
+  it("a guard refusal blocks the invoice without a judgment", async () => {
+    const { serv } = fakeServ([completion(rawFields(fields())), completion("I can't help with that request.", "content_filter")]);
+    const d = await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.serv });
+    expect(d.finalVerdict).toBe("BLOCK");
+    expect(d.blockedByGuard).toBe(true);
+    expect(d.payAmountUsdc).toBe(0);
+  });
+
+  it("a model PAY on a swapped wallet is overridden by code", async () => {
+    const swapped = fields({ payToWallet: "0x94e672298C44c94b0606740cBEfa6963fA3409C6" });
+    const { serv } = fakeServ([completion(rawFields(swapped)), completion(judgment("PAY"))]);
+    const d = await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.rawNano });
+    expect(d.judgment?.verdict).toBe("PAY");
+    expect(d.finalVerdict).toBe("HOLD");
+    expect(d.overriddenBy).toEqual(["WALLET_MISMATCH"]);
+  });
+
+  it("an unparseable judgment is never a PAY; invalid clause numbers are dropped", async () => {
+    const { serv } = fakeServ([completion(rawFields(fields())), completion("not json")]);
+    expect((await decide(serv, { invoice, policy, contractors, history: [], mode: MODES.rawNano })).finalVerdict).toBe("HOLD");
+    const { serv: s2 } = fakeServ([completion(rawFields(fields())), completion(judgment("HOLD", { cited_clauses: [2, 99, 2] }))]);
+    expect((await decide(s2, { invoice, policy, contractors, history: [], mode: MODES.rawNano })).judgment?.citedClauses).toEqual([2]);
+  });
+});
+
+describe("gap classification", () => {
+  const d = (verdict: "PAY" | "HOLD", covers = true, cited = [1]) =>
+    ({ finalVerdict: verdict, judgment: { verdict, citedClauses: cited, reasons: [], policyCovers: covers, suspectedManipulation: false } }) as unknown as Decision;
+  it("stable, covered, cited → no gap", () => expect(classifyGap([d("PAY"), d("PAY"), d("PAY")])).toEqual([]));
+  it("detects flips, uncovered cases and uncited verdicts", () => {
+    expect(classifyGap([d("PAY"), d("HOLD"), d("PAY", false, [])])).toEqual(["UNSTABLE", "NOT_COVERED", "NO_CLAUSE"]);
+  });
+});
+
+describe("wallet policy", () => {
+  it("allows USDC transfer only to each contractor, capped at their scaled agreement max", () => {
+    const wp = compileWalletPolicy(contractors, policy, 0.001);
+    expect(wp.scope).toBe("account");
+    expect(wp.rules).toHaveLength(contractors.length * 2);
+    const rule: any = wp.rules[0];
+    expect(rule.criteria.find((c: any) => c.type === "evmAddress").addresses).toEqual([USDC_BASE_SEPOLIA]);
+    const params = rule.criteria.find((c: any) => c.type === "evmData").conditions[0].params;
+    expect(params[0].values).toEqual([ama.wallet]);
+    expect(params[1].value).toBe(String(toSettled(350 * 15, 0.001) * 1e6)); // 5.25 USDC → 5250000
+  });
+});
+
+describe("store + receipts", () => {
+  it("versions policies, dedupes identical text, and exports receipts", () => {
+    const s = new Store(":memory:");
+    const v1 = s.addPolicy(policy.text);
+    expect(s.addPolicy(policy.text).version).toBe(v1.version);
+    expect(s.addPolicy(policy.text + "\n8. x").version).toBe(2);
+    const dec: Decision = {
+      invoiceId: "inv-1", policyVersion: 1, policyHash: v1.hash, fields: fields(), contractorId: "ama", findings: [],
+      judgment: { verdict: "PAY", citedClauses: [1], reasons: [{ clause: 1, finding: "rate matches", evidenceQuote: "350" }], policyCovers: true, suspectedManipulation: false },
+      finalVerdict: "PAY", payAmountUsdc: 4200, overriddenBy: [], blockedByGuard: false, calls: [], decidedAt: "x",
+    };
+    s.addDecision(dec, "serv");
+    expect(s.history()).toHaveLength(1);
+    const csv = receiptsCsv(s.latestDecisions(), [{ invoiceId: "inv-1", contractorId: "ama", to: ama.wallet, amountUsdc: 4200, settledUsdc: 4.2, status: "sent", txHash: "0x" + "a".repeat(64), message: "", sentAt: "" }], contractors);
+    expect(csv).toContain("sepolia.basescan.org/tx/0xaaaa");
+    expect(csv.split("\n")[1]).toContain("PAY,1,");
+  });
+});

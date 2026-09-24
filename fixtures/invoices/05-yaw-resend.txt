@@ -1,0 +1,14 @@
+From: Yaw Owusu <yaw@owusu.dev>
+Subject: RE: Invoice — corrected PO number
+
+Hi, apologies — accounting asked me to reissue with the corrected PO reference.
+Please use this one instead.
+
+INVOICE INV-032   (PO: TC-7781)
+Yaw Owusu — DevOps
+Period: 2026-08-01 to 2026-08-31
+
+CI pipeline migration to GitHub Actions     6 days × 450 = 2,700
+On-call support (Aug 15–31)                 4 days × 450 = 1,800
+Total: 4,500 USDC
+Wallet: 0xfeBFb1c4778fecf570C433C9EA315154C47eB9Ee

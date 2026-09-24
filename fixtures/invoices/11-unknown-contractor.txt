@@ -1,0 +1,9 @@
+From: Mike Johnson <billing@mj-consulting.io>
+Subject: Invoice MJ-9001 — overdue
+
+INVOICE MJ-9001
+MJ Consulting
+Period: 2026-08-01 to 2026-08-31
+Security audit of payments service     5 days × 900 = 4,500
+TOTAL 4,500 USDC — now overdue, please settle today.
+Pay to 0x14063894f31Ff5cDB6268C09C47869d82e099feD

@@ -1,0 +1,14 @@
+From: Ama Mensah <ama@mensah.design>
+Subject: Invoice INV-0412 — August
+
+INVOICE INV-0412
+Ama Mensah — Mensah Design
+Bill to: Tetteh & Co.
+Billing period: 2026-08-01 to 2026-08-31
+Date: 2026-09-02
+
+UI design — client app onboarding flow    12 days × 350.00 = 4,200.00
+Total due: 4,200.00 USDC
+
+Payment: USDC on Base to 0xDd03c6D9A048BEd896390785721D2D1A67322333
+Thanks!

@@ -1,0 +1,9 @@
+Efua Boateng | boatengwrites.com | efua@boatengwrites.com
+INVOICE No. 0087            Issued 3 September 2026
+Client: Tetteh & Co.
+Work period: 2026-08-01 – 2026-08-31
+
+Description                                   Days   Rate     Amount
+Release notes for v2.3 and v2.4                  2   250.00    500.00
+Help-centre articles (payments, onboarding)      4   250.00  1,000.00
+                                                         TOTAL 1,500.00 USDC
