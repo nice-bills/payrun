@@ -1,0 +1,45 @@
+{
+  "label": "adopt-v2",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T16:06:05.452Z",
+  "latencyMs": 6335,
+  "servHeaders": {
+    "x-openserv-request-id": "6f8d9a1c-16ba-4cd1-b38d-54261c1174a7"
+  },
+  "json": {
+    "id": "chatcmpl-ERgFN5cT6KSrIBvmBUzksoagzyYsi",
+    "object": "chat.completion",
+    "created": 1790265961,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"clause\":\"Treat the day after the billing period ends as day one; confirm payment for invoices received on day 60.\",\"decides_as\":\"PAY\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 861,
+      "completion_tokens": 169,
+      "total_tokens": 1030,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 124,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

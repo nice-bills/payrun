@@ -15,6 +15,7 @@ export default function PolicyPage() {
       gaps={data.gaps}
       replay={data.replay}
       names={Object.fromEntries(data.contractors.map((c) => [c.id, c.name]))}
+      lints={data.lints}
     />
   );
 }

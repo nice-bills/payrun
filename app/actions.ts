@@ -121,3 +121,57 @@ export async function tryScammerTransfer(): Promise<ActionResult<{ refused: bool
     return fail(e);
   }
 }
+
+/** Save edited clauses as a new draft version. Identical text returns the existing version. */
+export async function saveDraft(clauses: string[]): Promise<ActionResult<number>> {
+  try {
+    const { policyText } = await import("@/src/core/lint");
+    if (!clauses.some((c) => c.trim())) return { ok: false, error: "A policy needs at least one clause." };
+    const version = store().addPolicy(policyText(clauses));
+    revalidatePath("/policy");
+    return { ok: true, value: version.version };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/** SERV reads the wording before any invoice does: conflicts, undefined terms, open cases. */
+export async function lintVersion(version: number): Promise<ActionResult<import("@/src/core/lint").LintReport>> {
+  try {
+    const { lintPolicy } = await import("@/src/core/lint");
+    const s = store();
+    const policy = s.policy(version);
+    if (!policy) return { ok: false, error: `No policy v${version}.` };
+    const report = await lintPolicy(new ServClient(), policy);
+    s.addReport("lint", report);
+    revalidatePath("/policy");
+    return { ok: true, value: report };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+/** Start the gap finder on a version in the background; poll with jobStatus. */
+export async function findHoles(version: number): Promise<ActionResult<string>> {
+  try {
+    const { startJob } = await import("@/lib/jobs");
+    const { findGaps } = await import("@/src/core/gaps");
+    const s = store();
+    const policy = s.policy(version);
+    if (!policy) return { ok: false, error: `No policy v${version}.` };
+    const job = startJob("gaps", async (log) => {
+      const report = await findGaps(new ServClient(), policy, s.contractors(), { probes: 4, runsPerProbe: 3, onProgress: log });
+      s.addReport("gaps", report);
+      log(`Done: ${report.gaps.length} of ${report.results.length} probes expose a hole.`);
+    });
+    return { ok: true, value: job.id };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function jobStatus(id: string): Promise<ActionResult<import("@/lib/jobs").Job>> {
+  const { getJob } = await import("@/lib/jobs");
+  const job = getJob(id);
+  return job ? { ok: true, value: { ...job, progress: [...job.progress] } } : { ok: false, error: "That job is gone (the server restarted)." };
+}

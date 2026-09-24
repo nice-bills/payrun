@@ -1,0 +1,45 @@
+{
+  "label": "lint-v1",
+  "model": "gpt-6-luna-serv-kronos",
+  "raw": false,
+  "recordedAt": "2026-09-24T16:37:24.400Z",
+  "latencyMs": 14127,
+  "servHeaders": {
+    "x-openserv-request-id": "a28e0f0a-6694-4dc2-a4d2-8fffd11ac458"
+  },
+  "json": {
+    "id": "chatcmpl-ERgjZfyVSKe0TzLuqcfJGt8rCvekA",
+    "object": "chat.completion",
+    "created": 1790267833,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"issues\":[{\"clause\":null,\"kind\":\"missing_case\",\"note\":\"The policy does not say how to handle an invoice whose period partly overlaps work already paid, creating a risk of duplicate payment for the overlapping days.\",\"suggestion\":\"Add: “For an invoice period that partly overlaps work already paid, exclude the previously paid days and process only the unpaid days, subject to the other policy rules.”\"},{\"clause\":6,\"kind\":\"ambiguous\",\"note\":\"The 60-day receipt deadline does not say whether a late invoice must be rejected or may still be paid.\",\"suggestion\":\"Replace with: “Invoices received more than 60 days after the end of the billing period will not be paid.”\"},{\"clause\":7,\"kind\":\"ambiguous\",\"note\":\"The policy does not specify whether a manager must sign off on out-of-scope work before it is performed or may approve it afterward.\",\"suggestion\":\"Replace with: “Work outside the contractor’s scope of work requires the manager’s written sign-off before the work is performed to be eligible for payment.”\"}]}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 695,
+      "completion_tokens": 799,
+      "total_tokens": 1494,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 562,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

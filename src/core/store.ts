@@ -136,6 +136,23 @@ export class Store {
     this.db.prepare("INSERT INTO reports (kind, json, created_at) VALUES (?, ?, ?)").run(kind, JSON.stringify(data), new Date().toISOString());
   }
 
+  reports<T>(kind: string): T[] {
+    return (this.db.prepare("SELECT json FROM reports WHERE kind = ? ORDER BY id").all(kind) as { json: string }[]).map((r) => JSON.parse(r.json));
+  }
+
+  deleteContractor(id: string): void {
+    this.db.prepare("DELETE FROM contractors WHERE id = ?").run(id);
+  }
+
+  setting(key: string): string | null {
+    const row = this.db.prepare("SELECT value FROM settings WHERE key = ?").get(key) as { value: string } | undefined;
+    return row?.value ?? null;
+  }
+
+  setSetting(key: string, value: string): void {
+    this.db.prepare("INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(key, value);
+  }
+
   latestReport<T>(kind: string): T | null {
     const row = this.db.prepare("SELECT json FROM reports WHERE kind = ? ORDER BY id DESC LIMIT 1").get(kind) as { json: string } | undefined;
     return row ? JSON.parse(row.json) : null;

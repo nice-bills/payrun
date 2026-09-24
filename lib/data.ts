@@ -1,6 +1,7 @@
 import "server-only";
 import { Store } from "@/src/core/store";
 import type { GapReport } from "@/src/core/gaps";
+import type { LintReport } from "@/src/core/lint";
 import type { ReplayReport } from "@/src/core/replay";
 import type { PaymentResult } from "@/src/core/pay";
 import type { Contractor, Decision, Invoice, PolicyVersion } from "@/src/core/types";
@@ -15,6 +16,8 @@ export interface DeskData {
   payments: PaymentResult[];
   gaps: GapReport | null;
   replay: ReplayReport | null;
+  /** Latest SERV lint per policy version. */
+  lints: Record<number, LintReport>;
 }
 
 export interface DeskItem {
@@ -53,5 +56,6 @@ export function loadDesk(): DeskData {
     payments,
     gaps: s.latestReport<GapReport>("gaps"),
     replay: s.latestReport<ReplayReport>("replay"),
+    lints: Object.fromEntries(s.reports<LintReport>("lint").map((l) => [l.policyVersion, l])),
   };
 }
