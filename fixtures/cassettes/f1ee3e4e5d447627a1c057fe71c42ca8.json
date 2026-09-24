@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-clean-7",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:13:28.027Z",
+  "latencyMs": 4814,
+  "servHeaders": {
+    "x-openserv-request-id": "4e2cde47-5c33-4b29-b1b8-6f052d9f372a"
+  },
+  "json": {
+    "id": "chatcmpl-ERfQTCEQaisHsHd8yWL8vCZAzJOaX",
+    "object": "chat.completion",
+    "created": 1790262805,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AKOSUA-206\",\"contractor_name\":\"Akosua Darko\",\"contractor_email\":\"akosua.darko@gmail.com\",\"period_start\":\"2026-07-01\",\"period_end\":\"2026-07-31\",\"lines\":[{\"description\":\"Offline sync\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":380,\"amount_usdc\":760},{\"description\":\"Push notifications\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":380,\"amount_usdc\":760}],\"total_usdc\":1520,\"pay_to_wallet\":\"0x4c7C5f70F851D649b353D56981F7898188dA93D4\",\"payment_change_request\":null,\"notes\":\"Cheers.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 462,
+      "completion_tokens": 165,
+      "total_tokens": 627,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

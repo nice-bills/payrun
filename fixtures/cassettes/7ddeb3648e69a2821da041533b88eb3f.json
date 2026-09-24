@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-arithmetic-1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T15:01:36.965Z",
+  "latencyMs": 30511,
+  "servHeaders": {
+    "x-openserv-request-id": "65d41a3d-7c50-4bd1-9d0a-fc2b1bc45dbb"
+  },
+  "json": {
+    "id": "chatcmpl-ERfEZbdlGzbPsVkae48oiR42WEnA4",
+    "object": "chat.completion",
+    "created": 1790262067,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[],\"reasons\":[{\"clause\":1,\"finding\":\"The ARITHMETIC_MISMATCH is not resolved by a payment-policy clause, so the invoice total needs human review before payment.\",\"evidence_quote\":\"[ARITHMETIC_MISMATCH] Line \\\"Accessibility fixes\\\": 20 × 300 ≠ 6300.\"}],\"policy_covers\":false,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1224,
+      "completion_tokens": 361,
+      "total_tokens": 1585,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1221,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 259,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

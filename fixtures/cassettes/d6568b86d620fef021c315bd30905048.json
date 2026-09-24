@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-arithmetic-3",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:10:39.254Z",
+  "latencyMs": 8192,
+  "servHeaders": {
+    "x-openserv-request-id": "e77b98a6-0bdc-474d-a503-71e620af12ee"
+  },
+  "json": {
+    "id": "chatcmpl-ERfNf74fgt9GRcit6WfUqjrH3j0q7",
+    "object": "chat.completion",
+    "created": 1790262631,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[1],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice total conflicts with the agreed day rate and billed days, so the invoice total cannot be paid as submitted; a human must resolve the discrepancy first.\",\"evidence_quote\":\"[ARITHMETIC_MISMATCH] Line \\\"Rate limiter service\\\": 7 × 400 ≠ 3100.\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1046,
+      "completion_tokens": 400,
+      "total_tokens": 1446,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1043,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 282,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

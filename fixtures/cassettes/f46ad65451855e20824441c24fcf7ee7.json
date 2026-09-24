@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-unapproved_expense-2",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:10:57.640Z",
+  "latencyMs": 4644,
+  "servHeaders": {
+    "x-openserv-request-id": "2c5da71b-3d94-4e9a-8214-c118382cd46f"
+  },
+  "json": {
+    "id": "chatcmpl-ERfO1HGbtsIkz7R7QlMxgGf8xy8QR",
+    "object": "chat.completion",
+    "created": 1790262653,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The invoice includes a dinner expense that is not reimbursable because no written approval before the expense is on file.\",\"evidence_quote\":\"FACTS: \\\"Written expense approvals on file for this contractor: none\\\"; invoice: \\\"Team dinner after launch                     1 item × 180.00 = 180.00\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1158,
+      "completion_tokens": 220,
+      "total_tokens": 1378,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1155,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 99,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

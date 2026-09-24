@@ -258,3 +258,31 @@ export async function findGaps(
 
   return { policyVersion: policy.version, policyHash: policy.hash, results, gaps, calls };
 }
+
+/**
+ * Write the clause that settles a gap the way the finance lead chose. One small
+ * SERV call; the company, not the reviewer, decides what the policy means.
+ */
+export async function draftClause(
+  serv: ServClient,
+  policy: PolicyVersion,
+  probe: Probe,
+  chosen: Reading,
+  model = SMALL_MODEL,
+): Promise<string> {
+  const r = await serv.call<{ clause: string; decides_as: Verdict }>({
+    model,
+    system: SUGGEST_SYSTEM,
+    user: [
+      `POLICY\n${policyBlock(policy)}`,
+      `CASE\n${probe.invoiceText}`,
+      `WHY IT IS OPEN\n${probe.whyAmbiguous}`,
+      `THE COMPANY CHOSE THIS READING\n${chosen.reading} → ${chosen.verdict}`,
+    ].join("\n\n"),
+    schema: { name: "policy_clause", schema: SUGGEST_SCHEMA },
+    maxCompletionTokens: 600,
+    label: `adopt-v${policy.version}`,
+  });
+  if (!r.parsed?.clause) throw new Error("SERV did not return a clause");
+  return r.parsed.clause.trim();
+}

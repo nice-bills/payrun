@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-unapproved_expense-2",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:21:55.691Z",
+  "latencyMs": 6817,
+  "servHeaders": {
+    "x-openserv-request-id": "9c00aad0-4364-4bae-ac87-59fb1ab443f9"
+  },
+  "json": {
+    "id": "chatcmpl-ERfYdYcd6z4AJZVtX6xgCTDjYuGVF",
+    "object": "chat.completion",
+    "created": 1790263311,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The invoice includes an expense that is not reimbursable under policy, so the invoice total cannot be paid as submitted.\",\"evidence_quote\":\"FACTS: \\\"Written expense approvals on file for this contractor: none\\\"; FACTS: \\\"Non-day line items (expenses or fees): Team dinner after launch 180 USDC.\\\"; invoice: \\\"Expense was agreed verbally with the team.\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1158,
+      "completion_tokens": 297,
+      "total_tokens": 1455,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 163,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

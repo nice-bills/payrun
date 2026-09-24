@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-clean-16",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:16:21.961Z",
+  "latencyMs": 12599,
+  "servHeaders": {
+    "x-openserv-request-id": "744cf3dc-8691-4669-9b50-feba4965e982"
+  },
+  "json": {
+    "id": "chatcmpl-ERfTF6AU0Ad8T3WwgwH8LL3NmX8Fe",
+    "object": "chat.completion",
+    "created": 1790262977,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"NANA-215\",\"contractor_name\":\"Nana Yeboah\",\"contractor_email\":\"nana.yeboah@outlook.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Regression testing\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":600},{\"description\":\"Release sign-off testing\",\"quantity\":3,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":900}],\"total_usdc\":1500,\"pay_to_wallet\":\"0x2f449093C72dF2CA006Fad6A64C876a39F78323D\",\"payment_change_request\":null,\"notes\":\"Cheers.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 462,
+      "completion_tokens": 167,
+      "total_tokens": 629,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

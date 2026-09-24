@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-unapproved_expense-4",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:11:13.690Z",
+  "latencyMs": 4134,
+  "servHeaders": {
+    "x-openserv-request-id": "aa7b9f40-4919-43fd-95fc-71596964d1f1"
+  },
+  "json": {
+    "id": "chatcmpl-ERfOIynFvIKvbLh9bBK94fYNk7qrM",
+    "object": "chat.completion",
+    "created": 1790262670,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The invoice includes a co-working expense, which is neither software nor travel and is therefore not reimbursable under the policy.\",\"evidence_quote\":\"Non-day line items (expenses or fees): Co-working day passes 950 USDC.\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1158,
+      "completion_tokens": 213,
+      "total_tokens": 1371,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1155,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 110,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

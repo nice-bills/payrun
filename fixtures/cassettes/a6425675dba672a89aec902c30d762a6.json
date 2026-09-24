@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-unapproved_expense-4",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:22:28.129Z",
+  "latencyMs": 11243,
+  "servHeaders": {
+    "x-openserv-request-id": "8f10bd76-39ac-4e29-abfb-b29f9cc3b2f0"
+  },
+  "json": {
+    "id": "chatcmpl-ERfZBVCXsTLAhCtcNj6vliVdyi6dB",
+    "object": "chat.completion",
+    "created": 1790263345,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"NANA-840\",\"contractor_name\":\"Nana Yeboah\",\"contractor_email\":\"nana.yeboah@outlook.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Test automation suite\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":600},{\"description\":\"Test automation suite (cont.)\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":600},{\"description\":\"Co-working day passes\",\"quantity\":1,\"unit\":\"item\",\"unit_price_usdc\":950,\"amount_usdc\":950}],\"total_usdc\":2150,\"pay_to_wallet\":\"0x2f449093C72dF2CA006Fad6A64C876a39F78323D\",\"payment_change_request\":null,\"notes\":\"Expense was agreed verbally with the team.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 490,
+      "completion_tokens": 204,
+      "total_tokens": 694,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

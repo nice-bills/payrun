@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-near_duplicate-2",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:18:22.698Z",
+  "latencyMs": 14110,
+  "servHeaders": {
+    "x-openserv-request-id": "750bbff3-baac-411c-bbb0-b19edd7eb1c4"
+  },
+  "json": {
+    "id": "chatcmpl-ERfV7JrcXlBfN9J9D64J2cFg9Jlsd",
+    "object": "chat.completion",
+    "created": 1790263093,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"The invoice covers a billing period that was already paid, so it is a duplicate and should not be paid again.\",\"evidence_quote\":\"FACTS: \\\"[SAME_PERIOD_ALREADY_BILLED] Period 2026-08-01–2026-08-31 overlaps invoice NANA-410 already on file (PAY; 2026-08-01–2026-08-31, 1800 USDC).\\\"\"},{\"clause\":5,\"finding\":\"The payee's note confirms this invoice is a reissue of the earlier invoice rather than new work.\",\"evidence_quote\":\"Invoice: \\\"Reissued with corrected PO reference — please use this one instead of the earlier invoice.\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1154,
+      "completion_tokens": 255,
+      "total_tokens": 1409,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 57,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

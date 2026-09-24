@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-arithmetic-1",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:20:55.300Z",
+  "latencyMs": 15721,
+  "servHeaders": {
+    "x-openserv-request-id": "8c8c6738-7a82-448b-a90c-6cd6bdd528ba"
+  },
+  "json": {
+    "id": "chatcmpl-ERfXZsZRnYmh8FdOyznKILU25fOmn",
+    "object": "chat.completion",
+    "created": 1790263245,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[1],\"reasons\":[{\"clause\":1,\"finding\":\"Do not pay the invoice total now because payment is allowed only at the agreed day rate for days worked, but the invoice amount is inconsistent with the billed days and rate.\",\"evidence_quote\":\"FACTS: \\\"Days billed: 20, within the 20-day monthly cap.\\\"; \\\"Day rate billed does not exceed the agreed 300 USDC.\\\"; \\\"[ARITHMETIC_MISMATCH] Line \\\\\\\"Accessibility fixes\\\\\\\": 20 × 300 ≠ 6300.\\\" and invoice line \\\"Accessibility fixes                          20 days × 300.00 = 6,300.00\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1062,
+      "completion_tokens": 376,
+      "total_tokens": 1438,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 196,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

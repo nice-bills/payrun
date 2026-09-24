@@ -1,0 +1,45 @@
+{
+  "label": "extract-raw-small-eval-clean-13",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:07:53.900Z",
+  "latencyMs": 3095,
+  "servHeaders": {
+    "x-openserv-request-id": "76d94f53-5ebc-4c42-92ea-5ab4656ba9e6"
+  },
+  "json": {
+    "id": "chatcmpl-ERfL5UN2xllPvOSSH3VcI3i3YkDLk",
+    "object": "chat.completion",
+    "created": 1790262471,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AMA-212\",\"contractor_name\":\"Ama Mensah\",\"contractor_email\":\"ama@mensah.design\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Onboarding flow redesign\",\"quantity\":6,\"unit\":\"day\",\"unit_price_usdc\":350.00,\"amount_usdc\":2100.00},{\"description\":\"Design system tokens\",\"quantity\":6,\"unit\":\"day\",\"unit_price_usdc\":350.00,\"amount_usdc\":2100.00}],\"total_usdc\":4200.00,\"pay_to_wallet\":\"0xDd03c6D9A048BEd896390785721D2D1A67322333\",\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 456,
+      "completion_tokens": 205,
+      "total_tokens": 661,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 29,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

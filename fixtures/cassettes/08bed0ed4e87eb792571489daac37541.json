@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-unapproved_expense-3",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T15:03:12.481Z",
+  "latencyMs": 7676,
+  "servHeaders": {
+    "x-openserv-request-id": "fd74f884-db91-4f4f-a606-9d4efb356c7e"
+  },
+  "json": {
+    "id": "chatcmpl-ERfGTZNGBS2QECqy0q1m9x258DtCS",
+    "object": "chat.completion",
+    "created": 1790262185,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The co-working day passes are an unapproved expense and are not reimbursable.\",\"evidence_quote\":\"Written expense approvals on file for this contractor: none\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1321,
+      "completion_tokens": 81,
+      "total_tokens": 1402,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1318,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

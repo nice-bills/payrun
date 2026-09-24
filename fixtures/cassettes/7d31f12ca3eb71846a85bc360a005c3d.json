@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-probe-2",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:38:09.145Z",
+  "latencyMs": 5897,
+  "servHeaders": {
+    "x-openserv-request-id": "aa78b0f3-37cc-402b-8d11-98450ee43633"
+  },
+  "json": {
+    "id": "chatcmpl-ERfoLeBe291rCKMg1qeOjKQmpPpOP",
+    "object": "chat.completion",
+    "created": 1790264285,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"The invoice period overlaps work already paid, so this is a duplicate under the policy.\",\"evidence_quote\":\"[SAME_PERIOD_ALREADY_BILLED] Period 2026-04-08–2026-04-20 overlaps invoice KA-2026-04A already on file (PAY; 2026-04-01–2026-04-10, 3000 USDC).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1029,
+      "completion_tokens": 193,
+      "total_tokens": 1222,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1026,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 56,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

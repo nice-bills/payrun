@@ -1,0 +1,45 @@
+{
+  "label": "extract-raw-small-eval-unapproved_expense-2",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:10:52.994Z",
+  "latencyMs": 4060,
+  "servHeaders": {
+    "x-openserv-request-id": "c7ac7120-be5c-4730-a968-a1af9d5ce576"
+  },
+  "json": {
+    "id": "chatcmpl-ERfNxzFXdLkfyYDINeWU41h76gFr1",
+    "object": "chat.completion",
+    "created": 1790262649,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"EFUA-840\",\"contractor_name\":\"Efua Boateng\",\"contractor_email\":\"efua@boatengwrites.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Release notes\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":250.00,\"amount_usdc\":500.00},{\"description\":\"Release notes (cont.)\",\"quantity\":3,\"unit\":\"day\",\"unit_price_usdc\":250.00,\"amount_usdc\":750.00},{\"description\":\"Team dinner after launch\",\"quantity\":1,\"unit\":\"item\",\"unit_price_usdc\":180.00,\"amount_usdc\":180.00}],\"total_usdc\":1430.00,\"pay_to_wallet\":\"0x6F2894a218eF6f85E5909e5A9aBABd38d6Ac7fCd\",\"payment_change_request\":null,\"notes\":\"Expense was agreed verbally with the team.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 489,
+      "completion_tokens": 275,
+      "total_tokens": 764,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 52,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

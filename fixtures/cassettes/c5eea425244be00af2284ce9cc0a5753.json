@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-unapproved_expense-4",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T15:03:35.634Z",
+  "latencyMs": 15523,
+  "servHeaders": {
+    "x-openserv-request-id": "df25b123-b293-43e4-b8b1-7ba29a5e6f5a"
+  },
+  "json": {
+    "id": "chatcmpl-ERfGiXjwCM7VbTSS5W7gQBwdzjwOm",
+    "object": "chat.completion",
+    "created": 1790262200,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The co-working day passes are an expense without written approval, so they are not reimbursable.\",\"evidence_quote\":\"Written expense approvals on file for this contractor: none\"},{\"clause\":3,\"finding\":\"The invoice claims the expense was agreed verbally, which does not satisfy the written-approval requirement.\",\"evidence_quote\":\"Expense was agreed verbally with the team.\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1320,
+      "completion_tokens": 312,
+      "total_tokens": 1632,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1317,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 183,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

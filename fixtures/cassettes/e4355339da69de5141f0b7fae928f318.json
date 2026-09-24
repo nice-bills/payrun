@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-probe-4",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:39:27.444Z",
+  "latencyMs": 4644,
+  "servHeaders": {
+    "x-openserv-request-id": "6fafaa79-28f0-48e8-9cd4-6fba85499698"
+  },
+  "json": {
+    "id": "chatcmpl-ERfpbp4gfwDwHITzuwbxvrxIc2mlW",
+    "object": "chat.completion",
+    "created": 1790264363,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[7],\"reasons\":[{\"clause\":7,\"finding\":\"The invoice includes work that appears outside the agreed scope and needs a manager's sign-off before payment.\",\"evidence_quote\":\"Agreement: “Brand and product UI design for the Tetteh & Co. client app.” Invoice: “App-store listing screenshots and launch graphics”\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1027,
+      "completion_tokens": 232,
+      "total_tokens": 1259,
+      "prompt_tokens_details": {
+        "cached_tokens": 1024,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 121,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

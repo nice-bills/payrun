@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-clean-16",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:08:23.362Z",
+  "latencyMs": 6234,
+  "servHeaders": {
+    "x-openserv-request-id": "3179e444-eb57-45c0-b1f2-d113153f3cc3"
+  },
+  "json": {
+    "id": "chatcmpl-ERfLVgMFrKhS0RqGDfAOWqTppQat2",
+    "object": "chat.completion",
+    "created": 1790262497,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice bills five days at the agreed day rate, and the listed work is QA testing within the agreed scope.\",\"evidence_quote\":\"FACTS: “Days billed: 5, within the 12-day monthly cap.” “Day rate billed does not exceed the agreed 300 USDC.” Invoice: “Regression testing” and “Release sign-off testing”\"},{\"clause\":2,\"finding\":\"The billed days are within the monthly cap.\",\"evidence_quote\":\"FACTS: “Days billed: 5, within the 12-day monthly cap.”\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1080,
+      "completion_tokens": 363,
+      "total_tokens": 1443,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1077,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 194,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

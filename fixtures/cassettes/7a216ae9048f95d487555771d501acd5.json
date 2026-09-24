@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-exact_duplicate-2",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:19:49.359Z",
+  "latencyMs": 5818,
+  "servHeaders": {
+    "x-openserv-request-id": "ba770be0-241c-4f10-bb1f-49cbfdd10fd8"
+  },
+  "json": {
+    "id": "chatcmpl-ERfWcjPDmtquE2yOPyFsRbY11b62w",
+    "object": "chat.completion",
+    "created": 1790263186,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"This invoice is a duplicate of work that was already paid, so it must not be paid again.\",\"evidence_quote\":\"FACTS: \\\"[EXACT_DUPLICATE] Invoice number EFUA-512 is already on file (prior-EFUA 512, PAY).\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1126,
+      "completion_tokens": 183,
+      "total_tokens": 1309,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 71,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

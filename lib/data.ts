@@ -7,6 +7,7 @@ import type { Contractor, Decision, Invoice, PolicyVersion } from "@/src/core/ty
 
 /** One read of everything the desk shows. Plain JSON, safe to pass to client components. */
 export interface DeskData {
+  /** The live version: invoices are decided under this one. */
   policy: PolicyVersion | null;
   policies: PolicyVersion[];
   contractors: Contractor[];
@@ -45,7 +46,7 @@ export function loadDesk(): DeskData {
     };
   });
   return {
-    policy: s.latestPolicy(),
+    policy: s.livePolicy(),
     policies,
     contractors: s.contractors(),
     items,

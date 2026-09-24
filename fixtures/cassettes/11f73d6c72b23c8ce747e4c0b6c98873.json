@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-unapproved_expense-1",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:10:48.933Z",
+  "latencyMs": 5718,
+  "servHeaders": {
+    "x-openserv-request-id": "c4d133c9-fbf2-40c1-828f-d08e86776aff"
+  },
+  "json": {
+    "id": "chatcmpl-ERfNrHhimDpOEiIuS4ZxB8oCi6pR5",
+    "object": "chat.completion",
+    "created": 1790262643,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The invoice includes a laptop expense, but expenses are reimbursable only if approved in writing before they were incurred. No written approval is on file, and the invoice describes only verbal agreement.\",\"evidence_quote\":\"Written expense approvals on file for this contractor: none\"},{\"clause\":3,\"finding\":\"The invoice requests payment for the unapproved expense as part of its total.\",\"evidence_quote\":\"New laptop (work use)                        1 item × 950.00 = 950.00\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1144,
+      "completion_tokens": 309,
+      "total_tokens": 1453,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1141,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 154,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

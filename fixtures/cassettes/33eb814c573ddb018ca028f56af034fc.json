@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-clean-15",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:16:04.089Z",
+  "latencyMs": 5267,
+  "servHeaders": {
+    "x-openserv-request-id": "242ebc85-2871-47fb-a602-ceefbe937efd"
+  },
+  "json": {
+    "id": "chatcmpl-ERfSzASfMVp32XaTH8nujMNwz1vV2",
+    "object": "chat.completion",
+    "created": 1790262961,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AKOSUA-214\",\"contractor_name\":\"Akosua Darko\",\"contractor_email\":\"akosua.darko@gmail.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"App store release\",\"quantity\":4,\"unit\":\"day\",\"unit_price_usdc\":380,\"amount_usdc\":1520},{\"description\":\"App store release (cont.)\",\"quantity\":5,\"unit\":\"day\",\"unit_price_usdc\":380,\"amount_usdc\":1900}],\"total_usdc\":3420,\"pay_to_wallet\":\"0x4c7C5f70F851D649b353D56981F7898188dA93D4\",\"payment_change_request\":null,\"notes\":\"Thanks!\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 471,
+      "completion_tokens": 172,
+      "total_tokens": 643,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

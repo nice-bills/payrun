@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-clean-10",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:07:33.558Z",
+  "latencyMs": 4696,
+  "servHeaders": {
+    "x-openserv-request-id": "519ca6c0-2593-4a36-8ac6-de4bd8790414"
+  },
+  "json": {
+    "id": "chatcmpl-ERfKjCPADp0hL6JjFljb2PraM1Ly5",
+    "object": "chat.completion",
+    "created": 1790262449,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6],\"reasons\":[{\"clause\":1,\"finding\":\"The billed days and day rate comply with the agreement.\",\"evidence_quote\":\"Days billed: 9, within the 10-day monthly cap. Day rate billed does not exceed the agreed 250 USDC.\"},{\"clause\":2,\"finding\":\"The invoice is within the monthly cap.\",\"evidence_quote\":\"Days billed: 9, within the 10-day monthly cap.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days after the billing period ended.\",\"evidence_quote\":\"Received 2026-09-05, 36 days after the billing period ended (2026-07-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1100,
+      "completion_tokens": 338,
+      "total_tokens": 1438,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1097,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 151,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

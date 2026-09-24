@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-over_cap-3",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:20:36.041Z",
+  "latencyMs": 14039,
+  "servHeaders": {
+    "x-openserv-request-id": "fc5971ba-560d-4fcf-8f7d-52c5797b2ed1"
+  },
+  "json": {
+    "id": "chatcmpl-ERfXI5xw1JODaj3SBKdQnhkbMXehl",
+    "object": "chat.completion",
+    "created": 1790263228,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[2],\"reasons\":[{\"clause\":2,\"finding\":\"The invoice exceeds the monthly day cap in the agreement, so it cannot be paid.\",\"evidence_quote\":\"FACTS: \\\"[OVER_DAY_CAP] Bills 16 days; agreement caps at 12 days per month.\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1104,
+      "completion_tokens": 200,
+      "total_tokens": 1304,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 100,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

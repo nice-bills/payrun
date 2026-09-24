@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-arithmetic-2",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:21:08.836Z",
+  "latencyMs": 3877,
+  "servHeaders": {
+    "x-openserv-request-id": "42f38519-cba5-42ef-946d-61ded9c9e464"
+  },
+  "json": {
+    "id": "chatcmpl-ERfXtX3Y4whony9A3k3FlwWZq6KLg",
+    "object": "chat.completion",
+    "created": 1790263265,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[1],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice total does not match payment at the agreed day rate for the billed days, so it should not be paid as submitted.\",\"evidence_quote\":\"FACTS: \\\"[ARITHMETIC_MISMATCH] Line \\\\\\\"Landing page A/B tests\\\\\\\": 3 × 320 ≠ 1260.\\\" and \\\"Agreed day rate: 320 USDC\\\"; invoice: \\\"Landing page A/B tests                       3 days × 320.00 = 1,260.00\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1078,
+      "completion_tokens": 299,
+      "total_tokens": 1377,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 140,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

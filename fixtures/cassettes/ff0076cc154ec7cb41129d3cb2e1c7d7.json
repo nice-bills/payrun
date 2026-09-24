@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-arithmetic-1",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:10:18.192Z",
+  "latencyMs": 5572,
+  "servHeaders": {
+    "x-openserv-request-id": "371c55da-d36b-445d-bd3f-3c24effcad06"
+  },
+  "json": {
+    "id": "chatcmpl-ERfNN81MlboxDBYqn1ANCFvUWRdf2",
+    "object": "chat.completion",
+    "created": 1790262613,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[1],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice total conflicts with the agreed day rate for the billed days; resolve the discrepancy before payment.\",\"evidence_quote\":\"[ARITHMETIC_MISMATCH] Line \\\"Accessibility fixes\\\": 20 × 300 ≠ 6300.\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1062,
+      "completion_tokens": 292,
+      "total_tokens": 1354,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1059,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 186,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

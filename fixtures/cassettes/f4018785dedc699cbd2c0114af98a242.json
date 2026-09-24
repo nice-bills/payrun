@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-probe-4",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:39:45.379Z",
+  "latencyMs": 10397,
+  "servHeaders": {
+    "x-openserv-request-id": "a7105442-86ad-4f3e-b6b9-4a2f4dec1630"
+  },
+  "json": {
+    "id": "chatcmpl-ERfpsb2jaIvU84E9S8neJx8iEqF0C",
+    "object": "chat.completion",
+    "created": 1790264380,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[1,6,7],\"reasons\":[{\"clause\":1,\"finding\":\"The billed time is payable at the agreed rate and within the monthly cap.\",\"evidence_quote\":\"FACTS: \\\"Days billed: 5, within the 15-day monthly cap.\\\" and \\\"Day rate billed does not exceed the agreed 350 USDC.\\\"\"},{\"clause\":6,\"finding\":\"The invoice was submitted on time.\",\"evidence_quote\":\"FACTS: \\\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\\\"\"},{\"clause\":7,\"finding\":\"One line item appears outside the stated scope, and no manager sign-off is confirmed in FACTS, so a human must resolve it before payment.\",\"evidence_quote\":\"AGREEMENT: \\\"Scope of work: Brand and product UI design for the Tetteh & Co. client app.\\\" INVOICE: \\\"App-store listing screenshots and launch graphics | 2 days | 350 USDC/day | 700 USDC\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1027,
+      "completion_tokens": 439,
+      "total_tokens": 1466,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 184,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

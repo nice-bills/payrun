@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-clean-15",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:08:13.749Z",
+  "latencyMs": 6358,
+  "servHeaders": {
+    "x-openserv-request-id": "f1542e87-23a7-4bd2-bb1b-b5a154a1089c"
+  },
+  "json": {
+    "id": "chatcmpl-ERfLLVIdVhwMSszOVnxFY1bU3o1bt",
+    "object": "chat.completion",
+    "created": 1790262487,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[7],\"reasons\":[{\"clause\":7,\"finding\":\"The billed work is described as app-store release, while the agreement lists React Native mobile app development as the scope. A human must determine whether this release work is within scope or obtain the manager's sign-off required for out-of-scope work.\",\"evidence_quote\":\"Invoice: “App store release”; Agreement: “Scope of work: Mobile app development in React Native.”\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1090,
+      "completion_tokens": 376,
+      "total_tokens": 1466,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1087,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 245,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

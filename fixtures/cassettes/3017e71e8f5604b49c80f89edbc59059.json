@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-clean-1",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:12:04.419Z",
+  "latencyMs": 4345,
+  "servHeaders": {
+    "x-openserv-request-id": "146742f1-013f-429d-84c4-78dbaa6c7d9c"
+  },
+  "json": {
+    "id": "chatcmpl-ERfP8pwYdwHOi1dBH2gnMt90sp9P0",
+    "object": "chat.completion",
+    "created": 1790262722,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AMA-200\",\"contractor_name\":\"Ama Mensah\",\"contractor_email\":\"ama@mensah.design\",\"period_start\":\"2026-07-01\",\"period_end\":\"2026-07-31\",\"lines\":[{\"description\":\"Design system tokens\",\"quantity\":7,\"unit\":\"day\",\"unit_price_usdc\":350,\"amount_usdc\":2450},{\"description\":\"Checkout screens\",\"quantity\":7,\"unit\":\"day\",\"unit_price_usdc\":350,\"amount_usdc\":2450}],\"total_usdc\":4900,\"pay_to_wallet\":\"0xDd03c6D9A048BEd896390785721D2D1A67322333\",\"payment_change_request\":null,\"notes\":\"Thanks!\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 454,
+      "completion_tokens": 159,
+      "total_tokens": 613,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

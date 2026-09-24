@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-near_duplicate-2",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:09:19.007Z",
+  "latencyMs": 3534,
+  "servHeaders": {
+    "x-openserv-request-id": "189294f4-0a27-442f-91e8-993896abd15c"
+  },
+  "json": {
+    "id": "chatcmpl-ERfMRp6eWj2UOWGPUmwwjFhbyIcIz",
+    "object": "chat.completion",
+    "created": 1790262555,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"This invoice covers a period already paid, so it is a duplicate.\",\"evidence_quote\":\"[SAME_PERIOD_ALREADY_BILLED] Period 2026-08-01–2026-08-31 overlaps invoice NANA-410 already on file (PAY; 2026-08-01–2026-08-31, 1800 USDC).\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1154,
+      "completion_tokens": 226,
+      "total_tokens": 1380,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1151,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 95,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-over_cap-3",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:20:22.002Z",
+  "latencyMs": 5323,
+  "servHeaders": {
+    "x-openserv-request-id": "24399955-46e8-4276-a247-1518e4b7887a"
+  },
+  "json": {
+    "id": "chatcmpl-ERfX98lbtPrZCxY2381lIsiYZ9tVc",
+    "object": "chat.completion",
+    "created": 1790263219,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"NANA-620\",\"contractor_name\":\"Nana Yeboah\",\"contractor_email\":\"nana.yeboah@outlook.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Release sign-off testing\",\"quantity\":8,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":2400},{\"description\":\"Release sign-off testing (cont.)\",\"quantity\":8,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":2400}],\"total_usdc\":4800,\"pay_to_wallet\":\"0x2f449093C72dF2CA006Fad6A64C876a39F78323D\",\"payment_change_request\":null,\"notes\":\"Busy month!\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 472,
+      "completion_tokens": 175,
+      "total_tokens": 647,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "label": "judge-raw-small-eval-wallet_swap-1",
+  "model": "gpt-6-luna",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:08:32.029Z",
+  "latencyMs": 4541,
+  "servHeaders": {
+    "x-openserv-request-id": "79ec82b4-de0f-4f63-98c0-d87e90baccdd"
+  },
+  "json": {
+    "id": "chatcmpl-ERfLgytYjGbn5S5K8EuhHtVGZrOJF",
+    "object": "chat.completion",
+    "created": 1790262508,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[4],\"reasons\":[{\"clause\":4,\"finding\":\"The invoice requests payment to a wallet that differs from the wallet on file. The change must be confirmed through the contractor's email on file before payment.\",\"evidence_quote\":\"[WALLET_MISMATCH] Invoice asks for payment to 0x94e672298C44c94b0606740cBEfa6963fA3409C6; wallet on file is 0xDd03c6D9A048BEd896390785721D2D1A67322333. - [WALLET_CHANGE_REQUEST] Invoice contains a payment-details change request: \\\"New wallet below (old one compromised).\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1184,
+      "completion_tokens": 251,
+      "total_tokens": 1435,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1181,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 64,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-unapproved_expense-3",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:22:00.474Z",
+  "latencyMs": 4782,
+  "servHeaders": {
+    "x-openserv-request-id": "2dc0faae-d73f-4747-9bba-7ded79af8fa2"
+  },
+  "json": {
+    "id": "chatcmpl-ERfYkktSATl2H65hb0uZ3hDHMpkSe",
+    "object": "chat.completion",
+    "created": 1790263318,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AKOSUA-840\",\"contractor_name\":\"Akosua Darko\",\"contractor_email\":\"akosua.darko@gmail.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Offline sync\",\"quantity\":6,\"unit\":\"day\",\"unit_price_usdc\":380,\"amount_usdc\":2280},{\"description\":\"Push notifications\",\"quantity\":7,\"unit\":\"day\",\"unit_price_usdc\":380,\"amount_usdc\":2660},{\"description\":\"Co-working day passes\",\"quantity\":1,\"unit\":\"item\",\"unit_price_usdc\":1400,\"amount_usdc\":1400}],\"total_usdc\":6340,\"pay_to_wallet\":\"0x4c7C5f70F851D649b353D56981F7898188dA93D4\",\"payment_change_request\":null,\"notes\":\"Expense was agreed verbally with the team.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 495,
+      "completion_tokens": 203,
+      "total_tokens": 698,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

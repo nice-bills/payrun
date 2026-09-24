@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-near_duplicate-1",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:18:03.098Z",
+  "latencyMs": 9346,
+  "servHeaders": {
+    "x-openserv-request-id": "8304e70b-bfd5-4835-9451-0d9d8c3ca835"
+  },
+  "json": {
+    "id": "chatcmpl-ERfUqqNh6mNX8g7WVf22oP4EWBL92",
+    "object": "chat.completion",
+    "created": 1790263076,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"This invoice is a duplicate because it covers a period that was already paid.\",\"evidence_quote\":\"FACTS: \\\"[SAME_PERIOD_ALREADY_BILLED] Period 2026-08-01–2026-08-31 overlaps invoice AKOSUA-410 already on file (PAY; 2026-08-01–2026-08-31, 3420 USDC).\\\"\"},{\"clause\":5,\"finding\":\"The invoice itself states it is a reissue of an earlier invoice for the same work period.\",\"evidence_quote\":\"Invoice: \\\"Reissued with corrected PO reference — please use this one instead of the earlier invoice.\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1157,
+      "completion_tokens": 245,
+      "total_tokens": 1402,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 56,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-arithmetic-2",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:21:04.958Z",
+  "latencyMs": 9657,
+  "servHeaders": {
+    "x-openserv-request-id": "64f8ccdf-bd41-4296-a87e-e7af4d7b30bc"
+  },
+  "json": {
+    "id": "chatcmpl-ERfXrTVhwOah1ydnAEa93zkokRJBk",
+    "object": "chat.completion",
+    "created": 1790263263,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"ESI-730\",\"contractor_name\":\"Esi Quaye\",\"contractor_email\":\"esi@quaye.agency\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Landing page A/B tests\",\"quantity\":3,\"unit\":\"day\",\"unit_price_usdc\":320,\"amount_usdc\":1260}],\"total_usdc\":1260,\"pay_to_wallet\":\"0x71e2882962D9679ca5B0B85B63a3CEaCa48Eb297\",\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 442,
+      "completion_tokens": 138,
+      "total_tokens": 580,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

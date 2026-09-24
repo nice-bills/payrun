@@ -25,6 +25,7 @@ export class Store {
       CREATE TABLE IF NOT EXISTS payments (
         id INTEGER PRIMARY KEY AUTOINCREMENT, invoice_id TEXT NOT NULL, status TEXT NOT NULL, json TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS reports (id INTEGER PRIMARY KEY AUTOINCREMENT, kind TEXT NOT NULL, json TEXT NOT NULL, created_at TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
     `);
   }
 
@@ -39,6 +40,21 @@ export class Store {
   latestPolicy(): PolicyVersion | null {
     const row = this.db.prepare("SELECT json FROM policies ORDER BY version DESC LIMIT 1").get() as { json: string } | undefined;
     return row ? JSON.parse(row.json) : null;
+  }
+
+  /**
+   * The version invoices are decided under. New versions start as drafts: they
+   * are replayed against past invoices first and only go live on purpose.
+   * Without an explicit choice the first version is live.
+   */
+  livePolicy(): PolicyVersion | null {
+    const row = this.db.prepare("SELECT value FROM settings WHERE key = 'live_policy'").get() as { value: string } | undefined;
+    return (row && this.policy(Number(row.value))) || this.policy(1) || this.latestPolicy();
+  }
+
+  setLivePolicy(version: number): void {
+    if (!this.policy(version)) throw new Error(`No policy v${version}`);
+    this.db.prepare("INSERT INTO settings (key, value) VALUES ('live_policy', ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value").run(String(version));
   }
 
   policy(version: number): PolicyVersion | null {

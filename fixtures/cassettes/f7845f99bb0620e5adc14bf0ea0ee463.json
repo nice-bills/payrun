@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-clean-10",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:15:00.064Z",
+  "latencyMs": 13145,
+  "servHeaders": {
+    "x-openserv-request-id": "32d05246-6311-404a-b71b-5fc4aba34583"
+  },
+  "json": {
+    "id": "chatcmpl-ERfRxPWbzwcPvHWKcZXXM9UAR8CGF",
+    "object": "chat.completion",
+    "created": 1790262897,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"EFUA-209\",\"contractor_name\":\"Efua Boateng\",\"contractor_email\":\"efua@boatengwrites.com\",\"period_start\":\"2026-07-01\",\"period_end\":\"2026-07-31\",\"lines\":[{\"description\":\"Help-centre articles\",\"quantity\":4,\"unit\":\"day\",\"unit_price_usdc\":250,\"amount_usdc\":1000},{\"description\":\"Help-centre articles (cont.)\",\"quantity\":5,\"unit\":\"day\",\"unit_price_usdc\":250,\"amount_usdc\":1250}],\"total_usdc\":2250,\"pay_to_wallet\":\"0x6F2894a218eF6f85E5909e5A9aBABd38d6Ac7fCd\",\"payment_change_request\":null,\"notes\":\"Cheers.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 472,
+      "completion_tokens": 175,
+      "total_tokens": 647,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

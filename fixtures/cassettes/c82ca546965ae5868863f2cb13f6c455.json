@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-clean-4",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:12:46.732Z",
+  "latencyMs": 6151,
+  "servHeaders": {
+    "x-openserv-request-id": "e58ba875-572e-4e56-9662-b34607196252"
+  },
+  "json": {
+    "id": "chatcmpl-ERfPn48lnq6hhtM9EtZKBHZ63SMPZ",
+    "object": "chat.completion",
+    "created": 1790262763,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,5,6],\"reasons\":[{\"clause\":1,\"finding\":\"Pay at the agreed day rate for days worked in the billing month. The invoice bills 10 days in the stated billing period, and the billed rate is within the agreement.\",\"evidence_quote\":\"FACTS: \\\"Day rate billed does not exceed the agreed 300 USDC.\\\"; EXTRACTED: \\\"periodStart\\\":\\\"2026-08-01\\\",\\\"periodEnd\\\":\\\"2026-08-31\\\"; FACTS: \\\"Days billed: 10, within the 12-day monthly cap.\\\"\"},{\"clause\":2,\"finding\":\"The invoice does not exceed the monthly cap.\",\"evidence_quote\":\"FACTS: \\\"Days billed: 10, within the 12-day monthly cap.\\\"\"},{\"clause\":5,\"finding\":\"This invoice is not a duplicate of work already paid.\",\"evidence_quote\":\"FACTS: \\\"No other invoice on file covers this invoice number or period.\\\"\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the end of the billing period.\",\"evidence_quote\":\"FACTS: \\\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1093,
+      "completion_tokens": 348,
+      "total_tokens": 1441,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 49,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

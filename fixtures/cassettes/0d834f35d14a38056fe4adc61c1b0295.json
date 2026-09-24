@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-exact_duplicate-1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T15:00:34.116Z",
+  "latencyMs": 7192,
+  "servHeaders": {
+    "x-openserv-request-id": "fb03aac8-ffd3-42bc-85ed-508611fb307f"
+  },
+  "json": {
+    "id": "chatcmpl-ERfDvzjTxSygpkmomUlYdawlJv10q",
+    "object": "chat.completion",
+    "created": 1790262027,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"This invoice is a duplicate of one already paid.\",\"evidence_quote\":\"[EXACT_DUPLICATE] Invoice number AMA-512 is already on file (prior-AMA 512, PAY).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1252,
+      "completion_tokens": 144,
+      "total_tokens": 1396,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1249,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 49,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

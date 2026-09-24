@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-unapproved_expense-1",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:21:39.014Z",
+  "latencyMs": 20339,
+  "servHeaders": {
+    "x-openserv-request-id": "49db33e8-59ff-4a66-b329-1862faeda63c"
+  },
+  "json": {
+    "id": "chatcmpl-ERfYOYKgoch8FNdPSTxpvGsfdZBQq",
+    "object": "chat.completion",
+    "created": 1790263296,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AMA-840\",\"contractor_name\":\"Ama Mensah\",\"contractor_email\":\"ama@mensah.design\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Checkout screens\",\"quantity\":3,\"unit\":\"day\",\"unit_price_usdc\":350,\"amount_usdc\":1050},{\"description\":\"Checkout screens (cont.)\",\"quantity\":3,\"unit\":\"day\",\"unit_price_usdc\":350,\"amount_usdc\":1050},{\"description\":\"New laptop (work use)\",\"quantity\":1,\"unit\":\"item\",\"unit_price_usdc\":950,\"amount_usdc\":950}],\"total_usdc\":3050,\"pay_to_wallet\":\"0xDd03c6D9A048BEd896390785721D2D1A67322333\",\"payment_change_request\":null,\"notes\":\"Expense was agreed verbally with the team.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 483,
+      "completion_tokens": 197,
+      "total_tokens": 680,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

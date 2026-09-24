@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-probe-3",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:39:14.976Z",
+  "latencyMs": 3237,
+  "servHeaders": {
+    "x-openserv-request-id": "fec0642b-0121-4a4a-859b-9c69aafde636"
+  },
+  "json": {
+    "id": "chatcmpl-ERfpQeSMm2F22xyeh3eE2iXlFpEBu",
+    "object": "chat.completion",
+    "created": 1790264352,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,5,6],\"reasons\":[{\"clause\":1,\"finding\":\"Pay for worked days at the agreed day rate.\",\"evidence_quote\":\"FACTS: \\\"Days billed: 4, within the 10-day monthly cap.\\\" and \\\"Day rate billed does not exceed the agreed 250 USDC.\\\"\"},{\"clause\":2,\"finding\":\"The invoice does not exceed the monthly cap.\",\"evidence_quote\":\"FACTS: \\\"Days billed: 4, within the 10-day monthly cap.\\\"\"},{\"clause\":5,\"finding\":\"The invoice is not a duplicate.\",\"evidence_quote\":\"FACTS: \\\"No other invoice on file covers this invoice number or period.\\\"\"},{\"clause\":6,\"finding\":\"The invoice was received within the allowed time window.\",\"evidence_quote\":\"FACTS: \\\"Received 2026-08-29, 60 days after the billing period ended (2026-06-30).\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 984,
+      "completion_tokens": 298,
+      "total_tokens": 1282,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 63,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

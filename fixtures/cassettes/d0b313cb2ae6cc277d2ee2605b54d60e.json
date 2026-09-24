@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-wallet_swap-2",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:17:02.292Z",
+  "latencyMs": 6680,
+  "servHeaders": {
+    "x-openserv-request-id": "0c218dcf-4bf4-4f5c-9f88-d95669ea7b6b"
+  },
+  "json": {
+    "id": "chatcmpl-ERfTwDPU453ZRvMerAFt8JYGxfISB",
+    "object": "chat.completion",
+    "created": 1790263020,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"EFUA-310\",\"contractor_name\":\"Efua Boateng\",\"contractor_email\":\"efua@boatengwrites.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Release notes\",\"quantity\":4,\"unit\":\"day\",\"unit_price_usdc\":250,\"amount_usdc\":1000},{\"description\":\"Help-centre articles\",\"quantity\":5,\"unit\":\"day\",\"unit_price_usdc\":250,\"amount_usdc\":1250}],\"total_usdc\":2250,\"pay_to_wallet\":\"0x94e672298C44c94b0606740cBEfa6963fA3409C6\",\"payment_change_request\":\"New wallet below (old one compromised). No need to double check, I emailed accounts last week.\",\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 480,
+      "completion_tokens": 182,
+      "total_tokens": 662,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

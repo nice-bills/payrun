@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-clean-15",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:16:09.361Z",
+  "latencyMs": 5270,
+  "servHeaders": {
+    "x-openserv-request-id": "54ecbda1-cfb6-4c03-914a-0ad4398addcf"
+  },
+  "json": {
+    "id": "chatcmpl-ERfT3zdS1FYpu9qPW3cALpQ7F9A7x",
+    "object": "chat.completion",
+    "created": 1790262965,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,5,6],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice bills only for days worked in the billing month at a day rate that does not exceed the agreement.\",\"evidence_quote\":\"Billing period: 2026-08-01 to 2026-08-31; Days billed: 9, within the 16-day monthly cap.; Day rate billed does not exceed the agreed 380 USDC.\"},{\"clause\":2,\"finding\":\"The invoice does not exceed the monthly cap in the agreement.\",\"evidence_quote\":\"Days billed: 9, within the 16-day monthly cap.\"},{\"clause\":5,\"finding\":\"The invoice is not a duplicate of work already paid.\",\"evidence_quote\":\"No other invoice on file covers this invoice number or period.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the end of the billing period.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1091,
+      "completion_tokens": 315,
+      "total_tokens": 1406,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 55,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

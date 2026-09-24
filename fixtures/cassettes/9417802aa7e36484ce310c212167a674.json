@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-arithmetic-3",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T15:02:23.441Z",
+  "latencyMs": 27199,
+  "servHeaders": {
+    "x-openserv-request-id": "e1ad95d9-bc59-4795-bfa5-9edb53e87c07"
+  },
+  "json": {
+    "id": "chatcmpl-ERfFNZyuiHh9FQpSIJmou7gvNsfoF",
+    "object": "chat.completion",
+    "created": 1790262117,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[1],\"reasons\":[{\"clause\":1,\"finding\":\"The billed line amount does not match the stated day rate and billed days, so the invoice total needs clarification before payment.\",\"evidence_quote\":\"[ARITHMETIC_MISMATCH] Line \\\"Rate limiter service\\\": 7 × 400 ≠ 3100.\"},{\"clause\":1,\"finding\":\"The invoice itself states the inconsistent calculation.\",\"evidence_quote\":\"Rate limiter service                         7 days × 400.00 = 3,100.00\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1208,
+      "completion_tokens": 263,
+      "total_tokens": 1471,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1205,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 113,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

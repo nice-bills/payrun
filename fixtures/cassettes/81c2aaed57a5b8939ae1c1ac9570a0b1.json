@@ -1,0 +1,44 @@
+{
+  "label": "extract-raw-gpt-5.4-eval-near_duplicate-4",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:18:52.458Z",
+  "latencyMs": 10704,
+  "servHeaders": {
+    "x-openserv-request-id": "097df8a9-ca79-405a-88c7-42a8a369b8d3"
+  },
+  "json": {
+    "id": "chatcmpl-ERfViFOMpuCfwK07zXlekutBzEhBg",
+    "object": "chat.completion",
+    "created": 1790263130,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"EFUA-411\",\"contractor_name\":\"Efua Boateng\",\"contractor_email\":\"efua@boatengwrites.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Release notes\",\"quantity\":4,\"unit\":\"day\",\"unit_price_usdc\":250,\"amount_usdc\":1000},{\"description\":\"Blog post on stablecoin payouts\",\"quantity\":5,\"unit\":\"day\",\"unit_price_usdc\":250,\"amount_usdc\":1250}],\"total_usdc\":2250,\"pay_to_wallet\":\"0x6F2894a218eF6f85E5909e5A9aBABd38d6Ac7fCd\",\"payment_change_request\":null,\"notes\":\"Reissued with corrected PO reference — please use this one instead of the earlier invoice.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 484,
+      "completion_tokens": 187,
+      "total_tokens": 671,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

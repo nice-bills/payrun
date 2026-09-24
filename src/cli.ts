@@ -28,7 +28,7 @@ function modeFromArgs(): DecideMode {
 }
 
 function requirePolicy() {
-  const p = store.latestPolicy();
+  const p = store.livePolicy();
   if (!p) throw new Error("No policy yet. Run: npm run cli init");
   return p;
 }
@@ -66,7 +66,10 @@ async function main() {
       break;
     }
     case "policy": {
-      if (args[0] === "add") {
+      if (args[0] === "live") {
+        store.setLivePolicy(Number(args[1]));
+        console.log(`Policy v${args[1]} is now live.`);
+      } else if (args[0] === "add") {
         const p = store.addPolicy(readFileSync(args[1], "utf8"));
         console.log(`Policy v${p.version} (${p.hash.slice(0, 12)}), ${p.clauses.length} clauses.`);
       } else {
@@ -131,8 +134,10 @@ async function main() {
       break;
     }
     case "replay": {
-      const next = requirePolicy();
-      const fromVersion = Number(opt("from") ?? next.version - 1);
+      // Replays the newest draft against decisions made under the live version.
+      const next = store.latestPolicy();
+      if (!next) throw new Error("No policy yet.");
+      const fromVersion = Number(opt("from") ?? requirePolicy().version);
       const past = store.latestDecisions("serv", fromVersion);
       const invoices = new Map(store.invoices().map((i) => [i.id, i]));
       const report = await replay(serv, past, invoices, next, store.contractors(), store.history());

@@ -8,9 +8,8 @@ import { kindOf } from "./InboxTray";
 
 type Span = { start: number; end: number; kind: "evidence" | "hidden"; note?: number };
 
-/** Evidence the reviewer cited, located in the invoice text and numbered to match the margin notes. */
-export function citedSpans(item: DeskItem): Span[] {
-  const text = item.invoice.rawText;
+/** Evidence the reviewer cited, located in the invoice text and numbered to match the notes. */
+export function citedSpans(text: string, item: DeskItem): Span[] {
   const spans: Span[] = [];
   item.decision?.judgment?.reasons.forEach((r, i) => {
     const at = locateQuote(text, r.evidenceQuote);
@@ -19,32 +18,43 @@ export function citedSpans(item: DeskItem): Span[] {
   return spans;
 }
 
-function render(text: string, spans: Span[]) {
-  const sorted = [...spans].sort((a, b) => a.start - b.start);
+function render(text: string, spans: Span[], activeNote: number | null) {
   const out: React.ReactNode[] = [];
   let cursor = 0;
-  sorted.forEach((s, i) => {
-    if (s.start > cursor) out.push(text.slice(cursor, s.start));
-    const piece = text.slice(s.start, s.end);
-    out.push(
-      s.kind === "hidden" ? (
-        <mark key={i} className="rounded-sm bg-block-wash px-0.5 text-block outline outline-1 outline-block/40">
-          {piece}
-        </mark>
-      ) : (
-        <mark key={i} className="evidence text-ink">
-          {piece}
-          <sup className="ml-0.5 font-sans text-[0.65rem] font-bold text-pen">{s.note}</sup>
-        </mark>
-      ),
-    );
-    cursor = s.end;
-  });
+  [...spans]
+    .sort((a, b) => a.start - b.start)
+    .forEach((s, i) => {
+      if (s.start > cursor) out.push(text.slice(cursor, s.start));
+      const piece = text.slice(s.start, s.end);
+      out.push(
+        s.kind === "hidden" ? (
+          <mark key={i} className="rounded bg-card-block px-1 text-block">
+            {piece}
+          </mark>
+        ) : (
+          <mark key={i} className="evidence text-ink" data-active={activeNote === s.note}>
+            {piece}
+            <sup className="ml-0.5 font-sans text-[0.7rem] font-black text-pen">{s.note}</sup>
+          </mark>
+        ),
+      );
+      cursor = s.end;
+    });
   if (cursor < text.length) out.push(text.slice(cursor));
   return out;
 }
 
-export function InvoiceSheet({ item, fresh }: { item: DeskItem; fresh: boolean }) {
+function BinderClip() {
+  return (
+    <svg aria-hidden viewBox="0 0 96 40" className="absolute -top-5 left-1/2 h-10 w-24 -translate-x-1/2 drop-shadow-[0_3px_2px_oklch(0.12_0.1_274/0.45)]">
+      <path d="M20 22 L20 6 Q20 2 26 2 L70 2 Q76 2 76 6 L76 22" fill="none" stroke="oklch(0.78 0.01 274)" strokeWidth="3.5" />
+      <rect x="8" y="18" width="80" height="20" rx="3" fill="oklch(0.2 0.02 274)" />
+      <rect x="8" y="18" width="80" height="4" rx="2" fill="oklch(0.34 0.02 274)" />
+    </svg>
+  );
+}
+
+export function InvoiceSheet({ item, fresh, activeNote }: { item: DeskItem; fresh: boolean; activeNote: number | null }) {
   const [showHidden, setShowHidden] = useState(false);
   const d = item.decision;
   const hidden = item.invoice.hiddenText ?? null;
@@ -53,50 +63,47 @@ export function InvoiceSheet({ item, fresh }: { item: DeskItem; fresh: boolean }
   const { body, spans } = useMemo(() => {
     const hiddenAt = hidden ? locateQuote(text, hidden) : null;
     if (hiddenAt && !showHidden) {
-      // What a person sees: the file without the invisible text.
-      const visible = (text.slice(0, hiddenAt[0]) + text.slice(hiddenAt[1])).trimEnd();
-      return { body: visible, spans: citedSpans({ ...item, invoice: { ...item.invoice, rawText: visible } }) };
+      // What a person sees: the file without its invisible text.
+      const visible = (text.slice(0, hiddenAt[0]) + text.slice(hiddenAt[1])).replace(/\s*[.,]?\s*$/, "");
+      return { body: visible, spans: citedSpans(visible, item) };
     }
-    const s = citedSpans(item);
+    const s = citedSpans(text, item);
     if (hiddenAt) s.push({ start: hiddenAt[0], end: hiddenAt[1], kind: "hidden" });
     return { body: text, spans: s };
   }, [item, hidden, showHidden, text]);
 
-  const subline = d
-    ? d.blockedByGuard
-      ? "SERV PROMPT GUARD"
-      : `POLICY V${d.policyVersion} · ${stampDate(item.invoice.receivedAt)}`
-    : undefined;
+  const subline = d ? (d.blockedByGuard ? "SERV PROMPT GUARD" : `POLICY V${d.policyVersion} · ${stampDate(item.invoice.receivedAt)}`) : undefined;
 
   return (
-    <article aria-label={`Invoice ${item.invoice.source}`} className="relative">
-      <div className="relative rounded-[3px] bg-sheet shadow-[var(--shadow-sheet)]">
-        <header className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-rule px-6 py-3 font-type text-xs text-ink-2 sm:px-8">
-          <span className="rounded border border-rule px-1.5 py-0.5 text-ink">{kindOf(item.invoice.source)}</span>
+    <article aria-label={`Invoice ${item.invoice.source}`} className="relative mx-auto w-full max-w-[760px] pt-6">
+      <div className="relative rounded-[4px] bg-sheet shadow-[var(--shadow-sheet)]">
+        <BinderClip />
+        <header className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-rule px-7 pb-3 pt-7 font-type text-xs text-ink-2 sm:px-10">
+          <span className="rounded bg-ink px-1.5 py-0.5 font-sans text-[0.65rem] font-black tracking-[0.1em] text-sheet">{kindOf(item.invoice.source).toUpperCase()}</span>
           <span className="truncate">{item.invoice.source}</span>
           <span className="ml-auto">Received {stampDate(item.invoice.receivedAt)}</span>
         </header>
 
-        <div className="grain rounded-b-[3px] px-6 pb-10 pt-8 sm:px-8">
-          <pre className="max-w-[68ch] whitespace-pre-wrap break-words font-type text-[0.9rem] leading-[1.7] text-ink">{render(body, spans)}</pre>
+        <div className="px-7 pb-10 pt-7 sm:px-10">
+          <pre className="max-w-[64ch] whitespace-pre-wrap break-words font-type text-[0.95rem] leading-[1.75] text-ink">{render(body, spans, activeNote)}</pre>
 
           {hidden ? (
-            <button
-              type="button"
-              onClick={() => setShowHidden((v) => !v)}
-              aria-pressed={showHidden}
-              className="press mt-6 rounded-md border border-block/40 bg-block-wash px-3 py-1.5 text-sm font-medium text-block hover:border-block"
-            >
-              {showHidden ? "Hide the invisible text" : "Show what the model was fed"}
-            </button>
-          ) : null}
-          {hidden && showHidden ? (
-            <p className="mt-2 font-hand text-lg text-block">↑ set in 1pt white type: invisible on the page, readable by a model</p>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setShowHidden((v) => !v)}
+                aria-pressed={showHidden}
+                className="press rounded-xl bg-block px-4 py-2 text-sm font-bold text-sheet shadow-[var(--shadow-card)] hover:brightness-110"
+              >
+                {showHidden ? "Hide the invisible text" : "Reveal what the model was fed"}
+              </button>
+              {showHidden ? <span className="font-hand text-xl leading-tight text-block">1pt white type. You can&apos;t see it; a model reads it.</span> : null}
+            </div>
           ) : null}
         </div>
 
         {d ? (
-          <div className="absolute right-4 top-12 sm:right-8 sm:top-14">
+          <div className="absolute right-5 top-16 sm:right-10 sm:top-[4.5rem]">
             <Stamp key={`${item.invoice.id}-${d.decidedAt}`} verdict={d.finalVerdict} subline={subline} fresh={fresh} />
           </div>
         ) : null}
@@ -107,11 +114,11 @@ export function InvoiceSheet({ item, fresh }: { item: DeskItem; fresh: boolean }
           href={item.paid.txHash ? `https://sepolia.basescan.org/tx/${item.paid.txHash}` : undefined}
           target="_blank"
           rel="noreferrer"
-          className="mx-6 -mt-1 flex w-fit items-center gap-3 rounded-b-md border border-t-0 border-rule bg-sheet px-4 py-2 font-type text-xs text-ink-2 shadow-[var(--shadow-slip)] hover:text-ink sm:mx-8"
+          className="press mx-8 flex w-fit items-center gap-3 rounded-b-lg bg-card-pay px-4 py-2 font-type text-xs text-ink shadow-[var(--shadow-card)] hover:brightness-105 sm:mx-10"
         >
-          <span className="font-bold text-pay">PAID</span>
+          <span className="font-sans font-black tracking-[0.1em] text-pay">PAID</span>
           <span>{item.paid.settledUsdc} test USDC</span>
-          {item.paid.txHash ? <span className="underline decoration-rule underline-offset-2">{shortHash(item.paid.txHash)} ↗</span> : null}
+          {item.paid.txHash ? <span className="underline underline-offset-2">{shortHash(item.paid.txHash)} ↗</span> : null}
         </a>
       ) : null}
     </article>

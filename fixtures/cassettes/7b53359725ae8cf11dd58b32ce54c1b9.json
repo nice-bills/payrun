@@ -1,0 +1,44 @@
+{
+  "label": "judge-raw-gpt-5.4-eval-clean-1",
+  "model": "gpt-5.4",
+  "raw": true,
+  "recordedAt": "2026-09-24T15:12:10.403Z",
+  "latencyMs": 5983,
+  "servHeaders": {
+    "x-openserv-request-id": "abdd0359-b763-4a51-9b85-ee7f2d3eaa97"
+  },
+  "json": {
+    "id": "chatcmpl-ERfPCcZABOrZt9fD1cJgx1dp6mnCs",
+    "object": "chat.completion",
+    "created": 1790262726,
+    "model": "gpt-5.4-2026-03-05",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,5,6],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice bills only for days worked in the billing month at a rate that does not exceed the agreement.\",\"evidence_quote\":\"Billing period: 2026-07-01 to 2026-07-31; Days billed: 14, within the 15-day monthly cap.; Day rate billed does not exceed the agreed 350 USDC.\"},{\"clause\":2,\"finding\":\"The billed days do not exceed the monthly cap in the agreement.\",\"evidence_quote\":\"Agreed day rate: 350 USDC; cap 15 days per month; Days billed: 14, within the 15-day monthly cap.\"},{\"clause\":5,\"finding\":\"This invoice is not a duplicate of work already paid.\",\"evidence_quote\":\"No other invoice on file covers this invoice number or period.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the end of the billing period.\",\"evidence_quote\":\"Received 2026-09-05, 36 days after the billing period ended (2026-07-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1063,
+      "completion_tokens": 366,
+      "total_tokens": 1429,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 89,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}
