@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-02-kwame-clean",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T11:06:07.446Z",
+  "latencyMs": 18208,
+  "servHeaders": {
+    "x-openserv-request-id": "7ea9d1b1-300c-44f8-9a45-e4f94b2e14d0"
+  },
+  "json": {
+    "id": "chatcmpl-ERbYskb6tCLGLcUsR198smqkXPzO6",
+    "object": "chat.completion",
+    "created": 1790247950,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,4,5,6,7],\"reasons\":[{\"clause\":1,\"finding\":\"The billed 15 days are at the agreed rate, for work described in the invoice.\",\"evidence_quote\":\"Days billed: 15, within the 20-day monthly cap.\"},{\"clause\":2,\"finding\":\"The billed days are within the monthly cap.\",\"evidence_quote\":\"Days billed: 15, within the 20-day monthly cap.\"},{\"clause\":4,\"finding\":\"The invoice wallet matches the wallet on file; no payment-change request is shown.\",\"evidence_quote\":\"Wallet on the invoice matches the wallet on file.\"},{\"clause\":5,\"finding\":\"FACTS confirm there is no other invoice on file covering this period.\",\"evidence_quote\":\"No other invoice on file covers this invoice number or period.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the billing period end.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"},{\"clause\":7,\"finding\":\"Both listed work items fall within the agreed scope of work.\",\"evidence_quote\":\"Scope of work: Backend API development in TypeScript and Postgres.\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1352,
+      "completion_tokens": 296,
+      "total_tokens": 1648,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1349,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

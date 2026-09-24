@@ -1,10 +1,10 @@
 import { config } from "dotenv"; config({ quiet: true, path: "/home/bills/.config/Claude/scratch-workspaces/eca05e3c-c2bf-40b5-be28-6bea94b7a59e/67692826-253c-4e66-8f7f-b57b8e9f85b2/scratch-2026-09-24-fc36ae/.env" });
 import { readFileSync } from "node:fs";
-import { ServClient } from "../../src/core/serv.js";
-import { extractFields, readInvoiceText } from "../../src/core/extract.js";
-import { JUDGMENT_SCHEMA, judgmentUserMessage } from "../../src/core/decide.js";
-import { judgmentSystemPrompt, makePolicyVersion } from "../../src/core/policy.js";
-import { matchContractor, runChecks } from "../../src/core/checks.js";
+import { ServClient } from "../../src/core/serv";
+import { extractFields, readInvoiceText } from "../../src/core/extract";
+import { JUDGMENT_SCHEMA, judgmentUserMessage } from "../../src/core/decide";
+import { judgmentSystemPrompt, makePolicyVersion } from "../../src/core/policy";
+import { matchContractor, runChecks } from "../../src/core/checks";
 process.chdir("/home/bills/.config/Claude/scratch-workspaces/eca05e3c-c2bf-40b5-be28-6bea94b7a59e/67692826-253c-4e66-8f7f-b57b8e9f85b2/scratch-2026-09-24-fc36ae");
 const serv = new ServClient({ traceDir: "/tmp/claude-1000/-home-bills--config-Claude-scratch-workspaces-eca05e3c-c2bf-40b5-be28-6bea94b7a59e-67692826-253c-4e66-8f7f-b57b8e9f85b2-scratch-2026-09-24-fc36ae/e4ad3b23-3183-46fc-96e1-91f163c0746b/scratchpad/traces" });
 const contractors = JSON.parse(readFileSync("fixtures/contractors.json", "utf8"));

@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-2",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:49:29.148Z",
+  "latencyMs": 7556,
+  "servHeaders": {
+    "x-openserv-request-id": "3178979a-0a51-418b-b203-dc274a5467c0"
+  },
+  "json": {
+    "id": "chatcmpl-ERbIwQzrrfXDx3wmQvNImVBZXrrMQ",
+    "object": "chat.completion",
+    "created": 1790246962,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"The billed period overlaps an approved invoice, but the facts do not establish whether that invoice was paid. Confirm payment status and whether any of this work was already paid before deciding.\",\"evidence_quote\":\"[SAME_PERIOD_ALREADY_BILLED] Period 2026-04-08–2026-04-20 overlaps approved invoice KA-2026-04A (2026-04-01–2026-04-10, 3000 USDC).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1128,
+      "completion_tokens": 508,
+      "total_tokens": 1636,
+      "prompt_tokens_details": {
+        "cached_tokens": 1125,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 357,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

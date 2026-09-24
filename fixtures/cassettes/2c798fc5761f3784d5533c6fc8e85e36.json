@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-arithmetic-1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:54:19.029Z",
+  "latencyMs": 12419,
+  "servHeaders": {
+    "x-openserv-request-id": "a78ee59f-ecfe-4a09-894d-9944c8c797ee"
+  },
+  "json": {
+    "id": "chatcmpl-ERbNXJcvtAfWpPPllBt75v0q4J9KH",
+    "object": "chat.completion",
+    "created": 1790247247,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"verdict\": \"HOLD\",\n  \"cited_clauses\": [1],\n  \"reasons\": [\n    {\n      \"clause\": 1,\n      \"finding\": \"The billed total does not match the day-rate amount for the stated days worked; resolve the discrepancy before payment.\",\n      \"evidence_quote\": \"[ARITHMETIC_MISMATCH] Line \\\"Accessibility fixes\\\": 20 × 300 ≠ 6300.\"\n    }\n  ],\n  \"policy_covers\": true,\n  \"suspected_manipulation\": false\n}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1164,
+      "completion_tokens": 328,
+      "total_tokens": 1492,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1161,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 195,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

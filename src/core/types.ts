@@ -61,6 +61,8 @@ export interface Invoice {
   source: string;
   rawText: string;
   receivedAt: string;
+  /** Text present in the file but invisible to a human reader (e.g. 1pt white text in a PDF). */
+  hiddenText?: string | null;
 }
 
 export type FindingCode =

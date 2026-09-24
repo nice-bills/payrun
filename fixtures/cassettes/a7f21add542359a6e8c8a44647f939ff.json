@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-4",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:50:07.052Z",
+  "latencyMs": 7192,
+  "servHeaders": {
+    "x-openserv-request-id": "2beb8372-318d-44cb-89bb-1f6cb0a6cc78"
+  },
+  "json": {
+    "id": "chatcmpl-ERbJZAk4PexXNZnNPF5KSHpNMJNdl",
+    "object": "chat.completion",
+    "created": 1790247001,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[7],\"reasons\":[{\"clause\":7,\"finding\":\"The invoice includes launch graphics, which appear outside the stated scope; a manager must resolve whether this work was signed off before payment.\",\"evidence_quote\":\"Scope of work: Brand and product UI design for the Tetteh & Co. client app. / App-store listing screenshots and launch graphics\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1126,
+      "completion_tokens": 393,
+      "total_tokens": 1519,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1123,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 278,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

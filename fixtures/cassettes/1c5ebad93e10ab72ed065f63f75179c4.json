@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-03-efua-clean",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T11:06:19.827Z",
+  "latencyMs": 12380,
+  "servHeaders": {
+    "x-openserv-request-id": "7ebcab6b-4ed0-44bf-926e-49ae659af01a"
+  },
+  "json": {
+    "id": "chatcmpl-ERbZAIxTkZtuPnfvPQCQe19JUOmVK",
+    "object": "chat.completion",
+    "created": 1790247968,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6,7],\"reasons\":[{\"clause\":1,\"finding\":\"The billed work uses the agreed day rate and the total is supported by the billed days.\",\"evidence_quote\":\"Day rate billed does not exceed the agreed 250 USDC.\"},{\"clause\":2,\"finding\":\"The billed days are within the monthly cap.\",\"evidence_quote\":\"Days billed: 6, within the 10-day monthly cap.\"},{\"clause\":6,\"finding\":\"The invoice was received within the permitted time after the billing period ended.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"},{\"clause\":7,\"finding\":\"The listed work is within the contractor's scope, so no sign-off is required.\",\"evidence_quote\":\"Scope of work: Blog posts, release notes and help-centre articles.\"},{\"clause\":7,\"finding\":\"The invoice lists release notes and help-centre articles.\",\"evidence_quote\":\"Release notes for v2.3 and v2.4\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1335,
+      "completion_tokens": 385,
+      "total_tokens": 1720,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1332,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 123,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

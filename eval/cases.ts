@@ -1,5 +1,5 @@
-import type { HistoryEntry } from "../src/core/checks.js";
-import type { Contractor } from "../src/core/types.js";
+import type { HistoryEntry } from "../src/core/checks";
+import type { Contractor } from "../src/core/types";
 
 export type TrapKind =
   | "clean"

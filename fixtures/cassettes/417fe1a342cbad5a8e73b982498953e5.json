@@ -1,0 +1,45 @@
+{
+  "label": "extract-serv-06-akosua-wallet-change",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:54:15.718Z",
+  "latencyMs": 6404,
+  "servHeaders": {
+    "x-openserv-request-id": "9242bb30-25c9-4399-9c04-b49fd1d4105a"
+  },
+  "json": {
+    "id": "chatcmpl-ERbNbXnkPF4murIpir3achUQUzCkK",
+    "object": "chat.completion",
+    "created": 1790247251,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AD-0826\",\"contractor_name\":\"Akosua Darko\",\"contractor_email\":\"akosua.darko@gmail.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"React Native — offline sync for the mobile app\",\"quantity\":14,\"unit\":\"day\",\"unit_price_usdc\":380,\"amount_usdc\":5320}],\"total_usdc\":5320,\"pay_to_wallet\":\"0x94e672298C44c94b0606740cBEfa6963fA3409C6\",\"payment_change_request\":\"My exchange froze my old wallet during a compliance review, so please send this month's payment to my new wallet instead:\",\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 816,
+      "completion_tokens": 388,
+      "total_tokens": 1204,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 217,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

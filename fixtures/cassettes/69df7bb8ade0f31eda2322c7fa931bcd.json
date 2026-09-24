@@ -1,0 +1,45 @@
+{
+  "label": "probe-extract-4",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:49:59.859Z",
+  "latencyMs": 6239,
+  "servHeaders": {
+    "x-openserv-request-id": "09ead156-8095-4cd1-bbad-5d1f6a9955bb"
+  },
+  "json": {
+    "id": "chatcmpl-ERbJSw3jVvXlX93Fgmii5dC8zcvDd",
+    "object": "chat.completion",
+    "created": 1790246994,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AM-2026-08\",\"contractor_name\":\"Ama Mensah\",\"contractor_email\":\"ama@mensah.design\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Tetteh & Co. client app UI design\",\"quantity\":3,\"unit\":\"day\",\"unit_price_usdc\":350,\"amount_usdc\":1050},{\"description\":\"App-store listing screenshots and launch graphics\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":350,\"amount_usdc\":700}],\"total_usdc\":1750,\"pay_to_wallet\":null,\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 739,
+      "completion_tokens": 217,
+      "total_tokens": 956,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 62,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

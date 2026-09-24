@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-06-akosua-wallet-change",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:54:33.888Z",
+  "latencyMs": 18168,
+  "servHeaders": {
+    "x-openserv-request-id": "7f27a5ae-5dfe-4c2c-91d3-f71edb7f747b"
+  },
+  "json": {
+    "id": "chatcmpl-ERbNgeprHUWVdXNGrY7CmI1VfzyAv",
+    "object": "chat.completion",
+    "created": 1790247256,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[4],\"reasons\":[{\"clause\":4,\"finding\":\"WALLET_MISMATCH: The requested payment wallet differs from the wallet on file, so payment must wait for confirmation through the contractor’s email on file.\",\"evidence_quote\":\"[WALLET_MISMATCH] Invoice asks for payment to 0x94e672298C44c94b0606740cBEfa6963fA3409C6; wallet on file is 0x4c7C5f70F851D649b353D56981F7898188dA93D4.\"},{\"clause\":4,\"finding\":\"WALLET_CHANGE_REQUEST: The invoice requests a change in payment details. The facts do not confirm that change through the contractor’s email on file.\",\"evidence_quote\":\"[WALLET_CHANGE_REQUEST] Invoice contains a payment-details change request: \\\"My exchange froze my old wallet during a compliance review, so please send this month's payment to my new wallet instead:\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1329,
+      "completion_tokens": 212,
+      "total_tokens": 1541,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1326,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

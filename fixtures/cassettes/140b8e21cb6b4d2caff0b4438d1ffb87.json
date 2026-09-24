@@ -1,0 +1,45 @@
+{
+  "label": "extract-serv-eval-arithmetic-3",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:54:43.789Z",
+  "latencyMs": 4574,
+  "servHeaders": {
+    "x-openserv-request-id": "488f8ec4-cadf-4994-bb77-5ed9b62d7eb6"
+  },
+  "json": {
+    "id": "chatcmpl-ERbO5YaqmCsK5z8661akQAIvQ9Sd7",
+    "object": "chat.completion",
+    "created": 1790247281,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"KWAME-730\",\"contractor_name\":\"Kwame Asante\",\"contractor_email\":\"kwame.asante@proton.me\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Rate limiter service\",\"quantity\":7,\"unit\":\"day\",\"unit_price_usdc\":400.00,\"amount_usdc\":3100.00}],\"total_usdc\":3100.00,\"pay_to_wallet\":\"0x47A05dA7C29145996Be992CBF038B1280B8236c7\",\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 757,
+      "completion_tokens": 195,
+      "total_tokens": 952,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 46,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

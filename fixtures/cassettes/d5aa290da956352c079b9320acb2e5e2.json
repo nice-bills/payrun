@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-09-esi-expense-scope",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T11:00:19.868Z",
+  "latencyMs": 80563,
+  "servHeaders": {
+    "x-openserv-request-id": "c372831e-ce5e-49ed-bbb9-d523f0768a96"
+  },
+  "json": {
+    "id": "chatcmpl-ERbSmErOUDgx6mxzPWYj8oIjTeCT9",
+    "object": "chat.completion",
+    "created": 1790247572,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The dinner expense has no written approval on file; the invoice describes only verbal agreement.\",\"evidence_quote\":\"Note: dinner was agreed verbally with the team.\"},{\"clause\":3,\"finding\":\"The written approval on file is for a Figma seat for campaign design work, while the invoice describes an annual seat bought for the deck; the listed approval does not establish written approval for that expense.\",\"evidence_quote\":\"Written expense approvals on file for this contractor: Figma seat for campaign design work up to 200 USDC (approved 2026-08-10 by Kofi Tetteh (CEO))\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1419,
+      "completion_tokens": 263,
+      "total_tokens": 1682,
+      "prompt_tokens_details": {
+        "cached_tokens": 1416,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

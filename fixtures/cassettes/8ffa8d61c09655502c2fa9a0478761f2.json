@@ -1,0 +1,45 @@
+{
+  "label": "probe-extract-1",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:48:53.276Z",
+  "latencyMs": 4247,
+  "servHeaders": {
+    "x-openserv-request-id": "75ad6741-b5da-4ebd-b6bf-231fa1259faf"
+  },
+  "json": {
+    "id": "chatcmpl-ERbIQO4o5fwyJbz5Zvgu2HltJolGA",
+    "object": "chat.completion",
+    "created": 1790246930,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AD-2026-09\",\"contractor_name\":\"Akosua Darko\",\"contractor_email\":\"akosua.darko@gmail.com\",\"period_start\":\"2026-09-01\",\"period_end\":\"2026-09-02\",\"lines\":[{\"description\":\"React Native app development\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":380,\"amount_usdc\":760}],\"total_usdc\":760,\"pay_to_wallet\":null,\"payment_change_request\":\"I am requesting a change to my payout destination.\",\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 751,
+      "completion_tokens": 235,
+      "total_tokens": 986,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 107,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

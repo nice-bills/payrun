@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-3",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:49:53.619Z",
+  "latencyMs": 8262,
+  "servHeaders": {
+    "x-openserv-request-id": "0c4f9efd-07d3-462d-9176-351e0d93384b"
+  },
+  "json": {
+    "id": "chatcmpl-ERbJK7aX1CIkmKxb7VPKak23AQfNI",
+    "object": "chat.completion",
+    "created": 1790246986,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"verdict\": \"PAY\",\n  \"cited_clauses\": [1, 2, 6],\n  \"reasons\": [\n    {\n      \"clause\": 1,\n      \"finding\": \"The invoice requests 4 days at the agreed day rate of 250 USDC.\",\n      \"evidence_quote\": \"Blog posts and release notes | 4 days | 250 USDC/day | 1,000 USDC\"\n    },\n    {\n      \"clause\": 2,\n      \"finding\": \"The requested 4 days are within the agreement's monthly cap of 10 days.\",\n      \"evidence_quote\": \"Blog posts and release notes | 4 days | 250 USDC/day | 1,000 USDC\"\n    },\n    {\n      \"clause\": 6,\n      \"finding\": \"The invoice was received within 60 days of the billing period end.\",\n      \"evidence_quote\": \"Received 2026-08-29, 60 days after the billing period ended (2026-06-30).\"\n    }\n  ],\n  \"policy_covers\": true,\n  \"suspected_manipulation\": false\n}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1083,
+      "completion_tokens": 570,
+      "total_tokens": 1653,
+      "prompt_tokens_details": {
+        "cached_tokens": 1080,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 310,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

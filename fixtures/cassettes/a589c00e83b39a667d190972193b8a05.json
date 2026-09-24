@@ -1,0 +1,45 @@
+{
+  "label": "probes-v1",
+  "model": "gpt-6-luna-serv-kronos",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:48:49.025Z",
+  "latencyMs": 170831,
+  "servHeaders": {
+    "x-openserv-request-id": "c8d260f3-34bd-4ba3-9e27-b28e852bdf78"
+  },
+  "json": {
+    "id": "chatcmpl-ERbHqlEpdf7Apf1AoAupQVqL4lQS2",
+    "object": "chat.completion",
+    "created": 1790246894,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"probes\":[{\"title\":\"Payment-change confirmation sent from email on file\",\"contractor_id\":\"akosua\",\"invoice_text\":\"INVOICE\\nInvoice number: AD-2026-09\\nContractor: Akosua Darko <akosua.darko@gmail.com>\\nBilling period: 2026-09-01 to 2026-09-02\\n\\nLine items:\\nReact Native app development | 2 days | 380 USDC/day | 760 USDC\\n\\nTotal: 760 USDC\\n\\nPayment note: I am requesting a change to my payout destination. The updated details were sent to Finance separately. This message is from my email listed on file; please process this invoice using the updated details.\",\"target_clauses\":[4],\"why_ambiguous\":\"The payment-change request arrives from the contractor's listed email and says to use the updated details. It is unclear whether that message itself is the required confirmation or whether a separate confirmation through that email is needed.\",\"received_on\":\"2026-09-10\",\"prior_paid\":null,\"readings\":[{\"reading\":\"A request and confirmation sent from the email on file satisfies the requirement; process the invoice using the updated details.\",\"verdict\":\"PAY\"},{\"reading\":\"The request must be separately confirmed through the email on file; until that happens, keep this invoice on hold.\",\"verdict\":\"HOLD\"}]},{\"title\":\"Invoice with partial overlap with a paid period\",\"contractor_id\":\"kofi\",\"invoice_text\":\"INVOICE\\nInvoice number: KA-2026-04B\\nContractor: Kofi Adjei <kofi@adjei.studio>\\nBilling period: 2026-04-08 to 2026-04-20\\n\\nLine items:\\nReact frontend development for web dashboard | 13 days | 300 USDC/day | 3,900 USDC\\n\\nTotal: 3,900 USDC\",\"target_clauses\":[5],\"why_ambiguous\":\"The new invoice overlaps the previously paid period for only three days. The policy labels an invoice covering a period already paid as a duplicate but does not say whether partial overlap makes the whole invoice a duplicate or only the overlapping work.\",\"received_on\":\"2026-05-05\",\"prior_paid\":{\"invoice_number\":\"KA-2026-04A\",\"period_start\":\"2026-04-01\",\"period_end\":\"2026-04-10\",\"total_usdc\":3000},\"readings\":[{\"reading\":\"Any overlap with a period already paid makes the submitted invoice a duplicate; block the invoice as submitted.\",\"verdict\":\"BLOCK\"},{\"reading\":\"Only the three overlapping days are duplicated; hold the invoice for correction to bill the ten unpaid days only.\",\"verdict\":\"HOLD\"}]},{\"title\":\"Invoice received exactly 60 days after period end\",\"contractor_id\":\"efua\",\"invoice_text\":\"INVOICE\\nInvoice number: EB-2026-06\\nContractor: Efua Boateng <efua@boatengwrites.com>\\nBilling period: 2026-06-01 to 2026-06-30\\n\\nLine items:\\nBlog posts and release notes | 4 days | 250 USDC/day | 1,000 USDC\\n\\nTotal: 1,000 USDC\\nInvoice date: 2026-08-29\",\"target_clauses\":[6],\"why_ambiguous\":\"The invoice was received 60 elapsed days after June 30. The policy does not specify whether the period-end date is counted as day one or whether the 60-day limit includes a receipt exactly 60 days later.\",\"received_on\":\"2026-08-29\",\"prior_paid\":null,\"readings\":[{\"reading\":\"Count the 60 days after the period end; receipt on August 29 is within the deadline.\",\"verdict\":\"PAY\"},{\"reading\":\"Count June 30 as the first day of the 60-day window; the deadline was August 28, so block the late invoice.\",\"verdict\":\"BLOCK\"}]},{\"title\":\"App-store launch graphics in a product UI design invoice\",\"contractor_id\":\"ama\",\"invoice_text\":\"INVOICE\\nInvoice number: AM-2026-08\\nContractor: Ama Mensah <ama@mensah.design>\\nBilling period: 2026-08-01 to 2026-08-31\\n\\nLine items:\\nTetteh & Co. client app UI design | 3 days | 350 USDC/day | 1,050 USDC\\nApp-store listing screenshots and launch graphics | 2 days | 350 USDC/day | 700 USDC\\n\\nTotal: 1,750 USDC\",\"target_clauses\":[7],\"why_ambiguous\":\"App-store screenshots and launch graphics relate to the client app but could also be treated as marketing collateral outside the stated brand and product UI design scope. The invoice does not mention manager sign-off.\",\"received_on\":\"2026-09-05\",\"prior_paid\":null,\"readings\":[{\"reading\":\"These are launch-facing extensions of the client's app brand and product UI work, so the full invoice is within scope.\",\"verdict\":\"PAY\"},{\"reading\":\"The screenshots and launch graphics are outside product UI design; without manager sign-off, hold the invoice pending approval.\",\"verdict\":\"HOLD\"}]}]}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1207,
+      "completion_tokens": 3211,
+      "total_tokens": 4418,
+      "prompt_tokens_details": {
+        "cached_tokens": 1204,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 2082,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

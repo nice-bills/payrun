@@ -1,7 +1,7 @@
-import { decide, MODES, type DecideMode } from "./decide.js";
-import type { HistoryEntry } from "./checks.js";
-import type { ServClient } from "./serv.js";
-import type { Contractor, Decision, PolicyVersion, Verdict } from "./types.js";
+import { decide, MODES, type DecideMode } from "./decide";
+import type { HistoryEntry } from "./checks";
+import type { ServClient } from "./serv";
+import type { Contractor, Decision, PolicyVersion, Verdict } from "./types";
 
 export interface ReplayFlip {
   invoiceId: string;
@@ -25,7 +25,7 @@ export interface ReplayReport {
 export async function replay(
   serv: ServClient,
   past: Decision[],
-  invoices: Map<string, import("./types.js").Invoice>,
+  invoices: Map<string, import("./types").Invoice>,
   next: PolicyVersion,
   contractors: Contractor[],
   history: HistoryEntry[],

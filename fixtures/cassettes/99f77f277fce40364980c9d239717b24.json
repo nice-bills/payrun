@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-02-kwame-clean",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:51:50.011Z",
+  "latencyMs": 11993,
+  "servHeaders": {
+    "x-openserv-request-id": "79be5249-834b-4d20-95da-a28b70f05c2e"
+  },
+  "json": {
+    "id": "chatcmpl-ERbL8YgtlBv83GeVtnHUmqPZYGl79",
+    "object": "chat.completion",
+    "created": 1790247098,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice bills the agreed day rate for the listed workdays.\",\"evidence_quote\":\"- Payments API: webhooks + retries, 9 days @ 400 = 3600\\n- Postgres migration for invoices table, 6 days @ 400 = 2400\"},{\"clause\":2,\"finding\":\"The invoice lists 15 total workdays, within the 20-day monthly cap.\",\"evidence_quote\":\"- Payments API: webhooks + retries, 9 days @ 400 = 3600\\n- Postgres migration for invoices table, 6 days @ 400 = 2400\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the billing period ending.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1180,
+      "completion_tokens": 528,
+      "total_tokens": 1708,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1177,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 295,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

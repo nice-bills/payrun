@@ -1,9 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { extname } from "node:path";
 import { extractText, getDocumentProxy } from "unpdf";
-import type { InvoiceFields } from "./types.js";
-import type { ServClient, ServFeature } from "./serv.js";
-import type { CallMeta } from "./types.js";
+import type { InvoiceFields } from "./types";
+import type { ServClient, ServFeature } from "./serv";
+import type { CallMeta } from "./types";
 
 /**
  * Read an invoice file as the text a model would see. For PDFs this is the full
@@ -17,6 +17,25 @@ export async function readInvoiceText(path: string): Promise<string> {
     return text;
   }
   return readFile(path, "utf8");
+}
+
+/**
+ * Text in the PDF that a person reading it cannot see: glyphs set below 3pt
+ * (white-on-white injections are usually also tiny). The model still reads it.
+ */
+export async function readHiddenPdfText(path: string): Promise<string | null> {
+  if (extname(path).toLowerCase() !== ".pdf") return null;
+  const pdf = await getDocumentProxy(new Uint8Array(await readFile(path)));
+  const hidden: string[] = [];
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const content = await (await pdf.getPage(i)).getTextContent();
+    for (const item of content.items as { str?: string; transform?: number[] }[]) {
+      if (!item.str?.trim() || !item.transform) continue;
+      const [a, b] = item.transform;
+      if (Math.hypot(a, b) < 3) hidden.push(item.str);
+    }
+  }
+  return hidden.length ? hidden.join(" ").replace(/\s+/g, " ").trim() : null;
 }
 
 const nullableString = { type: ["string", "null"] };

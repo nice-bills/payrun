@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-11-unknown-contractor",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T14:53:00.105Z",
+  "latencyMs": 14754,
+  "servHeaders": {
+    "x-openserv-request-id": "782e763d-3f95-4189-b895-b7b133b503d1"
+  },
+  "json": {
+    "id": "chatcmpl-ERf6UxAqi4uI4HjhwMQIXCYUB3emz",
+    "object": "chat.completion",
+    "created": 1790261566,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[8],\"reasons\":[{\"clause\":8,\"finding\":\"UNKNOWN_CONTRACTOR: MJ Consulting is not matched to a contractor on file, so the invoice is held.\",\"evidence_quote\":\"[UNKNOWN_CONTRACTOR] No contractor on file matches \\\"MJ Consulting\\\" <billing@mj-consulting.io>.\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1179,
+      "completion_tokens": 205,
+      "total_tokens": 1384,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1176,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 116,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

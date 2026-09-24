@@ -13,12 +13,12 @@
 import { config } from "dotenv";
 config({ quiet: true });
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { decide, MODES, type DecideMode } from "../src/core/decide.js";
-import { DEMO_RECEIVED_AT } from "../src/core/gaps.js";
-import { makePolicyVersion } from "../src/core/policy.js";
-import { ServClient } from "../src/core/serv.js";
-import type { Contractor, Decision } from "../src/core/types.js";
-import { buildCases, type EvalCase, type TrapKind } from "./cases.js";
+import { decide, MODES, type DecideMode } from "../src/core/decide";
+import { DEMO_RECEIVED_AT } from "../src/core/gaps";
+import { makePolicyVersion } from "../src/core/policy";
+import { ServClient } from "../src/core/serv";
+import type { Contractor, Decision } from "../src/core/types";
+import { buildCases, type EvalCase, type TrapKind } from "./cases";
 
 const args = process.argv.slice(2);
 const opt = (n: string) => (args.includes(`--${n}`) ? args[args.indexOf(`--${n}`) + 1] : undefined);

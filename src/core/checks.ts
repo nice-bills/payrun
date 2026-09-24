@@ -1,4 +1,4 @@
-import type { Contractor, Finding, InvoiceFields, Verdict } from "./types.js";
+import type { Contractor, Finding, InvoiceFields, Verdict } from "./types";
 
 /** A previously decided invoice, used for duplicate and same-period checks. */
 export interface HistoryEntry {
@@ -77,21 +77,42 @@ export function runChecks(fields: InvoiceFields, contractor: Contractor | null, 
     out.push({ code: "RATE_MISMATCH", hard: true, detail: `Day rate billed ${overRate.unitPriceUsdc}; agreed rate is ${contractor.dayRateUsdc}.` });
   }
 
-  const mine = history.filter((h) => h.contractorId === contractor.id && h.verdict === "PAY");
+  // Anything already approved or waiting on a human counts: a reissue of a held invoice is still the same work.
+  const mine = history.filter((h) => h.contractorId === contractor.id && h.verdict !== "BLOCK");
   const no = normInvoiceNo(fields.invoiceNumber);
   const dup = no ? mine.find((h) => normInvoiceNo(h.invoiceNumber) === no) : undefined;
   if (dup) {
-    out.push({ code: "EXACT_DUPLICATE", hard: true, detail: `Invoice number ${fields.invoiceNumber} was already approved (${dup.invoiceId}).` });
+    out.push({ code: "EXACT_DUPLICATE", hard: true, detail: `Invoice number ${fields.invoiceNumber} is already on file (${dup.invoiceId}, ${dup.verdict}).` });
   } else {
     const same = mine.find((h) => overlaps(fields.periodStart, fields.periodEnd, h.periodStart, h.periodEnd));
     if (same) {
       out.push({
         code: "SAME_PERIOD_ALREADY_BILLED",
         hard: false,
-        detail: `Period ${fields.periodStart}–${fields.periodEnd} overlaps approved invoice ${same.invoiceNumber ?? same.invoiceId} (${same.periodStart}–${same.periodEnd}, ${same.totalUsdc} USDC).`,
+        detail: `Period ${fields.periodStart}–${fields.periodEnd} overlaps invoice ${same.invoiceNumber ?? same.invoiceId} already on file (${same.verdict}; ${same.periodStart}–${same.periodEnd}, ${same.totalUsdc} USDC).`,
       });
     }
   }
+  return out;
+}
+
+/**
+ * What the code checks confirmed, stated positively. Listing only problems left
+ * small models unsure whether a clean invoice had been checked at all (a clean
+ * invoice was held for "FACTS do not state whether the monthly cap is met").
+ */
+export function confirmedFacts(fields: InvoiceFields, contractor: Contractor | null, findings: Finding[]): string[] {
+  if (!contractor) return [];
+  const has = (code: Finding["code"]) => findings.some((f) => f.code === code);
+  const out: string[] = [];
+  const days = fields.lines.filter((l) => l.unit === "day").reduce((s, l) => s + l.quantity, 0);
+  if (!has("OVER_DAY_CAP")) out.push(`Days billed: ${days}, within the ${contractor.monthlyDayCap}-day monthly cap.`);
+  if (!has("RATE_MISMATCH") && days > 0) out.push(`Day rate billed does not exceed the agreed ${contractor.dayRateUsdc} USDC.`);
+  if (!has("ARITHMETIC_MISMATCH") && !has("MISSING_TOTAL")) out.push("Line amounts and total add up.");
+  if (!has("WALLET_MISMATCH")) out.push(fields.payToWallet ? "Wallet on the invoice matches the wallet on file." : "Invoice names no wallet; payment goes to the wallet on file.");
+  if (!has("EXACT_DUPLICATE") && !has("SAME_PERIOD_ALREADY_BILLED")) out.push("No other invoice on file covers this invoice number or period.");
+  const expenses = fields.lines.filter((l) => l.unit === "item" || l.unit === "expense");
+  out.push(expenses.length ? `Non-day line items (expenses or fees): ${expenses.map((l) => `${l.description} ${l.amountUsdc} USDC`).join("; ")}.` : "No expense or fee lines.");
   return out;
 }
 

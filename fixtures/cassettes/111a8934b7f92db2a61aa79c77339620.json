@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-03-efua-clean",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:57:47.797Z",
+  "latencyMs": 13368,
+  "servHeaders": {
+    "x-openserv-request-id": "446e9fcb-31d2-4d43-86fe-b869c2cad83d"
+  },
+  "json": {
+    "id": "chatcmpl-ERbQtuHSHLtw4oQ30K17l1LwLNcZr",
+    "object": "chat.completion",
+    "created": 1790247455,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6,7],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice uses the agreed day rate for the billed days; the invoice total is 1500 USDC.\",\"evidence_quote\":\"Day rate billed does not exceed the agreed 250 USDC.\"},{\"clause\":2,\"finding\":\"The billed days are within the monthly cap.\",\"evidence_quote\":\"Days billed: 6, within the 10-day monthly cap.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the billing period ending.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"},{\"clause\":7,\"finding\":\"The listed work matches the contractor's scope of work.\",\"evidence_quote\":\"Release notes for v2.3 and v2.4\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1223,
+      "completion_tokens": 397,
+      "total_tokens": 1620,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1220,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 175,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

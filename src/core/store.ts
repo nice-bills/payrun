@@ -1,10 +1,10 @@
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { DatabaseSync } from "node:sqlite";
-import { makePolicyVersion } from "./policy.js";
-import type { HistoryEntry } from "./checks.js";
-import type { PaymentResult } from "./pay.js";
-import type { Contractor, Decision, Invoice, PolicyVersion } from "./types.js";
+import { makePolicyVersion } from "./policy";
+import type { HistoryEntry } from "./checks";
+import type { PaymentResult } from "./pay";
+import type { Contractor, Decision, Invoice, PolicyVersion } from "./types";
 
 /** Small SQLite store. Rows keep their full JSON so the UI can render anything the core produced. */
 export class Store {
@@ -13,6 +13,8 @@ export class Store {
   constructor(path = "data/payrun.db") {
     if (path !== ":memory:") mkdirSync(dirname(path), { recursive: true });
     this.db = new DatabaseSync(path);
+    // The desk reads while the CLI writes; WAL lets both proceed.
+    if (path !== ":memory:") this.db.exec("PRAGMA journal_mode = WAL; PRAGMA busy_timeout = 5000;");
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS policies (version INTEGER PRIMARY KEY, hash TEXT NOT NULL, json TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS contractors (id TEXT PRIMARY KEY, json TEXT NOT NULL);
@@ -83,10 +85,14 @@ export class Store {
     return rows.map((r) => JSON.parse(r.json));
   }
 
-  /** History for duplicate checks: invoices already approved or paid, excluding `exceptInvoiceId`. */
-  history(exceptInvoiceId?: string): HistoryEntry[] {
+  /**
+   * History for duplicate checks. With `beforeInvoiceId`, only invoices that
+   * arrived earlier count (ingest order = id order), so a later reissue can
+   * never make the original look like the duplicate.
+   */
+  history(beforeInvoiceId?: string): HistoryEntry[] {
     return this.latestDecisions("serv")
-      .filter((d) => d.invoiceId !== exceptInvoiceId && d.contractorId && d.fields)
+      .filter((d) => (beforeInvoiceId ? d.invoiceId < beforeInvoiceId : true) && d.contractorId && d.fields)
       .map((d) => ({
         invoiceId: d.invoiceId,
         contractorId: d.contractorId!,

@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-06-akosua-wallet-change",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T11:06:55.922Z",
+  "latencyMs": 21217,
+  "servHeaders": {
+    "x-openserv-request-id": "07b68161-f33e-4c3f-a233-9993179c9ea4"
+  },
+  "json": {
+    "id": "chatcmpl-ERbZbV8fE7Sy3nqzQ53uHz2NI9nSo",
+    "object": "chat.completion",
+    "created": 1790247995,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[4],\"reasons\":[{\"clause\":4,\"finding\":\"WALLET_MISMATCH: the requested destination differs from the wallet on file. WALLET_CHANGE_REQUEST: the changed payment details have not been confirmed through the contractor's email on file, so hold the invoice pending confirmation.\",\"evidence_quote\":\"- [WALLET_MISMATCH] Invoice asks for payment to 0x94e672298C44c94b0606740cBEfa6963fA3409C6; wallet on file is 0x4c7C5f70F851D649b353D56981F7898188dA93D4.\\n- [WALLET_CHANGE_REQUEST] Invoice contains a payment-details change request: \\\"My exchange froze my old wallet during a compliance review, so please send this month's payment to my new wallet instead:\\\"\"},{\"clause\":4,\"finding\":\"The invoice also urges immediate payment, supporting the suspected-manipulation flag.\",\"evidence_quote\":\"I need this today or I can't pay rent — please don't delay it.\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1498,
+      "completion_tokens": 325,
+      "total_tokens": 1823,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1495,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 117,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

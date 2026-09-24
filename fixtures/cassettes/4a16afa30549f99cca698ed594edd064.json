@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-05-yaw-resend",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:58:26.632Z",
+  "latencyMs": 31660,
+  "servHeaders": {
+    "x-openserv-request-id": "e5f7cda9-7726-4d6c-96f7-39a507a41aeb"
+  },
+  "json": {
+    "id": "chatcmpl-ERbRF9kJ1HZd2tCjD7lDqTvf0jRrB",
+    "object": "chat.completion",
+    "created": 1790247477,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,5,6],\"reasons\":[{\"clause\":1,\"finding\":\"The billed rate is within the agreed rate.\",\"evidence_quote\":\"Day rate billed does not exceed the agreed 450 USDC.\"},{\"clause\":2,\"finding\":\"The billed days are within the monthly cap.\",\"evidence_quote\":\"Days billed: 10, within the 12-day monthly cap.\"},{\"clause\":5,\"finding\":\"No duplicate invoice for this period is on file.\",\"evidence_quote\":\"No other invoice on file covers this invoice number or period.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days after the billing period ended.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1295,
+      "completion_tokens": 402,
+      "total_tokens": 1697,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1292,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 185,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

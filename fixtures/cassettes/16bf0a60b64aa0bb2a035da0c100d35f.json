@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-08-nana-arithmetic",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:58:59.297Z",
+  "latencyMs": 16087,
+  "servHeaders": {
+    "x-openserv-request-id": "21e2d208-12c0-47c1-b1c4-482fce005dfd"
+  },
+  "json": {
+    "id": "chatcmpl-ERbS06X8Q7fKT4HfnSn2wFn83KLCu",
+    "object": "chat.completion",
+    "created": 1790247524,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[1],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice total exceeds the amount permitted by the agreed day rate for the billed days.\",\"evidence_quote\":\"[ARITHMETIC_MISMATCH] Line \\\"Regression testing, releases 2.3 and 2.4\\\": 10 × 300 ≠ 3300.\"},{\"clause\":1,\"finding\":\"The invoice requests 3300 USDC for 10 days at 300 USDC per day.\",\"evidence_quote\":\"Regression testing, releases 2.3 and 2.4    10 days × 300 = 3,300\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1181,
+      "completion_tokens": 344,
+      "total_tokens": 1525,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1178,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 174,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

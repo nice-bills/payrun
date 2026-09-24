@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-4",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:50:21.167Z",
+  "latencyMs": 5593,
+  "servHeaders": {
+    "x-openserv-request-id": "e7fd1626-c806-4a13-9e1c-c3f92c2491e6"
+  },
+  "json": {
+    "id": "chatcmpl-ERbJovCuVdq9h5QGJv4nGHFrT3Dqq",
+    "object": "chat.completion",
+    "created": 1790247016,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[7],\"reasons\":[{\"clause\":7,\"finding\":\"The app-store listing screenshots and launch graphics may be outside the agreed scope; manager sign-off is needed before payment for that work.\",\"evidence_quote\":\"Invoice: “App-store listing screenshots and launch graphics” | Agreement: “Brand and product UI design for the Tetteh & Co. client app.”\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1126,
+      "completion_tokens": 283,
+      "total_tokens": 1409,
+      "prompt_tokens_details": {
+        "cached_tokens": 1123,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 165,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

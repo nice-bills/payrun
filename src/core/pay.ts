@@ -1,6 +1,6 @@
 import { AgentKit, CdpEvmWalletProvider, erc20ActionProvider } from "@coinbase/agentkit";
-import { compileWalletPolicy, toSettled, USDC_BASE_SEPOLIA } from "./walletPolicy.js";
-import type { Contractor, Decision, PolicyVersion } from "./types.js";
+import { compileWalletPolicy, toSettled, USDC_BASE_SEPOLIA } from "./walletPolicy";
+import type { Contractor, Decision, PolicyVersion } from "./types";
 
 // AgentKit 0.10.4 fires usage analytics without awaiting them; when the
 // analytics endpoint answers 400 the rejection is unhandled and kills Node.

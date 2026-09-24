@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-04-yaw-original",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T11:06:27.953Z",
+  "latencyMs": 8125,
+  "servHeaders": {
+    "x-openserv-request-id": "717e038d-3511-4e27-9cbc-802888c5d7bc"
+  },
+  "json": {
+    "id": "chatcmpl-ERbZMWGnyxZIzqvrBJW3lFWXU6mJm",
+    "object": "chat.completion",
+    "created": 1790247980,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"verdict\": \"PAY\",\n  \"cited_clauses\": [1, 2, 4, 6, 7],\n  \"reasons\": [\n    {\n      \"clause\": 1,\n      \"finding\": \"The billed rate matches the agreed day rate, and the invoice bills workdays.\",\n      \"evidence_quote\": \"Day rate billed does not exceed the agreed 450 USDC.\"\n    },\n    {\n      \"clause\": 2,\n      \"finding\": \"The billed days are within the monthly cap.\",\n      \"evidence_quote\": \"Days billed: 10, within the 12-day monthly cap.\"\n    },\n    {\n      \"clause\": 4,\n      \"finding\": \"Payment is directed to the wallet on file.\",\n      \"evidence_quote\": \"Wallet on the invoice matches the wallet on file.\"\n    },\n    {\n      \"clause\": 6,\n      \"finding\": \"The invoice was received within 60 days after the billing period ended.\",\n      \"evidence_quote\": \"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"\n    },\n    {\n      \"clause\": 7,\n      \"finding\": \"The billed work falls within the contractor's DevOps scope.\",\n      \"evidence_quote\": \"Scope of work: DevOps: CI pipelines, cloud infrastructure and on-call support.\"\n    }\n  ],\n  \"policy_covers\": true,\n  \"suspected_manipulation\": false\n}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1370,
+      "completion_tokens": 488,
+      "total_tokens": 1858,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1367,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 154,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

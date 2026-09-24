@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-arithmetic-2",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:54:39.214Z",
+  "latencyMs": 14214,
+  "servHeaders": {
+    "x-openserv-request-id": "e3be0ce9-586d-4b89-b3c5-7ce44f103646"
+  },
+  "json": {
+    "id": "chatcmpl-ERbNqL8WZfSEFu6lHlN4fgKg6NAmm",
+    "object": "chat.completion",
+    "created": 1790247266,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[1],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice’s line amount does not match the stated days and agreed day rate, so the invoice total needs clarification before payment.\",\"evidence_quote\":\"[ARITHMETIC_MISMATCH] Line \\\"Landing page A/B tests\\\": 3 × 320 ≠ 1260.\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1180,
+      "completion_tokens": 282,
+      "total_tokens": 1462,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1177,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 168,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

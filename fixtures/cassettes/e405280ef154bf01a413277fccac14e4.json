@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-01-ama-clean",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:51:32.859Z",
+  "latencyMs": 21990,
+  "servHeaders": {
+    "x-openserv-request-id": "54b76e3c-fc54-416a-bb75-bd4b14783bb5"
+  },
+  "json": {
+    "id": "chatcmpl-ERbKi2q2F5o7ugFrY1my2PhDLZcDT",
+    "object": "chat.completion",
+    "created": 1790247072,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6,7],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice bills 12 days at the agreed rate, for the stated total.\",\"evidence_quote\":\"12 days × 350.00 = 4,200.00\"},{\"clause\":2,\"finding\":\"The billed 12 days are within the agreement's monthly cap of 15 days.\",\"evidence_quote\":\"quantity\\\":12\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the billing period ending.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"},{\"clause\":7,\"finding\":\"The invoice describes UI design for the client app, within the stated scope.\",\"evidence_quote\":\"UI design — client app onboarding flow\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1157,
+      "completion_tokens": 512,
+      "total_tokens": 1669,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1154,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 196,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

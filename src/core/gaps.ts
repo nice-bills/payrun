@@ -1,8 +1,8 @@
-import { decide, MODES, SMALL_MODEL, type DecideMode } from "./decide.js";
-import { extractFields } from "./extract.js";
-import type { ServClient } from "./serv.js";
-import type { HistoryEntry } from "./checks.js";
-import type { CallMeta, Contractor, Decision, Invoice, PolicyVersion, Verdict } from "./types.js";
+import { decide, MODES, SMALL_MODEL, type DecideMode } from "./decide";
+import { extractFields } from "./extract";
+import type { ServClient } from "./serv";
+import type { HistoryEntry } from "./checks";
+import type { CallMeta, Contractor, Decision, Invoice, PolicyVersion, Verdict } from "./types";
 
 /**
  * Gap finding rests on one idea from OpenServ's own write-up of bounded reasoning:

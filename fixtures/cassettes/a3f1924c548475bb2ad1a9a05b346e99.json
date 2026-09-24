@@ -1,0 +1,45 @@
+{
+  "label": "suggest-v1",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:50:30.074Z",
+  "latencyMs": 8905,
+  "servHeaders": {
+    "x-openserv-request-id": "d11148cf-e464-4189-b8ed-0989681036c6"
+  },
+  "json": {
+    "id": "chatcmpl-ERbJzrfEf90xuxIbtAF5pk2xUG8DO",
+    "object": "chat.completion",
+    "created": 1790247027,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"clause\":\"A payment-detail change request is not itself confirmation; require a separate confirmation through the contractor's email on file before paying, and hold the invoice until then.\",\"decides_as\":\"HOLD\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 857,
+      "completion_tokens": 141,
+      "total_tokens": 998,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 86,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

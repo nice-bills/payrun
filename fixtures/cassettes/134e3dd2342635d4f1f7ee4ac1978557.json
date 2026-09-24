@@ -1,0 +1,45 @@
+{
+  "label": "extract-serv-eval-clean-12",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:48:14.853Z",
+  "latencyMs": 5520,
+  "servHeaders": {
+    "x-openserv-request-id": "15eb7133-57e0-406c-aac7-28b9ee341cf6"
+  },
+  "json": {
+    "id": "chatcmpl-ERbHoBYyC5JBUmJjeUub3MNsHHTX6",
+    "object": "chat.completion",
+    "created": 1790246892,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"NANA-211\",\"contractor_name\":\"Nana Yeboah\",\"contractor_email\":\"nana.yeboah@outlook.com\",\"period_start\":\"2026-07-01\",\"period_end\":\"2026-07-31\",\"lines\":[{\"description\":\"Test automation suite\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":300.00,\"amount_usdc\":600.00},{\"description\":\"Regression testing\",\"quantity\":2,\"unit\":\"day\",\"unit_price_usdc\":300.00,\"amount_usdc\":600.00}],\"total_usdc\":1200.00,\"pay_to_wallet\":\"0x2f449093C72dF2CA006Fad6A64C876a39F78323D\",\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 777,
+      "completion_tokens": 256,
+      "total_tokens": 1033,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 75,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

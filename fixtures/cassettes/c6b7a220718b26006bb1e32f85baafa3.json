@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-04-yaw-original",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T11:03:34.129Z",
+  "latencyMs": 16026,
+  "servHeaders": {
+    "x-openserv-request-id": "a288630d-4e99-4b7e-a51a-9e3110ce3b36"
+  },
+  "json": {
+    "id": "chatcmpl-ERbWRxhmvPKSzHxolgGQD3ENlazXd",
+    "object": "chat.completion",
+    "created": 1790247799,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6,7],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice bills the agreed day rate for work in the billing month.\",\"evidence_quote\":\"Day rate billed does not exceed the agreed 450 USDC.\"},{\"clause\":2,\"finding\":\"The billed days are within the monthly cap.\",\"evidence_quote\":\"Days billed: 10, within the 12-day monthly cap.\"},{\"clause\":6,\"finding\":\"The invoice was received within the permitted period.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"},{\"clause\":7,\"finding\":\"The listed work matches the contractor's DevOps scope.\",\"evidence_quote\":\"CI pipeline migration to GitHub Actions\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1258,
+      "completion_tokens": 323,
+      "total_tokens": 1581,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1255,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 119,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

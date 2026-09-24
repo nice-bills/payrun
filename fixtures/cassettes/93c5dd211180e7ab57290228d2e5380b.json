@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-01-ama-clean",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T11:05:49.236Z",
+  "latencyMs": 122154,
+  "servHeaders": {
+    "x-openserv-request-id": "d565e341-0ed5-44a3-830e-08338341d842"
+  },
+  "json": {
+    "id": "chatcmpl-ERbYh1kxpii1fEmyNX3KqDqWFabMX",
+    "object": "chat.completion",
+    "created": 1790247939,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,4,5,6],\"reasons\":[{\"clause\":1,\"finding\":\"The billed rate and days match the agreement.\",\"evidence_quote\":\"Day rate billed does not exceed the agreed 350 USDC.\"},{\"clause\":2,\"finding\":\"The billed days are within the monthly cap.\",\"evidence_quote\":\"Days billed: 12, within the 15-day monthly cap.\"},{\"clause\":4,\"finding\":\"The invoice uses the wallet on file.\",\"evidence_quote\":\"Wallet on the invoice matches the wallet on file.\"},{\"clause\":5,\"finding\":\"No duplicate invoice for this period is on file.\",\"evidence_quote\":\"No other invoice on file covers this invoice number or period.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days after the billing period ended.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1329,
+      "completion_tokens": 460,
+      "total_tokens": 1789,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1326,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 220,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-near_duplicate-1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:51:57.423Z",
+  "latencyMs": 7884,
+  "servHeaders": {
+    "x-openserv-request-id": "74a1313c-b556-4828-a8ec-cbf34a48c1dc"
+  },
+  "json": {
+    "id": "chatcmpl-ERbLKSQogG599aMdI8HV3VQFyiiez",
+    "object": "chat.completion",
+    "created": 1790247110,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[5],\"reasons\":[{\"clause\":5,\"finding\":\"This invoice covers work in a period already billed, so it is a duplicate.\",\"evidence_quote\":\"[SAME_PERIOD_ALREADY_BILLED] Period 2026-08-01–2026-08-31 overlaps approved invoice AKOSUA-410 (2026-08-01–2026-08-31, 3420 USDC).\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1243,
+      "completion_tokens": 260,
+      "total_tokens": 1503,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1240,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 131,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

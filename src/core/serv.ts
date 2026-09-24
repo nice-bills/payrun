@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import type { CallMeta } from "./types.js";
+import type { CallMeta } from "./types";
 
 /** USD per million tokens, from docs.openserv.ai/serv-reasoning/models (SERV prices include reasoning). */
 const PRICES: Record<string, { in: number; out: number }> = {

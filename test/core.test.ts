@@ -1,14 +1,14 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { applyInvariants, runChecks } from "../src/core/checks.js";
-import { decide, MODES } from "../src/core/decide.js";
-import { classifyGap } from "../src/core/gaps.js";
-import { judgmentSystemPrompt, makePolicyVersion, parseClauses } from "../src/core/policy.js";
-import { receiptsCsv } from "../src/core/receipts.js";
-import { modelId, ServClient } from "../src/core/serv.js";
-import { Store } from "../src/core/store.js";
-import { compileWalletPolicy, toSettled, USDC_BASE_SEPOLIA } from "../src/core/walletPolicy.js";
-import type { Contractor, Decision, InvoiceFields } from "../src/core/types.js";
+import { applyInvariants, runChecks } from "../src/core/checks";
+import { decide, MODES } from "../src/core/decide";
+import { classifyGap } from "../src/core/gaps";
+import { judgmentSystemPrompt, makePolicyVersion, parseClauses } from "../src/core/policy";
+import { receiptsCsv } from "../src/core/receipts";
+import { modelId, ServClient } from "../src/core/serv";
+import { Store } from "../src/core/store";
+import { compileWalletPolicy, toSettled, USDC_BASE_SEPOLIA } from "../src/core/walletPolicy";
+import type { Contractor, Decision, InvoiceFields } from "../src/core/types";
 
 const contractors: Contractor[] = JSON.parse(readFileSync("fixtures/contractors.json", "utf8"));
 const policy = makePolicyVersion(readFileSync("fixtures/policy.v1.md", "utf8"), 1);
@@ -90,6 +90,19 @@ describe("checks and invariants", () => {
     expect(runChecks(fields(), ama, hist).map((x) => x.code)).toEqual(["EXACT_DUPLICATE"]);
     const soft = runChecks(fields({ invoiceNumber: "INV-0413" }), ama, hist);
     expect(soft.map((x) => [x.code, x.hard])).toEqual([["SAME_PERIOD_ALREADY_BILLED", false]]);
+  });
+  it("a held invoice for the same period also makes a reissue a duplicate", () => {
+    const hist = [{ invoiceId: "a", contractorId: "ama", invoiceNumber: "INV-0412", periodStart: "2026-08-01", periodEnd: "2026-08-31", totalUsdc: 4200, verdict: "HOLD" as const }];
+    expect(runChecks(fields({ invoiceNumber: "INV-0413" }), ama, hist).map((x) => x.code)).toEqual(["SAME_PERIOD_ALREADY_BILLED"]);
+    const blocked = [{ ...hist[0], verdict: "BLOCK" as const }];
+    expect(runChecks(fields({ invoiceNumber: "INV-0413" }), ama, blocked)).toEqual([]);
+  });
+  it("states what passed, not only what failed", async () => {
+    const { confirmedFacts } = await import("../src/core/checks.js");
+    const f = confirmedFacts(fields(), ama, []);
+    expect(f).toContain("Days billed: 12, within the 15-day monthly cap.");
+    expect(f).toContain("Wallet on the invoice matches the wallet on file.");
+    expect(f).toContain("No expense or fee lines.");
   });
   it("hard findings only ever make a verdict stricter", () => {
     const f = runChecks(fields({ payToWallet: "0x94e672298C44c94b0606740cBEfa6963fA3409C6" }), ama, []);
@@ -223,6 +236,8 @@ describe("store + receipts", () => {
     };
     s.addDecision(dec, "serv");
     expect(s.history()).toHaveLength(1);
+    expect(s.history("inv-0")).toHaveLength(0); // arrived before inv-1: inv-1 is not its history
+    expect(s.history("inv-2")).toHaveLength(1);
     const csv = receiptsCsv(s.latestDecisions(), [{ invoiceId: "inv-1", contractorId: "ama", to: ama.wallet, amountUsdc: 4200, settledUsdc: 4.2, status: "sent", txHash: "0x" + "a".repeat(64), message: "", sentAt: "" }], contractors);
     expect(csv).toContain("sepolia.basescan.org/tx/0xaaaa");
     expect(csv.split("\n")[1]).toContain("PAY,1,");

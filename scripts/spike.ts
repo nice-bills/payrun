@@ -6,10 +6,10 @@
 import { config } from "dotenv";
 config({ quiet: true });
 import { readFileSync } from "node:fs";
-import { JUDGMENT_SCHEMA } from "../src/core/decide.js";
-import { readInvoiceText } from "../src/core/extract.js";
-import { judgmentSystemPrompt, makePolicyVersion } from "../src/core/policy.js";
-import { ServClient, type ServCall } from "../src/core/serv.js";
+import { JUDGMENT_SCHEMA } from "../src/core/decide";
+import { readInvoiceText } from "../src/core/extract";
+import { judgmentSystemPrompt, makePolicyVersion } from "../src/core/policy";
+import { ServClient, type ServCall } from "../src/core/serv";
 
 const serv = new ServClient();
 const policy = makePolicyVersion(readFileSync("fixtures/policy.v1.md", "utf8"), 1);

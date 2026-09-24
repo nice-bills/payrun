@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-4",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:50:15.573Z",
+  "latencyMs": 8519,
+  "servHeaders": {
+    "x-openserv-request-id": "8b847817-45ed-4e9b-a557-8d8c34d66b97"
+  },
+  "json": {
+    "id": "chatcmpl-ERbJgZzExjFTEVUS7F2a2e9yTT0o0",
+    "object": "chat.completion",
+    "created": 1790247008,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[7],\"reasons\":[{\"clause\":7,\"finding\":\"The line item “App-store listing screenshots and launch graphics” appears outside the agreed scope of brand and product UI design for the client app. Manager sign-off must be confirmed before payment for that work.\",\"evidence_quote\":\"App-store listing screenshots and launch graphics | 2 days | 350 USDC/day | 700 USDC\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1126,
+      "completion_tokens": 453,
+      "total_tokens": 1579,
+      "prompt_tokens_details": {
+        "cached_tokens": 1123,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 330,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

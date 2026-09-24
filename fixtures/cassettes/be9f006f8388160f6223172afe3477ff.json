@@ -1,0 +1,45 @@
+{
+  "label": "suggest-v1",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:50:33.601Z",
+  "latencyMs": 3526,
+  "servHeaders": {
+    "x-openserv-request-id": "e76b0a7c-8f8e-49cc-b963-ea8c3f77a04c"
+  },
+  "json": {
+    "id": "chatcmpl-ERbK3CkkiGSKbczjWxjeLOBgq0DBY",
+    "object": "chat.completion",
+    "created": 1790247031,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"clause\":\"If an invoice period overlaps any previously paid period, block the entire invoice as a duplicate, including any unpaid days.\",\"decides_as\":\"BLOCK\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 825,
+      "completion_tokens": 119,
+      "total_tokens": 944,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 73,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

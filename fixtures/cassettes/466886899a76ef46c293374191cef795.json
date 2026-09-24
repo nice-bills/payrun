@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-3",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:49:45.356Z",
+  "latencyMs": 6378,
+  "servHeaders": {
+    "x-openserv-request-id": "de2a0705-a8d8-41ba-a3b4-670ba4f888c6"
+  },
+  "json": {
+    "id": "chatcmpl-ERbJDPtAomevxektGTv3CDjQVJeWt",
+    "object": "chat.completion",
+    "created": 1790246979,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice bills four days at the agreed day rate, totaling 1,000 USDC.\",\"evidence_quote\":\"Blog posts and release notes | 4 days | 250 USDC/day | 1,000 USDC\"},{\"clause\":2,\"finding\":\"The invoice bills four days, within the monthly cap of 10 days.\",\"evidence_quote\":\"Blog posts and release notes | 4 days | 250 USDC/day | 1,000 USDC\"},{\"clause\":6,\"finding\":\"The invoice was received within the allowed period.\",\"evidence_quote\":\"Received 2026-08-29, 60 days after the billing period ended (2026-06-30).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1083,
+      "completion_tokens": 392,
+      "total_tokens": 1475,
+      "prompt_tokens_details": {
+        "cached_tokens": 1080,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 192,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

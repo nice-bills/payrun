@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-clean-9",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:47:23.316Z",
+  "latencyMs": 15255,
+  "servHeaders": {
+    "x-openserv-request-id": "2c51093a-5da6-4edd-8a64-2d29a648b6ec"
+  },
+  "json": {
+    "id": "chatcmpl-ERbGmenBgTid61AhxhLHKbeTWDuFp",
+    "object": "chat.completion",
+    "created": 1790246828,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"PAY\",\"cited_clauses\":[1,2,6],\"reasons\":[{\"clause\":1,\"finding\":\"The invoice lists 7 days at the agreed 350 USDC day rate, for a total of 2450 USDC.\",\"evidence_quote\":\"Design system tokens                         3 days × 350.00 = 1,050.00\\nCheckout screens                             4 days × 350.00 = 1,400.00\\nTotal due: 2,450.00 USDC\"},{\"clause\":2,\"finding\":\"The invoice's 7 billed days are within the 15-day monthly cap.\",\"evidence_quote\":\"- Agreed day rate: 350 USDC; cap 15 days per month\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days after the billing period ended.\",\"evidence_quote\":\"- Received 2026-09-05, 36 days after the billing period ended (2026-07-31).\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1164,
+      "completion_tokens": 322,
+      "total_tokens": 1486,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1161,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 85,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

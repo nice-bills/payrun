@@ -1,0 +1,45 @@
+{
+  "label": "suggest-v1",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:50:42.392Z",
+  "latencyMs": 4593,
+  "servHeaders": {
+    "x-openserv-request-id": "4d8fce39-5a7d-4fe8-953c-3277d53fbb1e"
+  },
+  "json": {
+    "id": "chatcmpl-ERbKAav7KVtKqK0M8qhFApI95JwQS",
+    "object": "chat.completion",
+    "created": 1790247038,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"clause\":\"Treat app-store screenshots and launch graphics as outside product UI scope; hold payment until a manager signs off.\",\"decides_as\":\"HOLD\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 843,
+      "completion_tokens": 209,
+      "total_tokens": 1052,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 164,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

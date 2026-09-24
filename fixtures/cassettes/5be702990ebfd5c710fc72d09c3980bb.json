@@ -1,0 +1,45 @@
+{
+  "label": "extract-serv-eval-wallet_swap-3",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:51:02.491Z",
+  "latencyMs": 5561,
+  "servHeaders": {
+    "x-openserv-request-id": "107dcf5e-42ef-4a0d-a0a0-dc4ea4e078f1"
+  },
+  "json": {
+    "id": "chatcmpl-ERbKVfeXrkZgIvOF3fIHhqbiEPXjn",
+    "object": "chat.completion",
+    "created": 1790247059,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"AKOSUA-310\",\"contractor_name\":\"Akosua Darko\",\"contractor_email\":\"akosua.darko@gmail.com\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Offline sync\",\"quantity\":4,\"unit\":\"day\",\"unit_price_usdc\":380.00,\"amount_usdc\":1520.00},{\"description\":\"Push notifications\",\"quantity\":4,\"unit\":\"day\",\"unit_price_usdc\":380.00,\"amount_usdc\":1520.00}],\"total_usdc\":3040.00,\"pay_to_wallet\":\"0x94e672298C44c94b0606740cBEfa6963fA3409C6\",\"payment_change_request\":\"My old wallet was frozen by the exchange — please use my new address below.\",\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 801,
+      "completion_tokens": 280,
+      "total_tokens": 1081,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 86,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

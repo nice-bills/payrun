@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-06-akosua-wallet-change",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:58:36.080Z",
+  "latencyMs": 9441,
+  "servHeaders": {
+    "x-openserv-request-id": "efa64552-75aa-49a0-bf86-ff1ed65fbe60"
+  },
+  "json": {
+    "id": "chatcmpl-ERbRjpoRsUwARmKYWD5X7vHGo5ovc",
+    "object": "chat.completion",
+    "created": 1790247507,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[4],\"reasons\":[{\"clause\":4,\"finding\":\"The requested payment wallet differs from the wallet on file, and the change has not been confirmed through the contractor's email on file.\",\"evidence_quote\":\"[WALLET_MISMATCH] Invoice asks for payment to 0x94e672298C44c94b0606740cBEfa6963fA3409C6; wallet on file is 0x4c7C5f70F851D649b353D56981F7898188dA93D4.\"},{\"clause\":4,\"finding\":\"The invoice requests a payment-details change.\",\"evidence_quote\":\"[WALLET_CHANGE_REQUEST] Invoice contains a payment-details change request: \\\"My exchange froze my old wallet during a compliance review, so please send this month's payment to my new wallet instead:\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1386,
+      "completion_tokens": 315,
+      "total_tokens": 1701,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1383,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 96,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "label": "probe-extract-2",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:49:09.464Z",
+  "latencyMs": 2857,
+  "servHeaders": {
+    "x-openserv-request-id": "208d8f51-903e-4aa4-872b-a0b0f067b3ff"
+  },
+  "json": {
+    "id": "chatcmpl-ERbIh6FC1RC1ChnoddAIF0wEtNoOC",
+    "object": "chat.completion",
+    "created": 1790246947,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"KA-2026-04B\",\"contractor_name\":\"Kofi Adjei\",\"contractor_email\":\"kofi@adjei.studio\",\"period_start\":\"2026-04-08\",\"period_end\":\"2026-04-20\",\"lines\":[{\"description\":\"React frontend development for web dashboard\",\"quantity\":13,\"unit\":\"day\",\"unit_price_usdc\":300,\"amount_usdc\":3900}],\"total_usdc\":3900,\"pay_to_wallet\":null,\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 718,
+      "completion_tokens": 172,
+      "total_tokens": 890,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 46,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

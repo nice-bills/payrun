@@ -2,16 +2,15 @@ import { config } from "dotenv";
 config({ quiet: true });
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
-import { decide, MODES, type DecideMode } from "./core/decide.js";
-import { readInvoiceText } from "./core/extract.js";
-import { DEMO_RECEIVED_AT, findGaps } from "./core/gaps.js";
-import { createAgentKitPayer, payApproved } from "./core/pay.js";
-import { receiptsCsv } from "./core/receipts.js";
-import { replay } from "./core/replay.js";
-import { ServClient } from "./core/serv.js";
-import { Store } from "./core/store.js";
-import { compileWalletPolicy } from "./core/walletPolicy.js";
-import type { Contractor, Decision } from "./core/types.js";
+import { decide, MODES, type DecideMode } from "./core/decide";
+import { readHiddenPdfText, readInvoiceText } from "./core/extract";
+import { DEMO_RECEIVED_AT, findGaps } from "./core/gaps";
+import { receiptsCsv } from "./core/receipts";
+import { replay } from "./core/replay";
+import { ServClient } from "./core/serv";
+import { Store } from "./core/store";
+import { compileWalletPolicy } from "./core/walletPolicy";
+import type { Contractor, Decision } from "./core/types";
 
 const store = new Store(process.env.PAYRUN_DB ?? "data/payrun.db");
 const [cmd, ...args] = process.argv.slice(2);
@@ -53,6 +52,9 @@ function printDecision(d: Decision) {
   );
 }
 
+// The wallet stack is heavy and only needed by wallet commands.
+const payments = () => import("./core/pay");
+
 async function main() {
   const serv = new ServClient();
   switch (cmd) {
@@ -81,7 +83,8 @@ async function main() {
       const files = readdirSync(dir).filter((f) => /\.(txt|eml|pdf|md)$/i.test(f)).sort();
       for (const f of files) {
         const id = basename(f).replace(/\.[^.]+$/, "");
-        store.upsertInvoice({ id, source: f, rawText: await readInvoiceText(join(dir, f)), receivedAt });
+        const path = join(dir, f);
+        store.upsertInvoice({ id, source: f, rawText: await readInvoiceText(path), receivedAt, hiddenText: await readHiddenPdfText(path) });
       }
       console.log(`Ingested ${files.length} invoices from ${dir}.`);
       break;
@@ -144,13 +147,14 @@ async function main() {
         console.log(JSON.stringify(compileWalletPolicy(store.contractors(), requirePolicy()), null, 2));
         break;
       }
-      const payer = await createAgentKitPayer();
+      const payer = await (await payments()).createAgentKitPayer();
       if (sub === "address" || !sub) console.log(payer.address);
       if (sub === "fund") console.log(await payer.fundFromFaucet());
       if (sub === "apply") console.log(`Applied CDP policy ${await payer.applyPolicy(requirePolicy(), store.contractors())} to ${payer.address}`);
       break;
     }
     case "pay": {
+      const { createAgentKitPayer, payApproved } = await payments();
       const payer = await createAgentKitPayer();
       const paid = store.paidInvoiceIds();
       const todo = store.latestDecisions("serv").filter((d) => d.finalVerdict === "PAY" && !paid.has(d.invoiceId));
@@ -164,7 +168,7 @@ async function main() {
     case "attack": {
       // Bypass every Payrun check and ask the wallet directly to pay the attacker.
       const to = opt("to") ?? "0x94e672298C44c94b0606740cBEfa6963fA3409C6";
-      const payer = await createAgentKitPayer();
+      const payer = await (await payments()).createAgentKitPayer();
       // Only meaningful with the wallet policy attached; without it this is just a transfer.
       const attached = await payer.attachedPolicies();
       if (attached.length === 0) throw new Error("No CDP policy is attached to the payer wallet. Run `wallet apply` first.");

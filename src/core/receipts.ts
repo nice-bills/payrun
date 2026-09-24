@@ -1,5 +1,5 @@
-import type { PaymentResult } from "./pay.js";
-import type { Contractor, Decision } from "./types.js";
+import type { PaymentResult } from "./pay";
+import type { Contractor, Decision } from "./types";
 
 const esc = (v: unknown) => {
   const s = v == null ? "" : String(v);

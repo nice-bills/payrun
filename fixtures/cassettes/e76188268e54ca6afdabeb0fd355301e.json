@@ -1,0 +1,45 @@
+{
+  "label": "extract-serv-eval-arithmetic-1",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:54:06.609Z",
+  "latencyMs": 4726,
+  "servHeaders": {
+    "x-openserv-request-id": "c4c62a69-2842-4459-a353-cdff648db401"
+  },
+  "json": {
+    "id": "chatcmpl-ERbNUnVuzZpTBQv5cuxUtOhpnKEW7",
+    "object": "chat.completion",
+    "created": 1790247244,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"KOFI-730\",\"contractor_name\":\"Kofi Adjei\",\"contractor_email\":\"kofi@adjei.studio\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Accessibility fixes\",\"quantity\":20,\"unit\":\"day\",\"unit_price_usdc\":300.00,\"amount_usdc\":6300.00}],\"total_usdc\":6300.00,\"pay_to_wallet\":\"0x7D3338B5dab0C0feEdd9C83E17Bcf5F3B926B633\",\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 764,
+      "completion_tokens": 205,
+      "total_tokens": 969,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 51,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

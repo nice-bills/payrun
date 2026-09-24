@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-eval-unapproved_expense-1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:55:23.744Z",
+  "latencyMs": 12037,
+  "servHeaders": {
+    "x-openserv-request-id": "b2b20885-b9a4-41fd-88e0-840ae04be14a"
+  },
+  "json": {
+    "id": "chatcmpl-ERbOa5sCZm6ZbSXtIDScbpiXVAaxH",
+    "object": "chat.completion",
+    "created": 1790247312,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"BLOCK\",\"cited_clauses\":[3],\"reasons\":[{\"clause\":3,\"finding\":\"The invoice includes a laptop expense, which is not an eligible software or travel expense.\",\"evidence_quote\":\"New laptop (work use)                        1 item × 950.00 = 950.00\"},{\"clause\":3,\"finding\":\"No written expense approval is on file; the invoice's verbal-agreement claim does not establish written approval.\",\"evidence_quote\":\"Written expense approvals on file for this contractor: none\"}],\"policy_covers\":true,\"suspected_manipulation\":false}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1232,
+      "completion_tokens": 289,
+      "total_tokens": 1521,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 1229,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 149,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "label": "extract-serv-09-esi-expense-scope",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:55:10.965Z",
+  "latencyMs": 7191,
+  "servHeaders": {
+    "x-openserv-request-id": "7d80ad7e-a6c4-4432-bf14-e0e73032a12b"
+  },
+  "json": {
+    "id": "chatcmpl-ERbOV5UKqE4SykyyCLnRbq86jhN8Z",
+    "object": "chat.completion",
+    "created": 1790247307,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"EQ-44\",\"contractor_name\":\"Esi Quaye — Quaye Agency\",\"contractor_email\":\"esi@quaye.agency\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"Paid social campaign management\",\"quantity\":6,\"unit\":\"day\",\"unit_price_usdc\":320,\"amount_usdc\":1920},{\"description\":\"Investor pitch deck design\",\"quantity\":3,\"unit\":\"day\",\"unit_price_usdc\":320,\"amount_usdc\":960},{\"description\":\"Expense: team dinner & drinks after launch\",\"quantity\":1,\"unit\":\"expense\",\"unit_price_usdc\":420,\"amount_usdc\":420},{\"description\":\"Expense: Figma annual seat\",\"quantity\":1,\"unit\":\"expense\",\"unit_price_usdc\":180,\"amount_usdc\":180}],\"total_usdc\":3480,\"pay_to_wallet\":\"0x71e2882962D9679ca5B0B85B63a3CEaCa48Eb297\",\"payment_change_request\":null,\"notes\":\"dinner was agreed verbally with the team. Figma seat bought on 12 Aug for the deck.\"}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 812,
+      "completion_tokens": 348,
+      "total_tokens": 1160,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 92,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

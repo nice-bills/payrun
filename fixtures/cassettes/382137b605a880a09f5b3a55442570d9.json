@@ -1,0 +1,45 @@
+{
+  "label": "judge-serv-probe-1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:49:06.605Z",
+  "latencyMs": 4092,
+  "servHeaders": {
+    "x-openserv-request-id": "9275a053-4330-49b7-80c5-9c4a3410a858"
+  },
+  "json": {
+    "id": "chatcmpl-ERbIdJFEis8hvzvstWbYvnOVcWxzB",
+    "object": "chat.completion",
+    "created": 1790246943,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"verdict\":\"HOLD\",\"cited_clauses\":[4],\"reasons\":[{\"clause\":4,\"finding\":\"The invoice requests a change to payment details, and confirmation through the contractor’s email on file is not established; hold until confirmed.\",\"evidence_quote\":\"[WALLET_CHANGE_REQUEST] Invoice contains a payment-details change request: \\\"I am requesting a change to my payout destination.\\\"\"}],\"policy_covers\":true,\"suspected_manipulation\":true}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1127,
+      "completion_tokens": 199,
+      "total_tokens": 1326,
+      "prompt_tokens_details": {
+        "cached_tokens": 1124,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 86,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

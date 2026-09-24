@@ -1,0 +1,45 @@
+{
+  "label": "extract-serv-01-ama-clean",
+  "model": "gpt-6-luna",
+  "raw": false,
+  "recordedAt": "2026-09-24T10:51:10.865Z",
+  "latencyMs": 5192,
+  "servHeaders": {
+    "x-openserv-request-id": "8253c307-45cf-4459-a5a9-b72057507ac1"
+  },
+  "json": {
+    "id": "chatcmpl-ERbKeAUogBhvE7R0fBxA72apIYwJB",
+    "object": "chat.completion",
+    "created": 1790247068,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"invoice_number\":\"INV-0412\",\"contractor_name\":\"Ama Mensah — Mensah Design\",\"contractor_email\":\"ama@mensah.design\",\"period_start\":\"2026-08-01\",\"period_end\":\"2026-08-31\",\"lines\":[{\"description\":\"UI design — client app onboarding flow\",\"quantity\":12,\"unit\":\"day\",\"unit_price_usdc\":350.00,\"amount_usdc\":4200.00}],\"total_usdc\":4200.00,\"pay_to_wallet\":\"0xDd03c6D9A048BEd896390785721D2D1A67322333\",\"payment_change_request\":null,\"notes\":null}",
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 777,
+      "completion_tokens": 247,
+      "total_tokens": 1024,
+      "prompt_tokens_details": {
+        "cached_tokens": 0,
+        "cache_write_tokens": 0,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 95,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

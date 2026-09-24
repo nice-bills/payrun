@@ -1,8 +1,8 @@
-import { applyInvariants, matchContractor, runChecks, type HistoryEntry } from "./checks.js";
-import { extractFields } from "./extract.js";
-import { judgmentSystemPrompt } from "./policy.js";
-import type { ServClient, ServFeature } from "./serv.js";
-import type { CallMeta, Contractor, Decision, Finding, Invoice, InvoiceFields, Judgment, PolicyVersion } from "./types.js";
+import { applyInvariants, confirmedFacts, matchContractor, runChecks, type HistoryEntry } from "./checks";
+import { extractFields } from "./extract";
+import { judgmentSystemPrompt } from "./policy";
+import type { ServClient, ServFeature } from "./serv";
+import type { CallMeta, Contractor, Decision, Finding, Invoice, InvoiceFields, Judgment, PolicyVersion } from "./types";
 
 /** One way of running the pipeline. `serv` is the product; the raw modes are the controls. */
 export interface DecideMode {
@@ -77,7 +77,9 @@ export function judgmentUserMessage(invoice: Invoice, fields: InvoiceFields, con
         `Scope of work: ${contractor.scope}`,
       ].join("\n")
     : "Contractor on file: NONE MATCHED";
-  const facts = findings.length ? findings.map((f) => `- [${f.code}] ${f.detail}`).join("\n") : "- No issues found by code checks.";
+  const issues = findings.map((f) => `- [${f.code}] ${f.detail}`);
+  const confirmed = confirmedFacts(fields, contractor, findings).map((f) => `- ${f}`);
+  const facts = [...confirmed, ...issues].join("\n") || "- No contractor matched, so nothing could be checked against an agreement.";
   const approvals = contractor?.expenseApprovals?.length
     ? contractor.expenseApprovals.map((a) => `${a.description} up to ${a.maxUsdc} USDC (approved ${a.approvedOn} by ${a.approvedBy})`).join("; ")
     : "none";

@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { PolicyVersion } from "./types.js";
+import type { PolicyVersion } from "./types";
 
 /**
  * Split policy text into clauses. Numbered lines ("1." / "1)") start a clause;
