@@ -3,10 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { decide, MODES } from "@/src/core/decide";
 import { ServClient } from "@/src/core/serv";
+import { DEMO_MESSAGE, dbPath, isDemo } from "@/lib/demo";
 import { Store } from "@/src/core/store";
 import type { Decision } from "@/src/core/types";
 
-const store = () => new Store(process.env.PAYRUN_DB ?? "data/payrun.db");
+const store = () => new Store(dbPath(), { readOnly: isDemo() });
+const demoRefusal = () => ({ ok: false as const, error: DEMO_MESSAGE });
 
 export type ReviewResult = { ok: true; decision: Decision } | { ok: false; error: string };
 
@@ -18,6 +20,13 @@ export type ReviewResult = { ok: true; decision: Decision } | { ok: false; error
 export async function reviewInvoice(invoiceId: string): Promise<ReviewResult> {
   try {
     const s = store();
+    if (isDemo()) {
+      // Hosted demo: hand back the recorded verdict so the stamp can land again.
+      const recorded = s.latestDecisions("serv").find((d) => d.invoiceId === invoiceId);
+      if (!recorded) return { ok: false, error: DEMO_MESSAGE };
+      await new Promise((r) => setTimeout(r, 350));
+      return { ok: true, decision: { ...recorded, decidedAt: new Date().toISOString(), calls: recorded.calls.map((c) => ({ ...c, replayed: true })) } };
+    }
     const policy = s.livePolicy();
     const invoice = s.invoices().find((i) => i.id === invoiceId);
     if (!policy || !invoice) return { ok: false, error: "Invoice or policy not found." };
@@ -67,6 +76,7 @@ export async function adoptReading(probeIndex: number, readingIndex: number): Pr
 
 /** Re-decide the live version's invoices under the newest draft and report what would change. */
 export async function replayDraft(): Promise<ActionResult<import("@/src/core/replay").ReplayReport>> {
+  if (isDemo()) return demoRefusal();
   try {
     const { replay } = await import("@/src/core/replay");
     const s = store();
@@ -84,6 +94,7 @@ export async function replayDraft(): Promise<ActionResult<import("@/src/core/rep
 }
 
 export async function makeLive(version: number): Promise<ActionResult<number>> {
+  if (isDemo()) return demoRefusal();
   try {
     store().setLivePolicy(version);
     revalidatePath("/", "layout");
@@ -95,6 +106,7 @@ export async function makeLive(version: number): Promise<ActionResult<number>> {
 
 /** Pay every approved, unpaid invoice through AgentKit. The CDP policy on the wallet is the last gate. */
 export async function payApproved(): Promise<ActionResult<import("@/src/core/pay").PaymentResult[]>> {
+  if (isDemo()) return demoRefusal();
   try {
     const { createAgentKitPayer, payApproved: pay } = await import("@/src/core/pay");
     const s = store();
@@ -124,6 +136,7 @@ export async function tryScammerTransfer(): Promise<ActionResult<{ refused: bool
 
 /** Save edited clauses as a new draft version. Identical text returns the existing version. */
 export async function saveDraft(clauses: string[]): Promise<ActionResult<number>> {
+  if (isDemo()) return demoRefusal();
   try {
     const { policyText } = await import("@/src/core/lint");
     if (!clauses.some((c) => c.trim())) return { ok: false, error: "A policy needs at least one clause." };
@@ -137,6 +150,7 @@ export async function saveDraft(clauses: string[]): Promise<ActionResult<number>
 
 /** SERV reads the wording before any invoice does: conflicts, undefined terms, open cases. */
 export async function lintVersion(version: number): Promise<ActionResult<import("@/src/core/lint").LintReport>> {
+  if (isDemo()) return demoRefusal();
   try {
     const { lintPolicy } = await import("@/src/core/lint");
     const s = store();
@@ -153,6 +167,7 @@ export async function lintVersion(version: number): Promise<ActionResult<import(
 
 /** Start the gap finder on a version in the background; poll with jobStatus. */
 export async function findHoles(version: number): Promise<ActionResult<string>> {
+  if (isDemo()) return demoRefusal();
   try {
     const { startJob } = await import("@/lib/jobs");
     const { findGaps } = await import("@/src/core/gaps");
@@ -197,6 +212,7 @@ export async function payerBalance(): Promise<ActionResult<{ address: string; us
 
 /** SERV reads a pasted agreement into a draft contractor for the owner to confirm. */
 export async function readAgreementText(text: string): Promise<ActionResult<import("@/src/core/agreement").AgreementDraft>> {
+  if (isDemo()) return demoRefusal();
   try {
     if (text.trim().length < 40) return { ok: false, error: "Paste the agreement or the email that sets the terms." };
     const { readAgreement } = await import("@/src/core/agreement");
@@ -224,6 +240,7 @@ export async function saveContractor(input: import("@/src/core/types").Contracto
 }
 
 export async function removeContractor(id: string): Promise<ActionResult<string>> {
+  if (isDemo()) return demoRefusal();
   try {
     store().deleteContractor(id);
     revalidatePath("/", "layout");
@@ -235,6 +252,7 @@ export async function removeContractor(id: string): Promise<ActionResult<string>
 
 /** Compile the contractor book into the wallet's own rules and attach them to the paying wallet. */
 export async function attachWalletRules(): Promise<ActionResult<string>> {
+  if (isDemo()) return demoRefusal();
   try {
     const { createAgentKitPayer } = await import("@/src/core/pay");
     const { walletRulesFingerprint } = await import("@/lib/walletRules");

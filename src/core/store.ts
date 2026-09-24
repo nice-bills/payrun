@@ -10,7 +10,12 @@ import type { Contractor, Decision, Invoice, PolicyVersion } from "./types";
 export class Store {
   private db: DatabaseSync;
 
-  constructor(path = "data/payrun.db") {
+  constructor(path = "data/payrun.db", opts: { readOnly?: boolean } = {}) {
+    if (opts.readOnly) {
+      // Hosted demo: a committed snapshot on a read-only filesystem.
+      this.db = new DatabaseSync(path, { readOnly: true });
+      return;
+    }
     if (path !== ":memory:") mkdirSync(dirname(path), { recursive: true });
     this.db = new DatabaseSync(path);
     // The desk reads while the CLI writes; WAL lets both proceed.

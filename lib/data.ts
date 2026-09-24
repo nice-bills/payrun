@@ -1,4 +1,5 @@
 import "server-only";
+import { dbPath, isDemo } from "@/lib/demo";
 import { Store } from "@/src/core/store";
 import type { GapReport } from "@/src/core/gaps";
 import type { LintReport } from "@/src/core/lint";
@@ -29,7 +30,7 @@ export interface DeskItem {
 }
 
 function store(): Store {
-  return new Store(process.env.PAYRUN_DB ?? "data/payrun.db");
+  return new Store(dbPath(), { readOnly: isDemo() });
 }
 
 export function loadDesk(): DeskData {

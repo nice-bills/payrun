@@ -1,0 +1,114 @@
+{
+  "policyHash": "d66023819daad1fce8701a630e442ac8fe67a82b47cf683580462c174058c5bb",
+  "cases": 40,
+  "summary": {
+    "serv": {
+      "model": {
+        "trapsCaught": "24/24",
+        "cleanPaid": "15/16",
+        "falseAlarms": 1,
+        "byKind": {
+          "wallet_swap": "4/4",
+          "near_duplicate": "4/4",
+          "exact_duplicate": "2/2",
+          "over_cap": "3/3",
+          "arithmetic": "3/3",
+          "unapproved_expense": "4/4",
+          "injection": "4/4"
+        }
+      },
+      "final": {
+        "trapsCaught": "24/24",
+        "cleanPaid": "15/16",
+        "falseAlarms": 1,
+        "byKind": {
+          "wallet_swap": "4/4",
+          "near_duplicate": "4/4",
+          "exact_duplicate": "2/2",
+          "over_cap": "3/3",
+          "arithmetic": "3/3",
+          "unapproved_expense": "4/4",
+          "injection": "4/4"
+        }
+      },
+      "guardBlocks": 0,
+      "manipulationFlagged": 12,
+      "errors": 0,
+      "costUsd": 0.648,
+      "costPerInvoiceUsd": 0.0162,
+      "avgLatencyMs": 23597
+    },
+    "raw-small": {
+      "model": {
+        "trapsCaught": "24/24",
+        "cleanPaid": "14/16",
+        "falseAlarms": 2,
+        "byKind": {
+          "wallet_swap": "4/4",
+          "near_duplicate": "4/4",
+          "exact_duplicate": "2/2",
+          "over_cap": "3/3",
+          "arithmetic": "3/3",
+          "unapproved_expense": "4/4",
+          "injection": "4/4"
+        }
+      },
+      "final": {
+        "trapsCaught": "24/24",
+        "cleanPaid": "14/16",
+        "falseAlarms": 2,
+        "byKind": {
+          "wallet_swap": "4/4",
+          "near_duplicate": "4/4",
+          "exact_duplicate": "2/2",
+          "over_cap": "3/3",
+          "arithmetic": "3/3",
+          "unapproved_expense": "4/4",
+          "injection": "4/4"
+        }
+      },
+      "guardBlocks": 0,
+      "manipulationFlagged": 11,
+      "errors": 0,
+      "costUsd": 0.0222,
+      "costPerInvoiceUsd": 0.00055,
+      "avgLatencyMs": 8837
+    },
+    "raw-gpt-5.4": {
+      "model": {
+        "trapsCaught": "24/24",
+        "cleanPaid": "16/16",
+        "falseAlarms": 0,
+        "byKind": {
+          "wallet_swap": "4/4",
+          "near_duplicate": "4/4",
+          "exact_duplicate": "2/2",
+          "over_cap": "3/3",
+          "arithmetic": "3/3",
+          "unapproved_expense": "4/4",
+          "injection": "4/4"
+        }
+      },
+      "final": {
+        "trapsCaught": "24/24",
+        "cleanPaid": "16/16",
+        "falseAlarms": 0,
+        "byKind": {
+          "wallet_swap": "4/4",
+          "near_duplicate": "4/4",
+          "exact_duplicate": "2/2",
+          "over_cap": "3/3",
+          "arithmetic": "3/3",
+          "unapproved_expense": "4/4",
+          "injection": "4/4"
+        }
+      },
+      "guardBlocks": 0,
+      "manipulationFlagged": 12,
+      "errors": 0,
+      "costUsd": 0.6058,
+      "costPerInvoiceUsd": 0.01515,
+      "avgLatencyMs": 19314
+    }
+  }
+}

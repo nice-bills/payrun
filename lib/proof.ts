@@ -1,4 +1,5 @@
 import "server-only";
+import { dbPath, evalDir, isDemo } from "@/lib/demo";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Store } from "@/src/core/store";
@@ -26,10 +27,10 @@ export interface ProofData {
 }
 
 export function loadProof(): ProofData {
-  const dir = "data/eval";
+  const dir = evalDir();
   const latest = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith(".json")).sort().at(-1) : undefined;
   const raw = latest ? JSON.parse(readFileSync(join(dir, latest), "utf8")) : null;
-  const s = new Store(process.env.PAYRUN_DB ?? "data/payrun.db");
+  const s = new Store(dbPath(), { readOnly: isDemo() });
   const gaps = s.latestReport<{ results: { gap: string[] }[]; policyVersion: number }>("gaps");
   return {
     eval: raw ? { cases: raw.cases, ranAt: latest!.slice(0, 10), summary: raw.summary } : null,
