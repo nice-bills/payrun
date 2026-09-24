@@ -1,56 +1,59 @@
 @import "tailwindcss";
 
 /*
- * Payrun: an accounts-payable desk. A deep violet blotter, white invoices,
- * index cards tinted by verdict, a yellow legal pad with a red pen.
- * Verdict colour always travels with a word and a glyph.
+ * Payrun: an accounts-payable desk. A cork board, copy paper, navy
+ * fountain-pen ink, pushpins that carry the verdict, a yellow legal pad,
+ * rubber stamps. Paper lifts with hard, cut-paper shadows; no blur.
  */
 @theme {
-  /* The desk */
-  --color-desk: oklch(0.3 0.13 274);
-  --color-desk-deep: oklch(0.25 0.12 274);
-  --color-desk-line: oklch(0.4 0.12 274);
-  --color-on-desk: oklch(0.97 0.012 274);
-  --color-on-desk-2: oklch(0.82 0.05 274);
+  /* Cork board */
+  --color-cork: oklch(0.64 0.085 62);
+  --color-cork-dark: oklch(0.49 0.08 55);
+  --color-cork-deep: oklch(0.38 0.06 52);
+
+  /* Navy ink band (header) */
+  --color-band: oklch(0.27 0.07 255);
+  --color-on-band: oklch(0.96 0.015 90);
+  --color-on-band-2: oklch(0.8 0.04 245);
 
   /* Paper and ink */
-  --color-sheet: oklch(1 0 0);
-  --color-ink: oklch(0.2 0.025 274);
-  --color-ink-2: oklch(0.42 0.02 274);
-  --color-ink-3: oklch(0.55 0.015 274);
-  --color-rule: oklch(0.89 0.01 274);
+  --color-paper: oklch(0.985 0.008 92);
+  --color-paper-2: oklch(0.955 0.012 88);
+  --color-ink: oklch(0.26 0.06 258);
+  --color-ink-2: oklch(0.43 0.045 255);
+  --color-ink-3: oklch(0.56 0.03 250);
+  --color-rule: oklch(0.88 0.015 85);
 
-  /* Legal pad */
-  --color-pad: oklch(0.955 0.085 100);
-  --color-pad-line: oklch(0.84 0.06 235);
-  --color-pad-margin: oklch(0.68 0.15 25);
+  /* Legal pad and sticky notes */
+  --color-pad: oklch(0.94 0.11 100);
+  --color-pad-line: oklch(0.82 0.07 238);
+  --color-pad-margin: oklch(0.63 0.17 27);
+  --color-note: oklch(0.9 0.15 96);
+  --color-manila: oklch(0.86 0.075 78);
 
-  /* Sticky notes */
-  --color-note: oklch(0.92 0.13 98);
-
-  /* Index cards, tinted by verdict */
-  --color-card-pay: oklch(0.9 0.085 160);
-  --color-card-hold: oklch(0.89 0.115 88);
-  --color-card-block: oklch(0.85 0.095 30);
-
-  /* Inks */
-  --color-violet: oklch(0.42 0.2 274);
-  --color-marker: oklch(0.91 0.17 102);
-  --color-marker-press: oklch(0.86 0.17 100);
-  --color-pen: oklch(0.5 0.2 28);
-  --color-pay: oklch(0.47 0.13 155);
-  --color-hold: oklch(0.52 0.12 62);
+  /* Pushpins and stamp inks */
+  --color-pin-pay: oklch(0.55 0.15 150);
+  --color-pin-hold: oklch(0.74 0.16 72);
+  --color-pin-block: oklch(0.56 0.21 27);
+  --color-pay: oklch(0.45 0.13 150);
+  --color-hold: oklch(0.52 0.13 62);
   --color-block: oklch(0.5 0.2 27);
+  --color-pen: oklch(0.5 0.2 28);
 
-  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  /* Action: a highlighter-yellow button with a navy edge */
+  --color-marker: oklch(0.9 0.17 102);
+  --color-marker-press: oklch(0.85 0.17 100);
+
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
   --font-type: var(--font-courier), ui-monospace, monospace;
   --font-hand: var(--font-caveat), "Comic Sans MS", cursive;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
-  --shadow-sheet: 0 2px 0 oklch(0.15 0.08 274 / 0.25), 0 24px 48px -16px oklch(0.12 0.1 274 / 0.65);
-  --shadow-card: 0 1px 0 oklch(0.15 0.08 274 / 0.3), 0 6px 14px -6px oklch(0.12 0.1 274 / 0.55);
-  --shadow-lift: 0 2px 0 oklch(0.15 0.08 274 / 0.3), 0 18px 32px -10px oklch(0.1 0.1 274 / 0.7);
+  /* Cut-paper shadows: a hard offset, no blur. */
+  --shadow-paper: 3px 4px 0 var(--color-cork-deep);
+  --shadow-card: 2px 3px 0 var(--color-cork-deep);
+  --shadow-press: 1px 1px 0 var(--color-cork-deep);
 }
 
 @layer base {
@@ -58,7 +61,7 @@
     color-scheme: light;
   }
   body {
-    background: var(--color-desk);
+    background: var(--color-cork);
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -67,26 +70,42 @@
     text-wrap: balance;
   }
   :focus-visible {
-    outline: 2px solid var(--color-marker);
+    outline: 3px solid var(--color-ink);
     outline-offset: 2px;
   }
 }
 
-/* One static 160px grain tile: no filters recomputed while scrolling. */
-.desk-surface {
-  background-color: var(--color-desk);
-  background-image: url("/grain.png");
+/* Cork: two static grain tiles over the cork colour. No live filters, so scrolling stays cheap. */
+.cork {
+  background-color: var(--color-cork);
+  background-image: url("/grain.png"), url("/grain.png");
+  background-size: 160px 160px, 97px 97px;
 }
 
-/* Scroll areas: own their scroll, never drag the page along. */
 .scroll-y {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-desk-line) transparent;
+  scrollbar-color: var(--color-cork-dark) transparent;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-/* Legal pad: ruled lines and a red margin rule, in plain gradients. */
+/* Buttons are pressed into the board: the hard shadow shrinks. */
+.press {
+  box-shadow: var(--shadow-card);
+  transition: transform 120ms var(--ease-out), box-shadow 120ms var(--ease-out), background-color 150ms ease;
+}
+.press:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--shadow-press);
+}
+
+/* Legal pad: ruled lines and the red margin rule, as plain gradients. */
 .legal-pad {
   background-color: var(--color-pad);
   background-image:
@@ -100,7 +119,7 @@
   --stamp-ink: var(--color-ink);
   color: var(--stamp-ink);
   border: 3px solid var(--stamp-ink);
-  box-shadow: inset 0 0 0 2px var(--color-sheet), inset 0 0 0 4px var(--stamp-ink);
+  box-shadow: inset 0 0 0 2px var(--color-paper), inset 0 0 0 4px var(--stamp-ink);
   mix-blend-mode: multiply;
   -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='120'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -2.2 1.9'/></filter><rect width='100%' height='100%' filter='url(%23m)'/></svg>");
   mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='120'><filter id='m'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -2.2 1.9'/></filter><rect width='100%' height='100%' filter='url(%23m)'/></svg>");
@@ -114,7 +133,6 @@
 /* Highlighter stroke behind evidence the reviewer cited. */
 .evidence {
   background: linear-gradient(transparent 10%, var(--color-marker) 10%, var(--color-marker) 90%, transparent 90%);
-  border-radius: 2px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   padding: 0 2px;
@@ -122,22 +140,6 @@
 }
 .evidence[data-active="true"] {
   box-shadow: 0 0 0 2px var(--color-pen);
-}
-
-.press {
-  transition: transform 140ms var(--ease-out), background-color 150ms ease, box-shadow 150ms ease;
-}
-.press:active {
-  transform: scale(0.97);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .press,
-  .press:active,
-  .evidence {
-    transition: none;
-    transform: none;
-  }
 }
 
 /* Thermal receipt: zigzag tear along the bottom edge. */
@@ -148,10 +150,62 @@
   padding-bottom: calc(var(--tooth) + 14px);
 }
 
-/* Price tag with a punched hole: the wallet's own rules. */
+/* Luggage tag with a punched hole: the wallet's own rules. */
 .tag {
   clip-path: polygon(18px 0, 100% 0, 100% 100%, 18px 100%, 0 50%);
   -webkit-mask: radial-gradient(circle 5px at 16px 50%, #0000 98%, #000);
   mask: radial-gradient(circle 5px at 16px 50%, #0000 98%, #000);
   padding-left: 32px;
+}
+
+/* Conveyor: the inbox strip runs on its own until someone touches it. Constant motion is linear. */
+@keyframes conveyor {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.conveyor {
+  animation: conveyor var(--conveyor-duration, 60s) linear infinite;
+}
+.conveyor-host:hover .conveyor,
+.conveyor-host:focus-within .conveyor,
+.conveyor-host[data-paused="true"] .conveyor {
+  animation-play-state: paused;
+}
+
+/* Skeleton shimmer for paper that is still loading. */
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--color-paper-2) 0%, var(--color-rule) 40%, var(--color-paper-2) 80%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+/* A refused tag shakes once. */
+@keyframes refuse {
+  20% { transform: translateX(-6px) rotate(-1deg); }
+  40% { transform: translateX(5px) rotate(0.8deg); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(2px); }
+}
+.refuse {
+  animation: refuse 420ms var(--ease-out) 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press,
+  .press:active,
+  .evidence {
+    transition: none;
+    transform: none;
+  }
+  .conveyor,
+  .skeleton,
+  .refuse {
+    animation: none;
+  }
 }

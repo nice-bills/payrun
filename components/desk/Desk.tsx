@@ -9,6 +9,24 @@ import { InboxTray, whoFor } from "./InboxTray";
 import { InvoiceSheet } from "./InvoiceSheet";
 import { LegalPad } from "./LegalPad";
 
+/** A count that rolls to its new value, so a verdict landing is visible in the header too. */
+function Tally({ n }: { n: number }) {
+  const reduce = useReducedMotion();
+  return (
+    <span className="relative inline-block min-w-[1ch] overflow-hidden align-bottom tabular-nums">
+      <motion.span
+        key={n}
+        className="inline-block"
+        initial={reduce ? false : { y: "-100%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
+      >
+        {n}
+      </motion.span>
+    </span>
+  );
+}
+
 /** Each invoice stays in focus at least this long during a pile review, so the stamp can be seen. */
 const PILE_DWELL_MS = 750;
 
@@ -97,10 +115,10 @@ export function Desk({ items: initial, contractors }: { items: DeskItem[]; contr
 
   if (!item) {
     return (
-      <div className="grid h-full place-items-center px-6 text-center text-on-desk">
+      <div className="grid h-full place-items-center px-6 text-center text-ink">
         <div>
-          <h1 className="text-3xl font-black tracking-[-0.03em]">The inbox is empty</h1>
-          <p className="mt-2 text-on-desk-2">Put this month&apos;s invoices in the inbox folder and run the ingest command.</p>
+          <h1 className="text-3xl font-black tracking-[-0.03em]">The pile is empty</h1>
+          <p className="mt-2 text-ink">Put this month&apos;s invoices in the inbox folder and run the ingest command.</p>
         </div>
       </div>
     );
@@ -112,32 +130,35 @@ export function Desk({ items: initial, contractors }: { items: DeskItem[]; contr
       <section aria-label="Inbox" className="flex flex-col px-4 pt-5 sm:px-6 lg:min-h-0 lg:pl-6 lg:pr-3">
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
-            <h1 className="text-lg font-black tracking-[-0.02em] text-on-desk">This month</h1>
-            <p className="font-type text-xs text-on-desk-2">
-              {count("PAY")} pay · {count("HOLD")} hold · {count("BLOCK")} block
+            <h1 className="text-[1.35rem] font-black tracking-[-0.03em] text-ink">September pile</h1>
+            <p className="font-type text-xs font-bold text-ink">
+              <Tally n={count("PAY")} /> pay · <Tally n={count("HOLD")} /> hold · <Tally n={count("BLOCK")} /> block
             </p>
           </div>
           <button
             type="button"
             onClick={reviewPile}
             disabled={busy}
-            className="press shrink-0 rounded-xl bg-marker px-3.5 py-2 text-sm font-black text-ink shadow-[var(--shadow-card)] hover:bg-marker-press disabled:cursor-progress"
+            className="press shrink-0 rounded-[3px] bg-marker px-3.5 py-2 text-sm font-black text-ink hover:bg-marker-press disabled:cursor-progress"
           >
-            {pile ? (pile.done === pile.total ? `✓ All ${pile.total} read` : `Reading ${pile.done + 1} of ${pile.total}`) : "Review the pile"}
+            {pile ? (pile.done === pile.total ? `All ${pile.total} read` : `Reading ${pile.done + 1} of ${pile.total}`) : "Review the pile"}
           </button>
         </div>
         {pile ? (
-          <div aria-hidden className="mb-4 h-1.5 overflow-hidden rounded-full bg-desk-line">
+          <div aria-hidden className="mb-2 h-2 overflow-hidden rounded-[2px] bg-cork-deep">
             <motion.div
-              className="h-full origin-left rounded-full bg-marker"
+              className="h-full origin-left bg-marker"
               animate={{ scaleX: pile.total ? pile.done / pile.total : 0 }}
               transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
             />
           </div>
         ) : null}
-        <div className="-mx-4 overflow-x-auto px-4 pb-1 pt-1 [scroll-snap-type:x_mandatory] sm:-mx-6 sm:px-6 lg:scroll-y lg:mx-0 lg:-ml-2 lg:min-h-0 lg:flex-1 lg:px-0 lg:pl-2 lg:[scroll-snap-type:none]">
+        <div className="lg:scroll-y lg:-ml-2 lg:min-h-0 lg:flex-1 lg:pl-2">
           <InboxTray items={items} names={names} selectedId={selectedId} reviewingId={reviewingId} onSelect={(id) => !busy && select(id)} />
         </div>
+        <p className="hidden py-3 font-type text-[0.7rem] text-ink lg:block">
+          <a href="/terms" className="underline underline-offset-2">Terms</a> · <a href="/privacy" className="underline underline-offset-2">Privacy</a> · testnet only
+        </p>
       </section>
 
       {/* The invoice in focus */}

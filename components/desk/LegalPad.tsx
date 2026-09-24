@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, useReducedMotion } from "motion/react";
 import type { DeskItem } from "@/lib/data";
 import { usdc } from "@/lib/format";
 import type { FindingCode } from "@/src/core/types";
@@ -49,27 +50,47 @@ export function LegalPad({
   const reasons = (j?.reasons ?? []).map((r, i) => ({ ...r, n: i + 1 })).slice(0, 4);
   const judge = d?.calls.filter((c) => c.mode === "serv").at(-1);
   const h = headline(item, who);
+  const reduce = useReducedMotion();
+  // Notes are written in, one after another, each time the invoice changes: "where to look".
+  const write = (n: number) =>
+    reduce
+      ? {}
+      : {
+          initial: { clipPath: "inset(0 100% 0 0)" },
+          animate: { clipPath: "inset(0 0% 0 0)" },
+          transition: { duration: 0.32, delay: 0.12 + n * 0.09, ease: [0.23, 1, 0.32, 1] as const },
+        };
 
   return (
-    <aside aria-label="Reviewer's notes" className="legal-pad relative flex min-h-full flex-col rounded-t-md pb-6 pl-14 pr-6 pt-6 shadow-[var(--shadow-sheet)]">
-      <h2 className={`relative w-fit text-[2rem] font-black leading-[1.05] tracking-[-0.035em] ${h.tone}`}>
+    <aside key={item.invoice.id} aria-label="Reviewer's notes" className="legal-pad relative flex min-h-full flex-col rounded-t-[3px] pb-6 pl-14 pr-6 pt-6 shadow-[var(--shadow-paper)]">
+      <h2 className={`relative w-fit text-[2.1rem] font-black leading-[1.02] tracking-[-0.04em] ${h.tone}`}>
         {h.text}
         <svg aria-hidden viewBox="0 0 200 12" className="absolute -bottom-2 left-0 h-3 w-full text-pen" preserveAspectRatio="none">
-          <path d="M3 8 C 50 3, 120 11, 197 4" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" />
+          <motion.path
+            d="M3 8 C 50 3, 120 11, 197 4"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3.2"
+            strokeLinecap="round"
+            initial={reduce ? false : { pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+          />
         </svg>
       </h2>
 
       <div className="mt-7 flex flex-col gap-4">
         {d?.blockedByGuard ? (
-          <p className="font-hand text-[1.55rem] leading-[1.25] text-pen">
+          <motion.p {...write(0)} className="font-hand text-[1.55rem] leading-[1.25] text-pen">
             There&apos;s an instruction hidden inside this file. SERV&apos;s guard stopped it before the model read a word.
-          </p>
+          </motion.p>
         ) : null}
 
-        {reasons.map((r) => (
-          <div
+        {reasons.map((r, idx) => (
+          <motion.div
             key={r.n}
-            className="group -mx-2 cursor-default rounded-md px-2 py-1 transition-colors duration-150 hover:bg-sheet/50"
+            {...write(idx)}
+            className="group -mx-2 cursor-default rounded-[3px] px-2 py-1 transition-colors duration-150 hover:bg-paper/60"
             onMouseEnter={() => linked.has(r.n) && onNote(r.n)}
             onMouseLeave={() => onNote(null)}
           >
@@ -85,16 +106,18 @@ export function LegalPad({
                 <b className="text-ink">Clause {r.clause}.</b> {item.clauses[r.clause - 1]}
               </p>
             ) : null}
-          </div>
+          </motion.div>
         ))}
 
         {j?.suspectedManipulation ? (
-          <p className="font-hand text-[1.45rem] leading-[1.2] text-block">Leans on the reviewer: urgency, authority or orders.</p>
+          <motion.p {...write(reasons.length)} className="font-hand text-[1.45rem] leading-[1.2] text-block">
+            Leans on the reviewer: urgency, authority or orders.
+          </motion.p>
         ) : null}
       </div>
 
       {d && d.overriddenBy.length ? (
-        <p className="mt-5 rounded-lg bg-sheet px-3 py-2 text-sm text-ink shadow-[var(--shadow-card)]">
+        <p className="mt-5 rounded-[2px] bg-paper px-3 py-2 text-sm text-ink shadow-[var(--shadow-press)]">
           Model said <b>{j?.verdict}</b>. Code overruled it.
         </p>
       ) : null}
@@ -104,15 +127,14 @@ export function LegalPad({
           {d.findings.map((f) => (
             <li
               key={f.code}
-              className={`rounded-md px-2 py-1 font-type text-xs font-bold ${f.hard ? "bg-card-block text-ink" : "bg-sheet text-ink"} shadow-[var(--shadow-card)]`}
+              className="rounded-[2px] bg-paper px-2 py-1 font-type text-xs text-ink shadow-[var(--shadow-press)]"
             >
-              {f.hard ? "■ " : "▲ "}
-              {CHECK[f.code]}
+              <b className={f.hard ? "text-block" : "text-hold"}>{f.hard ? "RULE" : "NOTE"}</b> {CHECK[f.code]}
             </li>
           ))}
         </ul>
       ) : d && !d.blockedByGuard ? (
-        <p className="mt-5 font-type text-xs font-bold text-pay">✓ Rate · cap · sums · wallet · duplicates</p>
+        <p className="mt-5 font-type text-xs text-ink-2">Checked by code: rate, cap, sums, wallet, duplicates. Nothing found.</p>
       ) : null}
 
       <div className="mt-auto flex items-end justify-between gap-3 pt-8">
@@ -121,7 +143,7 @@ export function LegalPad({
             type="button"
             onClick={onReview}
             disabled={reviewing}
-            className="press w-fit rounded-xl bg-ink px-4 py-2 text-sm font-bold text-sheet shadow-[var(--shadow-card)] hover:bg-violet disabled:cursor-progress disabled:opacity-70"
+            className="press w-fit rounded-[3px] bg-ink px-4 py-2 text-sm font-black text-paper hover:bg-band disabled:cursor-progress disabled:opacity-70"
           >
             {reviewing ? "Reading…" : d ? "Read it again" : "Read it"}
           </button>

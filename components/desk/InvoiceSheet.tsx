@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, useReducedMotion } from "motion/react";
 import { useMemo, useState } from "react";
 import { Stamp } from "@/components/Stamp";
 import type { DeskItem } from "@/lib/data";
@@ -28,7 +29,7 @@ function render(text: string, spans: Span[], activeNote: number | null) {
       const piece = text.slice(s.start, s.end);
       out.push(
         s.kind === "hidden" ? (
-          <mark key={i} className="rounded bg-card-block px-1 text-block">
+          <mark key={i} className="bg-pin-block/15 px-1 text-block outline outline-1 outline-block/50">
             {piece}
           </mark>
         ) : (
@@ -46,15 +47,17 @@ function render(text: string, spans: Span[], activeNote: number | null) {
 
 function BinderClip() {
   return (
-    <svg aria-hidden viewBox="0 0 96 40" className="absolute -top-5 left-1/2 h-10 w-24 -translate-x-1/2 drop-shadow-[0_3px_2px_oklch(0.12_0.1_274/0.45)]">
-      <path d="M20 22 L20 6 Q20 2 26 2 L70 2 Q76 2 76 6 L76 22" fill="none" stroke="oklch(0.78 0.01 274)" strokeWidth="3.5" />
-      <rect x="8" y="18" width="80" height="20" rx="3" fill="oklch(0.2 0.02 274)" />
-      <rect x="8" y="18" width="80" height="4" rx="2" fill="oklch(0.34 0.02 274)" />
+    <svg aria-hidden viewBox="0 0 96 42" className="absolute -top-5 left-1/2 h-10 w-24 -translate-x-1/2">
+      <rect x="10" y="22" width="80" height="18" rx="2" fill="var(--color-cork-deep)" />
+      <path d="M20 22 L20 6 Q20 2 26 2 L70 2 Q76 2 76 6 L76 22" fill="none" stroke="oklch(0.8 0.01 250)" strokeWidth="3.5" />
+      <rect x="8" y="19" width="80" height="18" rx="2" fill="var(--color-ink)" />
+      <rect x="8" y="19" width="80" height="4" rx="1.5" fill="oklch(0.4 0.06 258)" />
     </svg>
   );
 }
 
 export function InvoiceSheet({ item, fresh, activeNote }: { item: DeskItem; fresh: boolean; activeNote: number | null }) {
+  const reduce = useReducedMotion();
   const [showHidden, setShowHidden] = useState(false);
   const d = item.decision;
   const hidden = item.invoice.hiddenText ?? null;
@@ -76,10 +79,17 @@ export function InvoiceSheet({ item, fresh, activeNote }: { item: DeskItem; fres
 
   return (
     <article aria-label={`Invoice ${item.invoice.source}`} className="relative mx-auto w-full max-w-[760px] pt-6">
-      <div className="relative rounded-[4px] bg-sheet shadow-[var(--shadow-sheet)]">
+      {/* The paper jolts as a fresh stamp hits it. */}
+      <motion.div
+        key={fresh ? `thud-${d?.decidedAt}` : "still"}
+        className="relative rounded-[3px] bg-paper shadow-[var(--shadow-paper)]"
+        initial={false}
+        animate={fresh && !reduce ? { y: [0, 0, 4, 0], rotate: [0, 0, 0.35, 0] } : undefined}
+        transition={{ duration: 0.34, times: [0, 0.5, 0.7, 1], ease: "easeOut" }}
+      >
         <BinderClip />
         <header className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-rule px-7 pb-3 pt-7 font-type text-xs text-ink-2 sm:px-10">
-          <span className="rounded bg-ink px-1.5 py-0.5 font-sans text-[0.65rem] font-black tracking-[0.1em] text-sheet">{kindOf(item.invoice.source).toUpperCase()}</span>
+          <span className="rounded-[2px] bg-ink px-1.5 py-0.5 font-sans text-[0.65rem] font-black tracking-[0.1em] text-paper">{kindOf(item.invoice.source).toUpperCase()}</span>
           <span className="truncate">{item.invoice.source}</span>
           <span className="ml-auto">Received {stampDate(item.invoice.receivedAt)}</span>
         </header>
@@ -93,7 +103,7 @@ export function InvoiceSheet({ item, fresh, activeNote }: { item: DeskItem; fres
                 type="button"
                 onClick={() => setShowHidden((v) => !v)}
                 aria-pressed={showHidden}
-                className="press rounded-xl bg-block px-4 py-2 text-sm font-bold text-sheet shadow-[var(--shadow-card)] hover:brightness-110"
+                className="press rounded-[3px] bg-block px-4 py-2 text-sm font-black text-paper hover:brightness-110"
               >
                 {showHidden ? "Hide the invisible text" : "Reveal what the model was fed"}
               </button>
@@ -107,14 +117,14 @@ export function InvoiceSheet({ item, fresh, activeNote }: { item: DeskItem; fres
             <Stamp key={`${item.invoice.id}-${d.decidedAt}`} verdict={d.finalVerdict} subline={subline} fresh={fresh} />
           </div>
         ) : null}
-      </div>
+      </motion.div>
 
       {item.paid ? (
         <a
           href={item.paid.txHash ? `https://sepolia.basescan.org/tx/${item.paid.txHash}` : undefined}
           target="_blank"
           rel="noreferrer"
-          className="press mx-8 flex w-fit items-center gap-3 rounded-b-lg bg-card-pay px-4 py-2 font-type text-xs text-ink shadow-[var(--shadow-card)] hover:brightness-105 sm:mx-10"
+          className="press mx-8 flex w-fit items-center gap-3 rounded-b-[3px] bg-paper-2 px-4 py-2 font-type text-xs text-ink sm:mx-10"
         >
           <span className="font-sans font-black tracking-[0.1em] text-pay">PAID</span>
           <span>{item.paid.settledUsdc} test USDC</span>

@@ -73,10 +73,10 @@ export function PayoutsBoard({
       {/* The pay run */}
       <main className="px-4 pb-12 pt-6 sm:px-8 lg:scroll-y lg:min-h-0">
         <div className="mx-auto max-w-[720px]">
-          <h1 className="text-[2.6rem] font-black leading-none tracking-[-0.045em] text-on-desk">
+          <h1 className="text-[2.6rem] font-black leading-none tracking-[-0.045em] text-ink">
             {due.length ? `${due.length} to pay` : "Nothing left to pay"}
           </h1>
-          <p className="mt-2 text-on-desk-2">
+          <p className="mt-2 text-ink">
             {due.length
               ? `${usdc(dueTotal)} USDC, each to the wallet on file. Testnet moves 1/${Math.round(1 / scale)} of it.`
               : `${paid.length} invoice${paid.length === 1 ? "" : "s"} paid this month. Every transfer is on Base Sepolia.`}
@@ -88,24 +88,24 @@ export function PayoutsBoard({
                 type="button"
                 onClick={pay}
                 disabled={!!working}
-                className="press rounded-2xl bg-marker px-6 py-3.5 text-lg font-black text-ink shadow-[var(--shadow-card)] hover:bg-marker-press disabled:cursor-progress disabled:opacity-70"
+                className="press rounded-[3px] bg-marker px-6 py-3.5 text-lg font-black text-ink hover:bg-marker-press disabled:cursor-progress disabled:opacity-70"
               >
                 {working === "pay" ? "Paying…" : `Pay ${due.length} · ${usdc(dueTotal)} USDC`}
               </button>
               <ul className="flex flex-wrap gap-2">
                 {due.map((d) => (
-                  <li key={d.invoiceId} className="rounded-lg bg-card-pay px-2.5 py-1 text-sm font-bold text-ink">
+                  <li key={d.invoiceId} className="rounded-[2px] bg-paper px-2.5 py-1 text-sm font-bold text-ink shadow-[var(--shadow-press)]">
                     {d.name.split(" ")[0]} {usdc(d.amountUsdc)}
                   </li>
                 ))}
               </ul>
             </div>
           ) : null}
-          {error ? <p role="alert" className="mt-4 font-bold text-card-block">{error}</p> : null}
+          {error ? <p role="alert" className="mt-4 w-fit rounded-[2px] bg-paper px-3 py-2 font-bold text-block shadow-[var(--shadow-press)]">{error}</p> : null}
 
           <div className="mt-10 flex items-baseline justify-between">
-            <h2 className="text-lg font-black tracking-[-0.02em] text-on-desk">Receipts</h2>
-            <a href="/receipts.csv" className="text-sm font-bold text-marker underline-offset-4 hover:underline">
+            <h2 className="text-lg font-black tracking-[-0.02em] text-ink">Receipts</h2>
+            <a href="/receipts.csv" className="text-sm font-bold text-ink underline decoration-2 underline-offset-4">
               Download CSV for the books
             </a>
           </div>
@@ -113,10 +113,11 @@ export function PayoutsBoard({
             {paid.map((p, n) => (
               <motion.li
                 key={`${p.invoiceId}-${p.sentAt}`}
-                initial={reduce ? false : { opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.2, delay: Math.min(n, 6) * 0.04, ease: [0.23, 1, 0.32, 1] }}
-                className="receipt bg-sheet px-5 pt-4 font-type text-[0.8rem] text-ink shadow-[var(--shadow-card)]"
+                // Receipts print out of the top, one after another.
+                initial={reduce ? false : { clipPath: "inset(0 0 100% 0)", y: -12 }}
+                animate={{ clipPath: "inset(0 0 0% 0)", y: 0 }}
+                transition={{ duration: 0.45, delay: Math.min(n, 8) * 0.08, ease: [0.23, 1, 0.32, 1] }}
+                className="receipt bg-paper px-5 pt-4 font-type text-[0.8rem] text-ink shadow-[var(--shadow-card)]"
               >
                 <p className="text-center font-sans text-xs font-black tracking-[0.2em]">PAYRUN · BASE SEPOLIA</p>
                 <p className="mt-1 text-center text-[0.7rem] text-ink-2">{new Date(p.sentAt).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" })}</p>
@@ -138,13 +139,13 @@ export function PayoutsBoard({
                   <span>To</span>
                   <span>{shortHash(p.to)}</span>
                 </p>
-                <p className="mt-2 text-center font-sans text-sm font-black tracking-[0.14em] text-pay">{p.status === "sent" ? "✓ SENT" : p.status.toUpperCase()}</p>
+                <p className="mt-2 text-center font-sans text-sm font-black tracking-[0.14em] text-pay">{p.status === "sent" ? "SENT" : p.status.toUpperCase()}</p>
                 {p.txHash ? (
                   <a
                     href={`https://sepolia.basescan.org/tx/${p.txHash}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-1 block text-center text-[0.72rem] text-violet underline underline-offset-2"
+                    className="mt-1 block text-center text-[0.72rem] text-ink underline underline-offset-2"
                   >
                     {shortHash(p.txHash)} ↗
                   </a>
@@ -157,17 +158,17 @@ export function PayoutsBoard({
 
       {/* The wallet's own rules */}
       <aside aria-label="Wallet rules" className="px-4 pb-12 pt-6 sm:px-8 lg:scroll-y lg:min-h-0 lg:pl-2">
-        <h2 className="text-2xl font-black tracking-[-0.03em] text-on-desk">The wallet&apos;s own rules</h2>
-        <p className="mt-1 max-w-[40ch] text-sm text-on-desk-2">
+        <h2 className="text-2xl font-black tracking-[-0.03em] text-ink">The wallet&apos;s own rules</h2>
+        <p className="mt-1 max-w-[40ch] text-sm text-ink">
           Compiled from the same policy and attached to the paying wallet{payer ? ` (${shortHash(payer)})` : ""}. Coinbase&apos;s signer enforces them, not Payrun and not a model.
         </p>
         <ul className="mt-6 flex flex-col gap-3">
           {tags.map((t, n) => (
             <li key={t.id} className="flex items-center" style={{ rotate: `${n % 2 ? 0.6 : -0.6}deg` }}>
-              <svg aria-hidden viewBox="0 0 40 10" className="h-3 w-10 shrink-0 text-on-desk-2">
+              <svg aria-hidden viewBox="0 0 40 10" className="h-3 w-10 shrink-0 text-ink">
                 <path d="M0 5 C 12 1, 26 9, 40 5" fill="none" stroke="currentColor" strokeWidth="1.5" />
               </svg>
-              <div className="tag flex flex-1 items-center justify-between gap-3 bg-card-hold py-2.5 pr-4 shadow-[var(--shadow-card)]">
+              <div className="tag flex flex-1 items-center justify-between gap-3 bg-manila py-2.5 pr-4">
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-black text-ink">{t.name}</span>
                   <span className="block font-type text-[0.7rem] text-ink-2">{shortHash(t.wallet)}</span>
@@ -181,21 +182,21 @@ export function PayoutsBoard({
           ))}
         </ul>
 
-        <div className="mt-8 rounded-2xl bg-desk-deep p-5">
-          <p className="text-lg font-black tracking-[-0.02em] text-on-desk">What if a model got fooled?</p>
-          <p className="mt-1 text-sm text-on-desk-2">Skip every check and ask the wallet directly to pay the address from Akosua&apos;s &quot;new wallet&quot; email.</p>
+        <div className={`mt-8 rounded-[3px] bg-band p-5 shadow-[var(--shadow-paper)] ${scam?.refused ? "refuse" : ""}`} key={scam ? "tried" : "idle"}>
+          <p className="text-lg font-black tracking-[-0.02em] text-on-band">What if a model got fooled?</p>
+          <p className="mt-1 text-sm text-on-band-2">Skip every check and ask the wallet directly to pay the address from Akosua&apos;s &quot;new wallet&quot; email.</p>
           <div className="mt-4 flex items-center gap-4">
             <button
               type="button"
               onClick={scamTry}
               disabled={!!working}
-              className="press rounded-xl bg-block px-4 py-2.5 text-sm font-black text-sheet shadow-[var(--shadow-card)] hover:brightness-110 disabled:cursor-progress disabled:opacity-70"
+              className="press rounded-[3px] bg-block px-4 py-2.5 text-sm font-black text-paper hover:brightness-110 disabled:cursor-progress disabled:opacity-70"
             >
               {working === "scam" ? "Asking the signer…" : `Pay ${shortHash(SCAMMER)} 1 USDC`}
             </button>
           </div>
           {scam ? (
-            <div className="mt-5 flex items-center gap-4 rounded-xl bg-sheet p-4">
+            <div className="mt-5 flex items-center gap-4 rounded-[3px] bg-paper p-4">
               <Stamp verdict={scam.refused ? "BLOCK" : "PAY"} size="sm" fresh />
               <p className="text-sm text-ink">
                 <b>{scam.refused ? "Refused by Coinbase's signer." : "It went through."}</b> <span className="text-ink-2">{scam.message}</span>

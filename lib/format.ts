@@ -8,11 +8,11 @@ export const shortHash = (h: string) => `${h.slice(0, 6)}…${h.slice(-4)}`;
 export const stampDate = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
 
-/** Word + shape for every verdict, so colour is never the only signal. */
-export const VERDICT: Record<Verdict, { word: string; glyph: string; label: string }> = {
-  PAY: { word: "PAY", glyph: "✓", label: "Approved to pay" },
-  HOLD: { word: "HOLD", glyph: "‖", label: "Held for a person" },
-  BLOCK: { word: "BLOCK", glyph: "✕", label: "Blocked" },
+/** Every verdict travels as a word, so colour is never the only signal. */
+export const VERDICT: Record<Verdict, { word: string; label: string }> = {
+  PAY: { word: "PAY", label: "Approved to pay" },
+  HOLD: { word: "HOLD", label: "Held for a person" },
+  BLOCK: { word: "BLOCK", label: "Blocked" },
 };
 
 /** Find a cited quote in the invoice text, tolerant of quote marks and whitespace. */

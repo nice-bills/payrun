@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { adoptReading, makeLive, replayDraft } from "@/app/actions";
+import { Pin } from "@/components/Pin";
 import { Stamp } from "@/components/Stamp";
 import { VERDICT } from "@/lib/format";
 import type { GapKind, GapReport } from "@/src/core/gaps";
@@ -19,7 +20,12 @@ const KIND: Record<GapKind, string> = {
 
 function VerdictMark({ v }: { v: Verdict }) {
   const ink = { PAY: "text-pay", HOLD: "text-hold", BLOCK: "text-block" }[v];
-  return <span className={`font-sans text-[0.7rem] font-black tracking-[0.12em] ${ink}`}>{VERDICT[v].glyph} {VERDICT[v].word}</span>;
+  return (
+    <span className={`inline-flex items-center gap-1 font-sans text-[0.72rem] font-black tracking-[0.14em] ${ink}`}>
+      <Pin verdict={v} className="size-4" />
+      {VERDICT[v].word}
+    </span>
+  );
 }
 
 export function PolicyBoard({
@@ -103,7 +109,7 @@ export function PolicyBoard({
                   aria-selected={selected}
                   onClick={() => setShown(p.version)}
                   className={`rounded-t-lg px-4 pb-2 pt-2.5 font-type text-xs font-bold transition-colors duration-150 ${
-                    selected ? "bg-sheet text-ink" : "bg-desk-line/70 text-on-desk-2 hover:text-on-desk"
+                    selected ? "bg-paper text-ink" : "bg-cork-dark text-paper hover:bg-cork-deep"
                   }`}
                 >
                   v{p.version} {p.version === live.version ? "· live" : p.version > live.version ? "· draft" : ""}
@@ -117,12 +123,12 @@ export function PolicyBoard({
             initial={reduce ? false : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
-            className="relative rounded-[4px] bg-sheet px-7 pb-10 pt-8 shadow-[var(--shadow-sheet)] sm:px-12"
+            className="relative rounded-[4px] bg-paper px-7 pb-10 pt-8 shadow-[var(--shadow-paper)] sm:px-12"
           >
             <div className="absolute right-6 top-6 sm:right-10">
               <span
                 className="stamp inline-block rounded-[6px] px-4 py-2 font-sans text-2xl font-black tracking-[0.08em]"
-                style={{ ["--stamp-ink" as string]: isDraft ? "var(--color-hold)" : version.version === live.version ? "var(--color-violet)" : "var(--color-ink-3)", rotate: "-6deg" }}
+                style={{ ["--stamp-ink" as string]: isDraft ? "var(--color-hold)" : version.version === live.version ? "var(--color-ink)" : "var(--color-ink-3)", rotate: "-6deg" }}
               >
                 {version.version === live.version ? "LIVE" : isDraft ? "DRAFT" : "OLD"}
               </span>
@@ -157,7 +163,7 @@ export function PolicyBoard({
             </ol>
 
             {isDraft ? (
-              <div className="mt-8 rounded-xl bg-desk px-5 py-4 text-on-desk">
+              <div className="mt-8 rounded-[3px] bg-band px-5 py-4 text-on-band">
                 {replayForShown ? (
                   <>
                     <p className="text-lg font-black tracking-[-0.02em]">
@@ -168,7 +174,7 @@ export function PolicyBoard({
                     {replayForShown.flips.length ? (
                       <ul className="mt-3 flex flex-col gap-2">
                         {replayForShown.flips.map((f) => (
-                          <li key={f.invoiceId} className="flex flex-wrap items-center gap-3 rounded-lg bg-sheet px-3 py-2 text-ink">
+                          <li key={f.invoiceId} className="flex flex-wrap items-center gap-3 rounded-[3px] bg-paper px-3 py-2 text-ink">
                             <span className="min-w-0 flex-1 truncate text-sm font-bold">
                               {(f.after.contractorId && names[f.after.contractorId]) || f.invoiceId}
                             </span>
@@ -183,7 +189,7 @@ export function PolicyBoard({
                       type="button"
                       onClick={goLive}
                       disabled={!!working}
-                      className="press mt-4 rounded-xl bg-marker px-4 py-2 text-sm font-black text-ink hover:bg-marker-press disabled:opacity-70"
+                      className="press mt-4 rounded-[4px] bg-marker px-4 py-2 text-sm font-black text-ink hover:bg-marker-press disabled:opacity-70"
                     >
                       {working === "live" ? "Switching…" : `Make v${version.version} live`}
                     </button>
@@ -191,12 +197,12 @@ export function PolicyBoard({
                 ) : (
                   <>
                     <p className="text-lg font-black tracking-[-0.02em]">Before this goes live</p>
-                    <p className="mt-1 text-sm text-on-desk-2">Re-read this month&apos;s invoices under v{version.version} and see which verdicts would change.</p>
+                    <p className="mt-1 text-sm text-on-band-2">Re-read this month&apos;s invoices under v{version.version} and see which verdicts would change.</p>
                     <button
                       type="button"
                       onClick={doReplay}
                       disabled={!!working}
-                      className="press mt-3 rounded-xl bg-marker px-4 py-2 text-sm font-black text-ink hover:bg-marker-press disabled:cursor-progress disabled:opacity-70"
+                      className="press mt-3 rounded-[4px] bg-marker px-4 py-2 text-sm font-black text-ink hover:bg-marker-press disabled:cursor-progress disabled:opacity-70"
                     >
                       {working === "replay" ? "Re-reading the month…" : `Replay under v${version.version}`}
                     </button>
@@ -211,8 +217,8 @@ export function PolicyBoard({
 
       {/* Holes in the policy, as sticky notes */}
       <aside aria-label="Holes in the policy" className="px-4 pb-12 pt-6 sm:px-8 lg:scroll-y lg:min-h-0 lg:pl-2">
-        <h2 className="text-2xl font-black tracking-[-0.03em] text-on-desk">{open.length} holes in v{gaps?.policyVersion ?? live.version}</h2>
-        <p className="mt-1 max-w-[34ch] text-sm text-on-desk-2">SERV wrote invoices aimed at your wording. These are the cases it leaves to the reviewer&apos;s guess.</p>
+        <h2 className="text-2xl font-black tracking-[-0.03em] text-ink">{open.length} holes in v{gaps?.policyVersion ?? live.version}</h2>
+        <p className="mt-1 max-w-[34ch] text-sm text-ink">SERV wrote invoices aimed at your wording. These are the cases it leaves to the reviewer&apos;s guess.</p>
         <ul className="mt-6 flex flex-col gap-6">
           {open.map(({ r, i }, n) => {
             const today = r.verdicts[0];
@@ -220,7 +226,7 @@ export function PolicyBoard({
             return (
               <li
                 key={i}
-                className="rounded-md bg-note px-5 pb-5 pt-4 shadow-[var(--shadow-card)]"
+                className="rounded-[3px] bg-note px-5 pb-5 pt-4 shadow-[var(--shadow-card)]"
                 style={{ rotate: `${n % 2 ? 0.8 : -0.8}deg` }}
               >
                 <p className="font-type text-[0.7rem] font-bold uppercase tracking-[0.12em] text-ink-2">{KIND[r.gap[0]]}</p>
@@ -231,7 +237,7 @@ export function PolicyBoard({
                   {new Set(r.verdicts).size > 1 ? <span className="ml-1">(varies: {r.verdicts.join(" / ")})</span> : null}
                 </p>
                 {done ? (
-                  <p className="mt-4 rounded-lg bg-sheet px-3 py-2 text-sm font-bold text-pay">✓ Settled in v{done}</p>
+                  <p className="mt-4 rounded-[3px] bg-paper px-3 py-2 text-sm font-bold text-pay">✓ Settled in v{done}</p>
                 ) : (
                   <div className="mt-4 flex flex-col gap-2">
                     <p className="text-xs font-bold text-ink-2">Which do you mean?</p>
@@ -241,7 +247,7 @@ export function PolicyBoard({
                         type="button"
                         onClick={() => adopt(i, k)}
                         disabled={!!working}
-                        className="press group flex flex-col gap-1 rounded-lg bg-sheet px-3 py-2.5 text-left shadow-[var(--shadow-card)] hover:ring-2 hover:ring-ink disabled:opacity-60"
+                        className="press group flex flex-col gap-1 rounded-[3px] bg-paper px-3 py-2.5 text-left shadow-[var(--shadow-card)] hover:ring-2 hover:ring-ink disabled:opacity-60"
                       >
                         <span className="flex items-center gap-2">
                           <VerdictMark v={reading.verdict} />
@@ -258,7 +264,7 @@ export function PolicyBoard({
           })}
         </ul>
         {!open.length ? (
-          <div className="mt-8 flex items-center gap-4 text-on-desk">
+          <div className="mt-8 flex items-center gap-4 text-ink">
             <Stamp verdict="PAY" size="sm" />
             <p className="text-sm">No open holes. Run the gap finder after changing the policy.</p>
           </div>

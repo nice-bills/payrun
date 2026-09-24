@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export default function PolicyPage() {
   const data = loadDesk();
   if (!data.policy) {
-    return <p className="p-10 text-on-desk">No policy yet. Run the init command to load one.</p>;
+    return <p className="p-10 text-ink">No policy yet. Run the init command to load one.</p>;
   }
   return (
     <PolicyBoard

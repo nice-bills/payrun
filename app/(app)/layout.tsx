@@ -11,7 +11,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const data = loadDesk();
   const toPay = data.items.filter((i) => i.decision?.finalVerdict === "PAY" && i.paid?.status !== "sent");
   return (
-    <div className="desk-surface flex h-dvh flex-col overflow-hidden">
+    <div className="cork flex h-dvh flex-col overflow-hidden">
       <TopBar
         policyVersion={data.policy?.version ?? null}
         toPay={toPay.length}
