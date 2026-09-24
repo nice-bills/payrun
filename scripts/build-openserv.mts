@@ -9,30 +9,45 @@
  * Then: npx @openserv-labs/client deploy openserv/deploy
  */
 import { build } from "esbuild";
-import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { agentkitLite } from "../openserv/lite/plugin.mjs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { parse } from "dotenv";
 
 const out = "openserv/deploy";
+// Start clean so files from older builds (lockfile, .npmrc) are not shipped.
+for (const f of ["package-lock.json", ".npmrc"]) rmSync(`${out}/${f}`, { force: true });
 mkdirSync(`${out}/src`, { recursive: true });
-await build({ entryPoints: ["openserv/agent.ts"], bundle: true, platform: "node", format: "esm", packages: "external", outfile: `${out}/src/agent.ts`, logLevel: "warning" });
+// Everything in one file: the container has 1 GB of RAM, too little for npm to install AgentKit's
+// full tree, and AgentKit's index loads every integration it ships. The agentkit-lite plugin keeps
+// only the CDP EVM wallet provider and the ERC-20 actions Payrun uses.
+await build({
+  entryPoints: ["openserv/agent.ts"],
+  bundle: true,
+  platform: "node",
+  format: "esm",
+  target: "node20",
+  minify: true,
+  outfile: `${out}/src/agent.mjs`,
+  external: ["bufferutil", "utf-8-validate"],
+  banner: { js: "import{createRequire as __cr}from'module';const require=__cr(import.meta.url);" },
+  plugins: [agentkitLite],
+  logLevel: "warning",
+});
 
-const root = JSON.parse(readFileSync("package.json", "utf8"));
-const arena = !!process.env.PAYRUN_ARENA_WALLET || /^PAYRUN_ARENA_WALLET=0x/m.test(readFileSync(".env", "utf8"));
-const deps = ["@openserv-labs/client", "@openserv-labs/sdk", "dotenv", "tsx", "unpdf", "viem", "zod", ...(arena ? ["@coinbase/agentkit", "@coinbase/cdp-sdk", "graphql"] : [])];
-// Peers the SDK needs at runtime; legacy-peer-deps won't install them on its own.
-const peers: Record<string, string> = { openai: "^7.23.0" };
-const pick = (n: string) => root.dependencies?.[n] ?? root.devDependencies?.[n];
+// OpenServ starts `npx tsx src/agent.ts`. tsx compiles its entry in memory, and a 9 MB bundle
+// runs the 1 GB container out of memory, so the entry is a launcher that runs the bundle on plain node.
 writeFileSync(
-  `${out}/package.json`,
-  JSON.stringify({ name: "payrun-check", private: true, type: "module", scripts: { start: "tsx src/agent.ts" }, engines: { node: ">=20" }, dependencies: { ...Object.fromEntries(deps.map((n) => [n, pick(n) ?? "latest"])), ...peers } }, null, 2) + "\n",
+  `${out}/src/agent.ts`,
+  `import { spawn } from "node:child_process";\nconst child = spawn(process.execPath, ["src/agent.mjs"], { stdio: "inherit", env: process.env });\nfor (const s of ["SIGINT", "SIGTERM"] as const) process.on(s, () => child.kill(s));\nchild.on("exit", (code) => process.exit(code ?? 1));\n`,
 );
+const root = JSON.parse(readFileSync("package.json", "utf8"));
+const tsx = root.devDependencies?.tsx ?? root.dependencies?.tsx ?? "latest";
+// The entrypoint OpenServ runs is `npx tsx src/agent.ts`; the bundle needs nothing else.
+writeFileSync(`${out}/package.json`, JSON.stringify({ name: "payrun-check", private: true, type: "module", scripts: { start: "tsx src/agent.ts" }, engines: { node: ">=20" }, dependencies: { tsx } }, null, 2) + "\n");
 writeFileSync(`${out}/.gitignore`, "node_modules\n");
-// The app's lockfile pins the Coinbase/Solana versions that work together; npm keeps them and prunes the rest.
-copyFileSync("package-lock.json", `${out}/package-lock.json`);
-// Same as the app: the OpenServ SDK still declares zod 3 peers; it runs fine on zod 4.
-writeFileSync(`${out}/.npmrc`, "legacy-peer-deps=true\n");
 
 const env = parse(readFileSync(".env"));
+const arena = !!process.env.PAYRUN_ARENA_WALLET || /^PAYRUN_ARENA_WALLET=0x/m.test(readFileSync(".env", "utf8"));
 const keep = [
   // Scam Payrun drives its own arena wallet, so the container needs CDP keys. The payroll wallet
   // (PAYRUN_WALLET_ADDRESS) is deliberately not passed.

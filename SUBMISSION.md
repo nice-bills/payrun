@@ -51,7 +51,7 @@ Record the local app (not the hosted demo) at 1440×900 so live actions work. Sa
 
 > We gave an AI payroll agent a wallet. Try to scam it.
 >
-> Send Payrun any invoice: hidden text, fake approvals, a frozen-wallet sob story. If it pays you, you keep it. <arena link>
+> Send Payrun any invoice: hidden text, fake approvals, a frozen-wallet sob story. If it pays you, you keep it. https://payrun-app.vercel.app/arena
 >
 > Built on @openservai SERV Reasoning + Coinbase AgentKit. Every attempt shows which layer caught it.
 
