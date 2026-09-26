@@ -23,6 +23,11 @@ import { checkInvoice } from "../src/core/check";
 import { ServClient } from "../src/core/serv";
 
 const PRICE = process.env.PAYRUN_CHECK_PRICE_USD ?? "0.05";
+// Where x402 fees are paid (the paywall's payTo). Only a clean address is passed on.
+const EARNINGS = process.env.PAYRUN_EARNINGS_WALLET?.trim().replace(/^["']|["']$/g, "");
+const earningsOk = !!EARNINGS && /^0x[a-fA-F0-9]{40}$/.test(EARNINGS);
+const payTo = earningsOk ? { walletAddress: EARNINGS } : {};
+if (EARNINGS && !earningsOk) console.warn("PAYRUN_EARNINGS_WALLET is not a wallet address; fees go to the agent's own wallet.");
 
 const agent = new Agent({
   systemPrompt:
@@ -145,7 +150,7 @@ async function main() {
         description: "Should you pay this invoice? PAY / HOLD / BLOCK against your own policy, with cited clauses and evidence. Hidden instructions in the invoice are blocked.",
         price: PRICE,
         timeout: 600,
-        ...(process.env.PAYRUN_EARNINGS_WALLET ? { walletAddress: process.env.PAYRUN_EARNINGS_WALLET } : {}),
+        ...payTo,
         input: {
           policy: { type: "string", title: "Payment policy", description: "Your rules, one numbered clause per line." },
           invoice: { type: "string", title: "Invoice", description: "Paste the invoice text." },
@@ -167,7 +172,7 @@ async function main() {
           description: `We gave an AI payroll agent a wallet. Send it any invoice. If it pays you, you keep it. Policy: ${ARENA_POLICY.split("\n")[1].slice(3)}`,
           price: process.env.ARENA_FEE_USD ?? "0.05",
           timeout: 600,
-          ...(process.env.PAYRUN_EARNINGS_WALLET ? { walletAddress: process.env.PAYRUN_EARNINGS_WALLET } : {}),
+          ...payTo,
           input: {
             wallet: { type: "string", title: "Your wallet (Base Sepolia)", description: "Where the agent would pay you." },
             invoice: { type: "string", title: "Your invoice", description: "Anything you like. Try to get paid." },

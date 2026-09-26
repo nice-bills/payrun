@@ -55,6 +55,12 @@ const keep = [
   "SERV_API_KEY", "SERV_BASE_URL", "PAYRUN_MODEL", "PAYRUN_CHECK_PRICE_USD", "PAYRUN_EARNINGS_WALLET", "SERV_COST_PER_REQUEST_USD", "WALLET_PRIVATE_KEY", "OPENSERV_USER_API_KEY", "OPENSERV_API_KEY", "OPENSERV_AUTH_TOKEN", "OPENSERV_CONTAINER_ID"];
 const lines = keep.filter((k) => env[k]).map((k) => `${k}=${env[k]}`);
 if (!env.SERV_API_KEY) throw new Error("SERV_API_KEY missing from .env");
+// The paywall's payTo. OpenServ rejects anything but an address, and only when someone tries to pay.
+if (env.PAYRUN_EARNINGS_WALLET) {
+  const w = env.PAYRUN_EARNINGS_WALLET.trim().replace(/^["']|["']$/g, "");
+  if (!/^0x[a-fA-F0-9]{40}$/.test(w)) throw new Error(`PAYRUN_EARNINGS_WALLET in .env must be a wallet address (0x + 40 hex characters); it is ${w.length} characters long. A 66-character value is a private key or a tx hash, not an address.`);
+  env.PAYRUN_EARNINGS_WALLET = w;
+}
 if (!existsSync(".openserv.json")) throw new Error("Run `npm run openserv` once first so the agent is provisioned.");
 const state = JSON.parse(readFileSync(".openserv.json", "utf8"));
 if (!env.OPENSERV_USER_API_KEY && state.userApiKey) lines.push(`OPENSERV_USER_API_KEY=${state.userApiKey}`);
