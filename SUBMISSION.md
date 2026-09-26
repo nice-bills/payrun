@@ -11,7 +11,10 @@ Rules: public X post tagging @openservai (name, concept, images, links), then th
   - Payrun Check: https://platform.openserv.ai/workspace/paywall/274c7b5ee0c745d6afbfa9f35264be85
   - Scam Payrun: https://platform.openserv.ai/workspace/paywall/09f842a0b0f44028bdb12f90dffee47f (arena wallet `0x1BFB…4e24`, 20 test USDC, signer caps each payout at 0.5)
 
-Before recording, get one attempt onto the public board (laptop): fix `PAYRUN_EARNINGS_WALLET` in `.env` (a bare `0x` + 40 hex, no quotes or spaces), run `npm run cli -- arena try --wallet 0x… --file attempt.txt`, then pay one attempt through the Scam Payrun paywall yourself.
+Before recording (laptop):
+1. `npm run cli -- arena try …` for each sample in `fixtures/arena/` (done: two attempts, both caught by SERV), then `npm run cli -- arena snapshot` and commit `demo/arena-board.json`, so the hosted `/arena` shows the board even while the container sleeps.
+2. Record from a production build so the Next.js dev badge is gone: `npm run build && npx next start --port 3100`, with `NEXT_PUBLIC_ARENA_BOARD_URL=/arena/board.json` in `.env.local`.
+3. Browser at 1440×900, zoom 100%, bookmarks bar hidden.
 
 ## 2. The 2-minute video
 
@@ -20,7 +23,7 @@ Record the local app (not the hosted demo) at 1440×900 so live actions work. Sa
 | Time | Screen | Say |
 |---|---|---|
 | 0:00–0:10 | Landing hero: the stamp lands, the hidden line appears | "Small companies pay contractors in USDC. This invoice looks fine. It has an instruction hidden in white text, for whatever AI reads it." |
-| 0:10–0:20 | `/start`: the seven setup steps tick down (policy, holes, contractors, wallet, wallet rules, funding, run payroll) | "Setting up takes one page: write the policy, add contractors, create a Coinbase wallet and give it its own rules." |
+| 0:10–0:20 | Landing, scroll to "Watch the pile sort itself": two or three cards pass the four layers and land in their trays | "Every invoice meets four layers: SERV's guard, code checks, SERV Reasoning, and Coinbase's signer. The first one that objects decides." |
 | 0:20–0:32 | Click the PDF on the desk → "Reveal what the model was fed" | "SERV's guard refused this one before the model saw it. Zero tokens." |
 | 0:32–0:45 | Akosua's invoice: hover a red-pen note, evidence rings | "Every verdict cites the clause and points at the words that decided it." |
 | 0:45–1:05 | Policy: SERV's wording notes, a sticky-note hole, pick a reading, replay "1 of 10 change", Make live | "SERV also finds the holes in your policy. You decide what you meant; replay shows what changes before it goes live." |

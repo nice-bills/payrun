@@ -267,7 +267,7 @@ export function PileMachine() {
           })}
         </div>
       </div>
-      <p className="mt-6 text-center font-type text-xs text-ink">{reduce ? "A finished run." : paused ? "Paused. Move away to carry on." : "Hover to pause."}</p>
+      <p className="mt-6 text-center font-type text-xs text-ink">{reduce ? "An illustration of a finished run." : paused ? "Paused. Move away to carry on." : "An illustration of a pay run. Hover to pause."}</p>
     </div>
   );
 }
