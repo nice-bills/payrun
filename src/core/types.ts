@@ -111,6 +111,8 @@ export interface CallMeta {
   traceFile: string | null;
   /** Answered from a recorded SERV response rather than a live call. */
   replayed: boolean;
+  /** SERV's x-openserv-request-id: look the call up in the OpenServ console (usage, Shadow Agent report). */
+  requestId?: string | null;
 }
 
 export interface Decision {

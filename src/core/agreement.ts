@@ -1,7 +1,7 @@
 import { isAddress } from "viem";
 import { SMALL_MODEL } from "./decide";
 import type { ServClient } from "./serv";
-import type { Contractor, ExpenseApproval } from "./types";
+import type { CallMeta, Contractor, ExpenseApproval } from "./types";
 
 /**
  * SERV reads a contractor agreement (or the email that confirms one) and fills
@@ -51,6 +51,7 @@ export interface AgreementDraft {
   contractor: Partial<Contractor>;
   notes: string | null;
   missing: string[];
+  meta?: CallMeta;
 }
 
 interface RawAgreement {
@@ -88,7 +89,7 @@ export async function readAgreement(serv: ServClient, text: string, model = SMAL
     ),
   };
   const missing = (["name", "email", "wallet", "dayRateUsdc", "monthlyDayCap", "scope"] as const).filter((k) => contractor[k] === undefined);
-  return { contractor, notes: a.notes, missing };
+  return { contractor, notes: a.notes, missing, meta: r.meta };
 }
 
 export function slugId(name: string, taken: Set<string>): string {

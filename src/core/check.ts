@@ -28,6 +28,8 @@ export interface CheckResult {
   termsRead: Partial<Contractor> | null;
   termsMissing: string[];
   servRequests: number;
+  /** x-openserv-request-id of every SERV call behind this verdict, for the caller's audit trail. */
+  servRequestIds: string[];
 }
 
 export async function checkInvoice(serv: ServClient, input: CheckInput): Promise<CheckResult> {
@@ -38,9 +40,11 @@ export async function checkInvoice(serv: ServClient, input: CheckInput): Promise
   let termsRead: Partial<Contractor> | null = null;
   let termsMissing: string[] = ["terms"];
   let requests = 0;
+  const ids: string[] = [];
   if (input.terms?.trim()) {
     const draft = await readAgreement(serv, input.terms);
     requests++;
+    if (draft.meta?.requestId) ids.push(draft.meta.requestId);
     termsRead = draft.contractor;
     termsMissing = draft.missing;
     const c = draft.contractor;
@@ -57,6 +61,7 @@ export async function checkInvoice(serv: ServClient, input: CheckInput): Promise
     mode: MODES.serv,
   });
   requests += d.calls.length;
+  ids.push(...d.calls.flatMap((c) => (c.requestId ? [c.requestId] : [])));
   const cited = d.judgment?.citedClauses ?? [];
   return {
     verdict: d.finalVerdict,
@@ -69,5 +74,6 @@ export async function checkInvoice(serv: ServClient, input: CheckInput): Promise
     termsRead,
     termsMissing,
     servRequests: requests,
+    servRequestIds: ids,
   };
 }

@@ -66,6 +66,7 @@ The wallet signs only what Payrun Check asked for: USDC on Base, up to `maxPrice
 | Pay run | SERV agent with AgentKit tools (`tool_choice: required`, one action per turn), Shadow Agent on each decision |
 | For other agents | Payrun Check on OpenServ's x402 market |
 | Controls | Raw mode (`x-openserv-disable-braid`) as the comparison arm for every measurement |
+| Audit trail | Every SERV call keeps its `x-openserv-request-id`: on the verdict card, on each SERV step of a pay run, in the receipts CSV (`serv_request_ids`) and in every Payrun Check reply (`servRequestIds`), so any verdict can be looked up in the OpenServ console |
 
 ## Measured, not claimed
 

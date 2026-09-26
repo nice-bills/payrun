@@ -143,7 +143,7 @@ export function LegalPad({
             type="button"
             onClick={onReview}
             disabled={reviewing}
-            className="press w-fit rounded-[3px] bg-ink px-4 py-2 text-sm font-black text-paper hover:bg-band disabled:cursor-progress disabled:opacity-70"
+            className="press w-fit shrink-0 whitespace-nowrap rounded-[3px] bg-ink px-4 py-2 text-sm font-black text-paper hover:bg-band disabled:cursor-progress disabled:opacity-70"
           >
             {reviewing ? "Reading…" : d ? "Read it again" : "Read it"}
           </button>
@@ -156,6 +156,14 @@ export function LegalPad({
             <br />
             policy v{d?.policyVersion} #{d?.policyHash.slice(0, 7)}
             {judge.replayed ? " · replayed" : ""}
+            {judge.requestId ? (
+              <>
+                <br />
+                <span className="whitespace-nowrap" title={`SERV request ${judge.requestId}: look this verdict up in the OpenServ console`}>
+                  req {judge.requestId.slice(0, 13)}…
+                </span>
+              </>
+            ) : null}
           </p>
         ) : null}
       </div>

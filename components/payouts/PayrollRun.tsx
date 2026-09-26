@@ -158,6 +158,11 @@ export function PayrollRun({ open, scale }: { open: OpenRow[]; scale: number }) 
                           {shortHash(st.txHash)}
                         </a>
                       ) : null}
+                      {st.requestId ? (
+                        <span className="ml-1.5 whitespace-nowrap font-type text-[0.68rem] text-ink-2" title={`SERV request ${st.requestId}: look it up in the OpenServ console`}>
+                          req {st.requestId.slice(0, 8)}
+                        </span>
+                      ) : null}
                     </span>
                   </motion.li>
                 ))}

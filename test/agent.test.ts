@@ -182,3 +182,20 @@ describe("Scam Payrun arena", () => {
     expect(JSON.stringify(b)).not.toContain("INVOICE");
   });
 });
+
+describe("SERV request ids", () => {
+  it("keeps x-openserv-request-id on every call and on the agent's SERV steps", async () => {
+    const k = await import("../scripts/demo/kit");
+    const { serv } = k.scriptedServ([k.say.content(extracted()), k.say.call("hold_invoice", { cited_clauses: [1], reasons, policy_covers: true, question_for_owner: "?" })]);
+    const run = await runInvoiceAgent(serv, { invoice, policy, contractors, history: [], wallet: null });
+    const ids = run.decision.calls.map((c) => c.requestId);
+    expect(ids.every((id) => /^req_demo_\d+$/.test(id ?? ""))).toBe(true);
+    expect(new Set(ids).size).toBe(ids.length);
+    const servSteps = run.steps.filter((s) => s.actor === "SERV");
+    expect(servSteps.map((s) => s.requestId)).toEqual(ids);
+    const { receiptsCsv } = await import("../src/core/receipts");
+    const csv = receiptsCsv([run.decision], [], contractors);
+    expect(csv.split("\n")[0]).toContain("serv_request_ids");
+    expect(csv.split("\n")[1]).toContain(ids.join(" "));
+  });
+});

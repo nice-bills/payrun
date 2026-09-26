@@ -35,6 +35,8 @@ export interface AgentStep {
   /** true passed, false refused or blocked, null informational. */
   ok: boolean | null;
   txHash?: string | null;
+  /** The SERV request behind a SERV step (x-openserv-request-id). */
+  requestId?: string | null;
 }
 
 export interface AgentRun {
@@ -186,10 +188,10 @@ export async function runInvoiceAgent(serv: ServClient, input: AgentInput): Prom
   const ex = await extractFields(serv, invoice.rawText, { model: SMALL_MODEL, raw: false, guard: true }, `extract-serv-${invoice.id}`);
   calls.push(ex.meta);
   if (ex.meta.guardBlocked) {
-    step({ actor: "SERV", title: "Prompt Guard refused the invoice", detail: "An instruction aimed at the reviewer was found. No model read it (0 tokens), and no tool can be called for it.", ok: false });
+    step({ actor: "SERV", title: "Prompt Guard refused the invoice", detail: "An instruction aimed at the reviewer was found. No model read it (0 tokens), and no tool can be called for it.", ok: false, requestId: ex.meta.requestId });
     return done({ fields: null, contractorId: null, findings: [], judgment: null, finalVerdict: "BLOCK", payAmountUsdc: 0, overriddenBy: [], blockedByGuard: true });
   }
-  step({ actor: "SERV", title: "Prompt Guard passed the invoice", detail: "Fields read from the invoice with the guard on.", ok: true });
+  step({ actor: "SERV", title: "Prompt Guard passed the invoice", detail: "Fields read from the invoice with the guard on.", ok: true, requestId: ex.meta.requestId });
   const fields = ex.fields;
   if (!fields) {
     step({ actor: "Payrun", title: "Could not read the invoice", detail: "Held for a person.", ok: false });
@@ -234,13 +236,13 @@ export async function runInvoiceAgent(serv: ServClient, input: AgentInput): Prom
     calls.push(res.meta);
     const tc = res.toolCalls[0];
     if (!tc) {
-      step({ actor: "SERV", title: "Answered without acting", detail: res.content.slice(0, 200) || "No tool call.", ok: false });
+      step({ actor: "SERV", title: "Answered without acting", detail: res.content.slice(0, 200) || "No tool call.", ok: false, requestId: res.meta.requestId });
       break;
     }
     const args = parseArgs(tc.arguments) ?? {};
     turns.push({ role: "assistant", content: null, tool_calls: [{ id: tc.id, type: "function", function: { name: tc.name, arguments: tc.arguments } }] });
     const reply = (content: string) => turns.push({ role: "tool", tool_call_id: tc.id, content });
-    step({ actor: "SERV", title: `called ${tc.name}`, detail: summarizeCall(tc.name, args), ok: null });
+    step({ actor: "SERV", title: `called ${tc.name}`, detail: summarizeCall(tc.name, args), ok: null, requestId: res.meta.requestId });
 
     if (tc.name === "check_balance") {
       if (!wallet) {
