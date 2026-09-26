@@ -62,6 +62,7 @@ const check = actions.find((a) => a.name.endsWith("payrun_check_invoice"))!;
 head("An AgentKit agent with Payrun installed");
 line(`Wallet ${walletProvider.getAddress()} on ${walletProvider.getNetwork().networkId}`);
 line(`Actions: ${actions.map((a) => a.name.replace(/^CustomActionProvider_/, "")).join(", ")}`);
+if (!live) line("Offline run: a local x402 trigger verifies the signature and runs the real check. No USDC moves; the settlement hash and request ids are placeholders.");
 
 for (const k of ["clean", "hidden"] as const) {
   current = k;

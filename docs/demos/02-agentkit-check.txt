@@ -2,6 +2,7 @@
 An AgentKit agent with Payrun installed
 Wallet 0x3b19fC22962a86D55547bE3B84079dF27cb467fF on base-mainnet
 Actions: ERC20ActionProvider_get_balance, ERC20ActionProvider_transfer, ERC20ActionProvider_approve, ERC20ActionProvider_get_allowance, ERC20ActionProvider_get_erc20_token_address, payrun_check_invoice
+Offline run: a local x402 trigger verifies the signature and runs the real check. No USDC moves; the settlement hash and request ids are placeholders.
 
 Before paying Ama's invoice: payrun_check_invoice
   Verdict: PAY
