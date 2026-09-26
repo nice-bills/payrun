@@ -20,7 +20,8 @@
     "demo:check": "tsx scripts/demo/02-agentkit-check.ts",
     "demo:redteam": "tsx scripts/demo/03-red-team.ts",
     "demo:warm": "tsx scripts/demo/05-warm-graphs.ts",
-    "demo:photo": "tsx scripts/demo/06-photo-invoice.ts"
+    "demo:photo": "tsx scripts/demo/06-photo-invoice.ts",
+    "demo:batch": "tsx scripts/demo/07-batch-payroll.ts"
   },
   "dependencies": {
     "@coinbase/agentkit": "^0.10.4",

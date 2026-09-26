@@ -1,0 +1,42 @@
+
+Pay run with the smart payroll wallet (batching)
+
+01-ama-clean
+  SERV     ✓ Prompt Guard passed the invoice — Fields read from the invoice with the guard on.
+  Payrun   ✓ Code checks passed — Sums, rate, day cap, wallet on file and duplicates.
+  SERV     · called check_balance — Reads the payroll wallet before paying.
+  AgentKit ✓ get_balance — 20 test USDC in 0x5A11…0Ab1
+  SERV     · called pay_invoice — 4,200 USDC citing clause 1, 2: Days at the agreed rate, within the cap.
+  AgentKit ✓ queued the transfer — 4.2 test USDC to Ama Mensah (0xDd03…2333), in this run's batch.
+  → PAY
+
+02-kwame-clean
+  SERV     ✓ Prompt Guard passed the invoice — Fields read from the invoice with the guard on.
+  Payrun   ✓ Code checks passed — Sums, rate, day cap, wallet on file and duplicates.
+  SERV     · called check_balance — Reads the payroll wallet before paying.
+  AgentKit ✓ get_balance — 15.8 test USDC in 0x5A11…0Ab1
+  SERV     · called pay_invoice — 6,000 USDC citing clause 1, 2: Days at the agreed rate, within the cap.
+  AgentKit ✓ queued the transfer — 6 test USDC to Kwame Asante (0x47A0…36c7), in this run's batch.
+  → PAY
+
+03-efua-clean
+  SERV     ✓ Prompt Guard passed the invoice — Fields read from the invoice with the guard on.
+  Payrun   ✓ Code checks passed — Sums, rate, day cap, wallet on file and duplicates.
+  SERV     · called check_balance — Reads the payroll wallet before paying.
+  AgentKit ✓ get_balance — 9.8 test USDC in 0x5A11…0Ab1
+  SERV     · called pay_invoice — 1,500 USDC citing clause 1, 2: Days at the agreed rate, within the cap.
+  AgentKit ✓ queued the transfer — 1.5 test USDC to Efua Boateng (0x6F28…7fCd), in this run's batch.
+  → PAY
+  01-ama-clean: Coinbase ✓ signed the batched transfer, tx 0xbbbbbbbb…
+  02-kwame-clean: Coinbase ✓ signed the batched transfer, tx 0xbbbbbbbb…
+  03-efua-clean: Coinbase ✓ signed the batched transfer, tx 0xbbbbbbbb…
+
+The one user operation
+  USDC.transfer(0xDd03c6D9…, 4.2) → Ama Mensah
+  USDC.transfer(0x47A05dA7…, 6) → Kwame Asante
+  USDC.transfer(0x6F2894a2…, 1.5) → Efua Boateng
+
+3 invoices paid in 1 transaction, gas sponsored. Receipts share tx 0xbbbbbbbbbb…
+
+The same rules, compiled for user operations (attached to the owner that signs them)
+8 rules, all "sendUserOperation": every call in a batch must be USDC.transfer to a contractor-book wallet within its cap.

@@ -163,7 +163,11 @@ export async function runPayrollAgent(): Promise<ActionResult<{ jobId: string } 
     const { startJob } = await import("@/lib/jobs");
     const { createAgentKitPayer } = await import("@/src/core/pay");
     const { runPayroll } = await import("@/src/core/payroll");
-    const wallet = await createAgentKitPayer();
+    // PAYRUN_WALLET_KIND=smart: the gasless smart payroll wallet, one batched settlement per run.
+    const wallet =
+      process.env.PAYRUN_WALLET_KIND === "smart"
+        ? (await import("@/src/core/batch")).batchingWallet(await (await import("@/src/core/smartPayer")).createSmartPayer())
+        : await createAgentKitPayer();
     const job = startJob("payroll", async (log) => {
       await runPayroll(new ServClient(), s, wallet, (e) => log(JSON.stringify(e)));
       revalidatePath("/", "layout");

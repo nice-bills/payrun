@@ -219,6 +219,32 @@ async function main() {
       console.log("Usage: arena setup [--faucet] | arena try --wallet 0x… --file invoice.txt [--handle x] [--dry] | arena snapshot [--url board]");
       break;
     }
+    case "smart": {
+      // The smart payroll wallet: gasless, and a pay run settles in one user operation.
+      const { createSmartPayer } = await import("./core/smartPayer");
+      const sub = args[0] ?? "address";
+      const payer = await createSmartPayer();
+      if (sub === "address") console.log(`Smart payroll wallet ${payer.address} (owner ${payer.ownerAddress}). Fund it with test USDC; it needs no ETH.`);
+      if (sub === "apply") console.log(`Attached ${await payer.applyPolicy(requirePolicy(), store.contractors(), store.setting("owner_wallet"))} to owner ${payer.ownerAddress} (sendUserOperation rules).`);
+      if (sub === "attack") {
+        // Check the signer enforces the rules on user operations before relying on them.
+        const to = opt("to") ?? "0x94e672298C44c94b0606740cBEfa6963fA3409C6";
+        const r = await payer.transfer(to, Number(opt("amount") ?? "0.01"));
+        console.log(r.ok ? `!! The smart wallet paid ${to} (${r.txHash}). Its rules are NOT enforced on user operations: do not use it.` : `Refused, as it should be: ${r.message}`);
+      }
+      if (sub === "payroll") {
+        const { runPayroll } = await import("./core/payroll");
+        const { batchingWallet } = await import("./core/batch");
+        const report = await runPayroll(serv, store, batchingWallet(payer), (e) => {
+          if (e.type === "start") console.log(`\n${e.invoiceId}`);
+          if (e.type === "step") console.log(`  ${e.step.actor.padEnd(8)} ${e.step.ok === false ? "✗" : e.step.ok ? "✓" : "·"} ${e.step.title} — ${e.step.detail}${e.step.txHash ? ` ${e.step.txHash}` : ""}`);
+          if (e.type === "done") console.log(`  → ${e.verdict}`);
+        });
+        const paid = report.runs.filter((r) => r.payment?.status === "sent");
+        console.log(`\n${report.runs.length} invoices, ${paid.length} paid in ${new Set(paid.map((r) => r.payment?.txHash)).size} transaction(s).`);
+      }
+      break;
+    }
     case "redteam": {
       // The house red team: SERV writes attacks, an AgentKit wallet pays each Scam Payrun entry over x402.
       // Real money: the entry fee is USDC on Base mainnet, paid from PAYRUN_REDTEAM_WALLET (a CDP account).

@@ -22,7 +22,8 @@ import { settlementScale, toSettled } from "./walletPolicy";
 export interface AgentWallet {
   address: string;
   balance(): Promise<{ usdc: number | null; message: string }>;
-  transfer(to: string, amountUsdc: number): Promise<{ ok: boolean; txHash: string | null; message: string }>;
+  /** `queued`: accepted into the pay run's batch; it settles when the run ends (see batch.ts). */
+  transfer(to: string, amountUsdc: number): Promise<{ ok: boolean; txHash: string | null; message: string; queued?: boolean }>;
 }
 
 export type StepActor = "SERV" | "Payrun" | "AgentKit" | "Coinbase";
@@ -289,11 +290,16 @@ export async function runInvoiceAgent(serv: ServClient, input: AgentInput): Prom
         to: contractor!.wallet,
         amountUsdc: total,
         settledUsdc,
-        status: r.ok ? "sent" : isPolicyRejection(r.message) ? "rejected" : "failed",
+        status: r.ok ? (r.queued ? "queued" : "sent") : isPolicyRejection(r.message) ? "rejected" : "failed",
         txHash: r.txHash,
         message: r.message,
         sentAt: new Date().toISOString(),
       };
+      if (r.ok && r.queued) {
+        reply(`Approved and queued: ${settledUsdc} test USDC to ${contractor!.wallet} settles with the rest of this pay run in one transaction.`);
+        step({ actor: "AgentKit", title: "queued the transfer", detail: `${settledUsdc} test USDC to ${contractor!.name} (${short(contractor!.wallet)}), in this run's batch.`, ok: true });
+        return done({ fields, contractorId: contractor!.id, findings, judgment, finalVerdict: "PAY", payAmountUsdc: total, overriddenBy: [], blockedByGuard: false }, payment);
+      }
       if (r.ok) {
         reply(`Sent ${settledUsdc} test USDC to ${contractor!.wallet}. Transaction ${r.txHash}.`);
         step({ actor: "Coinbase", title: "signed the transfer", detail: `${settledUsdc} test USDC to ${contractor!.name} (${short(contractor!.wallet)}).`, ok: true, txHash: r.txHash });

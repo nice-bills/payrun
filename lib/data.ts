@@ -41,7 +41,9 @@ export function loadDesk(): DeskData {
   const policies = s.policies();
   const byVersion = new Map(policies.map((p) => [p.version, p]));
   const decisions = new Map(s.latestDecisions("serv").map((d) => [d.invoiceId, d]));
-  const payments = s.payments();
+  // A batched pay run records "queued" and then the batch's outcome; show the outcome.
+  const all = s.payments();
+  const payments = all.filter((p, i) => p.status !== "queued" || !all.slice(i + 1).some((q) => q.invoiceId === p.invoiceId));
   const lastPayment = (id: string) => payments.filter((p) => p.invoiceId === id).at(-1) ?? null;
   const items = s.invoices().map((invoice) => {
     const decision = decisions.get(invoice.id) ?? null;

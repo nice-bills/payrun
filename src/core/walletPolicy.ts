@@ -36,6 +36,12 @@ export interface WalletPolicyOptions {
    * Every other address is still refused.
    */
   owner?: string | null;
+  /**
+   * Which signing operation the rules govern. An EOA payroll wallet sends
+   * transactions (`sendEvmTransaction`); a smart account sends user operations
+   * (`sendUserOperation`), where every call in a batch must match a rule.
+   */
+  operation?: "sendEvmTransaction" | "sendUserOperation";
 }
 
 /**
@@ -55,17 +61,19 @@ export interface WalletPolicyOptions {
 export function compileWalletPolicy(contractors: Contractor[], policy: PolicyVersion, opts: WalletPolicyOptions = {}): CreatePolicyBody {
   const scale = opts.scale ?? settlementScale();
   const owner = opts.owner || null;
+  const operation = opts.operation ?? "sendEvmTransaction";
   if (owner && contractors.some((c) => c.wallet.toLowerCase() === owner.toLowerCase())) {
     throw new Error("The owner wallet is also a contractor's wallet; withdrawals would lift that contractor's cap.");
   }
   const usdc = { type: "evmAddress" as const, addresses: [USDC_BASE_SEPOLIA as `0x${string}`], operator: "in" as const };
-  const baseSepolia = { type: "evmNetwork" as const, networks: ["base-sepolia" as const], operator: "in" as const };
+  // User-operation rules have no network criterion; the smart account's network is fixed at send time.
+  const baseSepolia = operation === "sendEvmTransaction" ? [{ type: "evmNetwork" as const, networks: ["base-sepolia" as const], operator: "in" as const }] : [];
   const units = (usdcAmount: number) => parseUnits(String(toSettled(usdcAmount, scale)), USDC_DECIMALS).toString();
   const rule = (wallets: string[], maxUsdc: number | null) => ({
     action: "accept" as const,
-    operation: "sendEvmTransaction" as const,
+    operation,
     criteria: [
-      baseSepolia,
+      ...baseSepolia,
       usdc,
       {
         type: "evmData" as const,
@@ -83,7 +91,7 @@ export function compileWalletPolicy(contractors: Contractor[], policy: PolicyVer
     ],
   });
   const room = MAX_POLICY_RULES - (owner ? 1 : 0);
-  const rules: CreatePolicyBody["rules"] = [
+  const rules = [
     ...(contractors.length <= room
       ? contractors.map((c) => rule([c.wallet], agreementMaxUsdc(c)))
       : [rule(contractors.map((c) => c.wallet), Math.max(...contractors.map(agreementMaxUsdc)))]),
@@ -93,7 +101,8 @@ export function compileWalletPolicy(contractors: Contractor[], policy: PolicyVer
   return {
     scope: "account",
     // CDP allows 50 chars of [A-Za-z0-9 ,.]
-    description: `Payrun policy v${policy.version} ${policy.hash.slice(0, 12)}`,
-    rules,
+    description: `Payrun ${operation === "sendUserOperation" ? "batch " : ""}policy v${policy.version} ${policy.hash.slice(0, 12)}`,
+    // One shape for both operations; the SDK types each operation separately.
+    rules: rules as unknown as CreatePolicyBody["rules"],
   };
 }
