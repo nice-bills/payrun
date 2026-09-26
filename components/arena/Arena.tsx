@@ -124,10 +124,10 @@ export function Arena({
             ) : (
               <span className="rounded-[3px] bg-paper px-5 py-3 font-bold shadow-[var(--shadow-press)]">Opening soon</span>
             )}
-            <span className="font-type text-xs">Paid over x402 on OpenServ · test USDC on Base Sepolia</span>
+            <span className="font-type text-xs">Entry paid in USDC on Base, over x402 on OpenServ</span>
           </div>
           <p className="mt-4 max-w-[52ch] text-sm">
-            On the entry form: your Base Sepolia wallet (where the agent would pay you), your invoice, and an X handle for the board. {`Five tries per wallet a day.`}
+            On the entry form: the address the agent would pay you at (in test USDC on Base Sepolia), your invoice, and an X handle for the board. {`Five tries per wallet a day.`}
           </p>
         </div>
 
