@@ -97,5 +97,5 @@ Useful CLI commands: `run` (decide the pile), `gaps`, `replay`, `wallet fund|app
 - Testnet only. Invoices settle at a disclosed 1/1000 scale so a faucet covers a month.
 - SERV's compiled graph is private; the app shows its own clause view, not SERV's graph.
 - SERV does not report Shadow Agent outcomes per response, so Payrun cannot force a HOLD when validation is exhausted.
-- A new policy's first compile takes about a minute; cached versions answer in seconds.
+- A new policy's first compile takes about a minute; cached versions answer in seconds. Going live (or `npm run cli -- policy live <v>`) sends one warm-up request per graph (desk review and pay-run agent), so the minute is spent then, not on the first invoice; the memo shows whether the live version's graphs are compiled. `npm run demo:warm` shows it against a local stand-in that compiles like SERV.
 - See `DESIGN.md` for the details and `PRODUCT.md` for the product brief.

@@ -1,0 +1,14 @@
+
+Policy v2 goes live: warm SERV's two graphs
+  SERV is compiling the desk review graph for v2…
+  Desk review graph compiled (6.0s).
+  SERV is compiling the pay-run agent graph for v2…
+  Pay-run agent graph compiled (6.0s).
+
+Going live again with the same wording (already compiled)
+  SERV is compiling the desk review graph for v2…
+  Desk review graph was already compiled (0.0s).
+  SERV is compiling the pay-run agent graph for v2…
+  Pay-run agent graph was already compiled (0.0s).
+
+First: review 6.0s, agent 6.0s · again: review 0.0s (cached), agent 0.0s (cached)

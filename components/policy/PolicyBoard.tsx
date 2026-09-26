@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
-import { adoptReading, findHoles, jobStatus, lintVersion, makeLive, replayDraft, saveDraft } from "@/app/actions";
+import { adoptReading, findHoles, jobStatus, lintVersion, makeLive, replayDraft, saveDraft, warmVersion } from "@/app/actions";
 import { Pin } from "@/components/Pin";
 import { Stamp } from "@/components/Stamp";
 import { VERDICT } from "@/lib/format";
@@ -11,6 +11,7 @@ import type { GapKind, GapReport } from "@/src/core/gaps";
 import type { LintKind, LintReport } from "@/src/core/lint";
 import type { ReplayReport } from "@/src/core/replay";
 import type { PolicyVersion, Verdict } from "@/src/core/types";
+import type { WarmReport } from "@/src/core/warmStatus";
 
 const LINT: Record<LintKind, string> = {
   conflict: "Clashes with another clause",
@@ -43,6 +44,7 @@ export function PolicyBoard({
   replay: initialReplay,
   names,
   lints,
+  warm,
 }: {
   policies: PolicyVersion[];
   live: PolicyVersion;
@@ -50,6 +52,7 @@ export function PolicyBoard({
   replay: ReplayReport | null;
   names: Record<string, string>;
   lints: Record<number, LintReport>;
+  warm: Record<number, WarmReport>;
 }) {
   const router = useRouter();
   const reduce = useReducedMotion();
@@ -62,6 +65,30 @@ export function PolicyBoard({
   const [, startTransition] = useTransition();
   const [editing, setEditing] = useState<string[] | null>(null);
   const [holes, setHoles] = useState<{ id: string; progress: string[]; status: string } | null>(null);
+  const [warming, setWarming] = useState<{ version: number; line: string } | null>(null);
+
+  /** Follow SERV compiling a version's graphs, one progress line at a time. */
+  const followWarm = async (v: number, id: string) => {
+    setWarming({ version: v, line: "SERV is compiling the reasoning graphs…" });
+    for (;;) {
+      await new Promise((res) => setTimeout(res, 1500));
+      const j = await jobStatus(id);
+      if (!j.ok) return setWarming(null);
+      setWarming({ version: v, line: j.value.progress.at(-1) ?? "SERV is compiling the reasoning graphs…" });
+      if (j.value.status !== "running") {
+        if (j.value.error) setError(j.value.error);
+        setWarming(null);
+        router.refresh();
+        return;
+      }
+    }
+  };
+  const compileNow = (v: number) =>
+    run("warm", async () => {
+      const r = await warmVersion(v);
+      if (!r.ok) return setError(r.error);
+      await followWarm(v, r.value);
+    });
 
   useEffect(() => setShown(newest.version), [newest.version]);
 
@@ -161,6 +188,7 @@ export function PolicyBoard({
       const r = await makeLive(version.version);
       if (!r.ok) return setError(r.error);
       router.refresh();
+      if (r.value.warmJob) void followWarm(r.value.version, r.value.warmJob);
     });
 
   return (
@@ -221,6 +249,19 @@ export function PolicyBoard({
               <dd className="text-ink">
                 v{version.version} · #{version.hash.slice(0, 7)}
               </dd>
+              {version.version === live.version ? (
+                <>
+                  <dt>SERV</dt>
+                  <dd>
+                    <GraphStatus
+                      report={warm[version.version] ?? null}
+                      warming={warming?.version === version.version ? warming.line : null}
+                      busy={!!working}
+                      onCompile={() => compileNow(version.version)}
+                    />
+                  </dd>
+                </>
+              ) : null}
             </dl>
             <hr className="my-6 border-rule" />
             {editing ? (
@@ -468,5 +509,33 @@ export function PolicyBoard({
         ) : null}
       </aside>
     </div>
+  );
+}
+
+/** Whether SERV already holds this version's compiled graphs, so the first invoice is quick. */
+function GraphStatus({ report, warming, busy, onCompile }: { report: WarmReport | null; warming: string | null; busy: boolean; onCompile: () => void }) {
+  const secs = (ms: number) => `${(ms / 1000).toFixed(ms < 10_000 ? 1 : 0)}s`;
+  return (
+    <span aria-live="polite">
+      {warming ? (
+        <>
+          <span className="mr-2 inline-block size-2 animate-pulse rounded-full bg-hold" aria-hidden />
+          {warming}
+        </>
+      ) : report ? (
+        <>
+          <span className="mr-2 inline-block size-2 rounded-full bg-pay" aria-hidden />
+          Graphs compiled: desk review {secs(report.graphs.find((g) => g.name === "review")?.ms ?? 0)}, pay-run agent {secs(report.graphs.find((g) => g.name === "agent")?.ms ?? 0)}. Invoices answer in seconds.
+        </>
+      ) : (
+        <>
+          <span className="mr-2 inline-block size-2 rounded-full bg-ink-3" aria-hidden />
+          Not compiled yet: the first invoice under this wording waits about a minute.
+          <button type="button" onClick={onCompile} disabled={busy} className="ml-2 underline hover:text-ink disabled:opacity-60">
+            Compile now
+          </button>
+        </>
+      )}
+    </span>
   );
 }

@@ -162,3 +162,32 @@ export async function localWallet() {
   // AgentKit bundles its own viem; the client is the same at runtime, only the declarations differ.
   return new ViemWalletProvider(createWalletClient({ account: privateKeyToAccount(generatePrivateKey()), chain: base, transport: http("http://127.0.0.1:1") }) as never);
 }
+
+/**
+ * A local stand-in for SERV's chat completions endpoint that behaves like its
+ * graph cache: the first request with a new system prompt waits `compileMs`
+ * (the compile), later ones answer at once. Point the app at it with SERV_BASE_URL.
+ */
+export async function fakeServEndpoint(compileMs = 6000, port = 0): Promise<{ url: string; compiled: Set<string>; close: () => Promise<void> }> {
+  const { createHash } = await import("node:crypto");
+  const compiled = new Set<string>();
+  const server: Server = createServer((req, res) => {
+    let body = "";
+    req.on("data", (d) => (body += d));
+    req.on("end", async () => {
+      const b = JSON.parse(body);
+      const key = createHash("sha256").update(`${b.model}\n${b.messages[0].content}`).digest("hex").slice(0, 12);
+      if (!compiled.has(key)) {
+        await new Promise((r) => setTimeout(r, compileMs));
+        compiled.add(key);
+      }
+      const answer = b.tools?.some((t: any) => t.function?.name === "hold_invoice")
+        ? say.call("hold_invoice", { cited_clauses: [], reasons: [], policy_covers: true, question_for_owner: "warm-up" })
+        : say.content({ verdict: "HOLD", cited_clauses: [], reasons: [], policy_covers: true, suspected_manipulation: false });
+      res.writeHead(200, headers());
+      res.end(JSON.stringify(answer));
+    });
+  });
+  await new Promise<void>((r) => server.listen(port, "127.0.0.1", r));
+  return { url: `http://127.0.0.1:${(server.address() as { port: number }).port}`, compiled, close: () => new Promise((r) => server.close(() => r())) };
+}

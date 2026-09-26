@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { decide, MODES } from "@/src/core/decide";
 import { ServClient } from "@/src/core/serv";
+import { warmKey, warmPolicy } from "@/src/core/warm";
 import { DEMO_MESSAGE, dbPath, isDemo } from "@/lib/demo";
 import { Store } from "@/src/core/store";
 import { walletRulesFingerprint } from "@/lib/walletRules";
@@ -94,15 +95,38 @@ export async function replayDraft(): Promise<ActionResult<import("@/src/core/rep
   }
 }
 
-export async function makeLive(version: number): Promise<ActionResult<number>> {
+/** Make a version live, then have SERV compile its reasoning graphs in the background (poll with jobStatus). */
+export async function makeLive(version: number): Promise<ActionResult<{ version: number; warmJob: string | null }>> {
   if (isDemo()) return demoRefusal();
   try {
-    store().setLivePolicy(version);
+    const s = store();
+    s.setLivePolicy(version);
     revalidatePath("/", "layout");
-    return { ok: true, value: version };
+    return { ok: true, value: { version, warmJob: s.setting(warmKey(version)) ? null : await startWarm(s, version) } };
   } catch (e) {
     return fail(e);
   }
+}
+
+/** Have SERV compile a version's graphs now (background job; poll with jobStatus). */
+export async function warmVersion(version: number): Promise<ActionResult<string>> {
+  if (isDemo()) return demoRefusal();
+  try {
+    const id = await startWarm(store(), version);
+    return id ? { ok: true, value: id } : { ok: false, error: `No policy v${version}.` };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+async function startWarm(s: Store, version: number): Promise<string | null> {
+  const policy = s.policy(version);
+  if (!policy) return null;
+  const { startJob } = await import("@/lib/jobs");
+  return startJob(`warm-v${version}`, async (log) => {
+    const report = await warmPolicy(new ServClient(), policy, log);
+    s.setSetting(warmKey(version), JSON.stringify(report));
+  }).id;
 }
 
 /** Pay every approved, unpaid invoice through AgentKit. The CDP policy on the wallet is the last gate. */

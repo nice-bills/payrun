@@ -4,6 +4,7 @@ import { Store } from "@/src/core/store";
 import type { GapReport } from "@/src/core/gaps";
 import type { LintReport } from "@/src/core/lint";
 import type { ReplayReport } from "@/src/core/replay";
+import { warmKey, type WarmReport } from "@/src/core/warmStatus";
 import type { PaymentResult } from "@/src/core/pay";
 import type { Contractor, Decision, Invoice, PolicyVersion } from "@/src/core/types";
 
@@ -19,6 +20,8 @@ export interface DeskData {
   replay: ReplayReport | null;
   /** Latest SERV lint per policy version. */
   lints: Record<number, LintReport>;
+  /** Whether SERV has compiled each version's reasoning graphs (warmed on going live). */
+  warm: Record<number, WarmReport>;
 }
 
 export interface DeskItem {
@@ -58,5 +61,11 @@ export function loadDesk(): DeskData {
     gaps: s.latestReport<GapReport>("gaps"),
     replay: s.latestReport<ReplayReport>("replay"),
     lints: Object.fromEntries(s.reports<LintReport>("lint").map((l) => [l.policyVersion, l])),
+    warm: Object.fromEntries(
+      policies.flatMap((p) => {
+        const w = s.setting(warmKey(p.version));
+        return w ? [[p.version, JSON.parse(w) as WarmReport]] : [];
+      }),
+    ),
   };
 }

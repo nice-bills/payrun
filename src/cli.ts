@@ -66,9 +66,16 @@ async function main() {
       break;
     }
     case "policy": {
-      if (args[0] === "live") {
-        store.setLivePolicy(Number(args[1]));
-        console.log(`Policy v${args[1]} is now live.`);
+      if (args[0] === "live" || args[0] === "warm") {
+        // live: switch versions, then have SERV compile the new graphs now rather than on the first invoice.
+        const v = Number(args[1] ?? requirePolicy().version);
+        if (args[0] === "live") store.setLivePolicy(v);
+        const { warmPolicy, warmKey } = await import("./core/warm");
+        const p = store.policy(v);
+        if (!p) throw new Error(`No policy v${v}.`);
+        console.log(args[0] === "live" ? `Policy v${v} is now live. Warming SERV's graphs…` : `Warming SERV's graphs for v${v}…`);
+        const report = await warmPolicy(serv, p, (m) => console.log(`  ${m}`));
+        store.setSetting(warmKey(v), JSON.stringify(report));
       } else if (args[0] === "add") {
         const p = store.addPolicy(readFileSync(args[1], "utf8"));
         console.log(`Policy v${p.version} (${p.hash.slice(0, 12)}), ${p.clauses.length} clauses.`);

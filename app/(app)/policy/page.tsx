@@ -16,6 +16,7 @@ export default function PolicyPage() {
       replay={data.replay}
       names={Object.fromEntries(data.contractors.map((c) => [c.id, c.name]))}
       lints={data.lints}
+      warm={data.warm}
     />
   );
 }
