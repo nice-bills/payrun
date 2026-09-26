@@ -1,0 +1,55 @@
+{
+  "label": "agent-03-efua-clean-t1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-26T15:36:26.379Z",
+  "latencyMs": 2584,
+  "servHeaders": {
+    "x-openserv-request-id": "9b2087d8-4cc4-451c-b5f9-6165e91b2746"
+  },
+  "json": {
+    "id": "chatcmpl-ESOjoXRYO1qb5jYDA2p3XuHr4pM7H",
+    "object": "chat.completion",
+    "created": 1790436984,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_w427RYKzmkLgpcjvKpvsfulR",
+              "type": "function",
+              "function": {
+                "name": "pay_invoice",
+                "arguments": "{\"amount_usdc\":1500,\"cited_clauses\":[1,2,5,6,7],\"reasons\":[{\"clause\":1,\"finding\":\"Pay at the agreed day rate for eligible work; six billed days at the agreed rate are confirmed.\",\"evidence_quote\":\"Day rate billed does not exceed the agreed 250 USDC.\"},{\"clause\":2,\"finding\":\"The billed days are within the monthly cap.\",\"evidence_quote\":\"Days billed: 6, within the 10-day monthly cap.\"},{\"clause\":5,\"finding\":\"No duplicate period invoice is identified.\",\"evidence_quote\":\"No other invoice on file covers this invoice number or period.\"},{\"clause\":6,\"finding\":\"The invoice was received within 60 days of the period end.\",\"evidence_quote\":\"Received 2026-09-05, 5 days after the billing period ended (2026-08-31).\"},{\"clause\":7,\"finding\":\"The listed work is within the agreed scope of work.\",\"evidence_quote\":\"Scope of work: Blog posts, release notes and help-centre articles.\"}]}"
+              }
+            }
+          ],
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1914,
+      "completion_tokens": 240,
+      "total_tokens": 2154,
+      "prompt_tokens_details": {
+        "cached_tokens": 1671,
+        "cache_write_tokens": 117,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

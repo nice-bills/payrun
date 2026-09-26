@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { usdc } from "@/lib/format";
 
 const NAV = [
+  { href: "/start", label: "Start" },
   { href: "/desk", label: "Desk" },
   { href: "/policy", label: "Policy" },
   { href: "/contractors", label: "Contractors" },

@@ -8,7 +8,7 @@ import { DatabaseSync } from "node:sqlite";
 
 mkdirSync("demo/eval", { recursive: true });
 rmSync("demo/payrun.db", { force: true });
-new DatabaseSync("data/payrun.db").exec("VACUUM INTO 'demo/payrun.db'");
+new DatabaseSync(process.env.PAYRUN_DB ?? "data/payrun.db").exec("VACUUM INTO 'demo/payrun.db'");
 
 const latest = readdirSync("data/eval").filter((f) => f.endsWith(".json")).sort().at(-1);
 if (latest) {

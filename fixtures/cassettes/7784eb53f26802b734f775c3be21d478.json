@@ -1,0 +1,55 @@
+{
+  "label": "agent-02-kwame-clean-t1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-26T15:36:22.627Z",
+  "latencyMs": 1837,
+  "servHeaders": {
+    "x-openserv-request-id": "cbab45d2-79b2-47d8-b625-9425af8e4ec6"
+  },
+  "json": {
+    "id": "chatcmpl-ESOjlT2bPbSJhrPEVvh8G52e2aQUh",
+    "object": "chat.completion",
+    "created": 1790436981,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_xZ7MYK3zwwN0NuU8sHVtnt4b",
+              "type": "function",
+              "function": {
+                "name": "hold_invoice",
+                "arguments": "{\"cited_clauses\":[],\"reasons\":[],\"policy_covers\":false,\"question_for_owner\":\"The available balance covers only 2,100 USDC at the settlement scale, below this invoice's 6,000 USDC total. Please top up the wallet before payment.\"}"
+              }
+            }
+          ],
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1931,
+      "completion_tokens": 72,
+      "total_tokens": 2003,
+      "prompt_tokens_details": {
+        "cached_tokens": 1688,
+        "cache_write_tokens": 117,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

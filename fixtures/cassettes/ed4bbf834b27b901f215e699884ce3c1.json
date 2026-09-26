@@ -1,0 +1,55 @@
+{
+  "label": "agent-03-efua-clean-t0",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-26T15:36:23.503Z",
+  "latencyMs": 869,
+  "servHeaders": {
+    "x-openserv-request-id": "0bc60fc3-47e3-48b0-8a5a-78bd636ec5d4"
+  },
+  "json": {
+    "id": "chatcmpl-ESOjne5Ny5U2cDczDtA4V0Vs7Zzi0",
+    "object": "chat.completion",
+    "created": 1790436983,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_gU65upx5NSdpIRPzfC7vuXPF",
+              "type": "function",
+              "function": {
+                "name": "check_balance",
+                "arguments": "{}"
+              }
+            }
+          ],
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1797,
+      "completion_tokens": 13,
+      "total_tokens": 1810,
+      "prompt_tokens_details": {
+        "cached_tokens": 1155,
+        "cache_write_tokens": 516,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

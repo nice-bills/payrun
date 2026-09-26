@@ -1,0 +1,55 @@
+{
+  "label": "agent-04-yaw-original-t1",
+  "model": "gpt-6-luna-serv-kronos-multipath",
+  "raw": false,
+  "recordedAt": "2026-09-26T15:36:31.613Z",
+  "latencyMs": 1821,
+  "servHeaders": {
+    "x-openserv-request-id": "ddb79991-0178-4768-a8c6-6dd711fe8616"
+  },
+  "json": {
+    "id": "chatcmpl-ESOjuASXevmguFvAvtkRtOqY8JeP5",
+    "object": "chat.completion",
+    "created": 1790436990,
+    "model": "gpt-6-luna",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "call_17R0v7uwX4f69UgtNxuYBwXL",
+              "type": "function",
+              "function": {
+                "name": "hold_invoice",
+                "arguments": "{\"cited_clauses\":[],\"reasons\":[],\"policy_covers\":false,\"question_for_owner\":\"Please top up the payroll wallet; the available balance covers invoices up to 2,100 USDC, below this invoice’s 4,500 USDC total.\"}"
+              }
+            }
+          ],
+          "refusal": null,
+          "annotations": []
+        },
+        "finish_reason": "tool_calls"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1949,
+      "completion_tokens": 69,
+      "total_tokens": 2018,
+      "prompt_tokens_details": {
+        "cached_tokens": 1706,
+        "cache_write_tokens": 117,
+        "audio_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 0,
+        "audio_tokens": 0,
+        "accepted_prediction_tokens": 0,
+        "rejected_prediction_tokens": 0
+      }
+    },
+    "service_tier": "default"
+  }
+}

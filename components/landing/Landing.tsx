@@ -216,8 +216,8 @@ export function Landing({ data }: { data: LandingData }) {
             <Link href="/desk" className="press rounded-[3px] bg-marker px-6 py-3.5 text-lg font-black text-ink hover:bg-marker-press">
               Review this month&apos;s pile
             </Link>
-            <Link href="/proof" className="text-base font-bold underline decoration-2 underline-offset-4">
-              See what was measured
+            <Link href="/start" className="text-base font-bold underline decoration-2 underline-offset-4">
+              Set up your company
             </Link>
           </div>
           <p className="mt-6 font-type text-xs">USDC on Base Sepolia · testnet · built for the OpenServ SERV Hackathon</p>
