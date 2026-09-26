@@ -3,6 +3,8 @@
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { CountUp } from "@/components/CountUp";
+import { PileMachine } from "@/components/landing/PileMachine";
 import { Pin } from "@/components/Pin";
 import { Stamp } from "@/components/Stamp";
 import { Wordmark } from "@/components/TopBar";
@@ -109,6 +111,74 @@ Please pay to the wallet on file.`}
   );
 }
 
+const SHAKE = { x: [0, -7, 6, -4, 3, 0], rotate: [0, -1.2, 1, -0.5, 0.3, 0] };
+
+/** The scammer's transfer: it shakes when it scrolls in (the signer said no), and again on hover. */
+function RefusedTag() {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className="tag flex cursor-default items-center justify-between gap-4 bg-manila py-3 pr-4 text-ink"
+      whileInView={reduce ? undefined : SHAKE}
+      whileHover={reduce ? undefined : SHAKE}
+      viewport={{ once: true, amount: 1 }}
+      transition={{ duration: 0.45, delay: 0.1, ease: EASE }}
+    >
+      <span className="font-type text-xs">0x94e6…09C6 · 1 USDC</span>
+      <span className="font-sans text-xs font-black tracking-[0.12em] text-block">REFUSED BY SIGNER</span>
+    </motion.div>
+  );
+}
+
+/** A step number that inks in, with a pen tick, as the step reaches the middle of the screen. */
+function StepNumber({ n }: { n: number }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.span
+      className="relative inline-block font-sans text-6xl font-black leading-none tracking-[-0.05em] text-ink"
+      initial={reduce ? false : { opacity: 0.25, scale: 0.7 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "0px 0px -35% 0px" }}
+      transition={{ duration: 0.35, ease: EASE }}
+    >
+      {n}
+      <svg aria-hidden viewBox="0 0 24 24" className="absolute -right-5 top-0 size-6 text-pen">
+        <motion.path
+          d="M4 13 L10 19 L21 5"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          initial={reduce ? false : { pathLength: 0 }}
+          whileInView={{ pathLength: 1 }}
+          viewport={{ once: true, margin: "0px 0px -35% 0px" }}
+          transition={{ duration: 0.3, delay: 0.3, ease: EASE }}
+        />
+      </svg>
+    </motion.span>
+  );
+}
+
+/** The proof receipt feeds out of a printer slot when it scrolls into view. */
+function PrintOut({ children }: { children: React.ReactNode }) {
+  const reduce = useReducedMotion();
+  return (
+    <div className="relative pt-2">
+      <div aria-hidden className="absolute inset-x-[-10px] top-0 z-10 h-3 rounded-[3px] bg-ink shadow-[var(--shadow-press)]" />
+      <motion.div
+        style={{ rotate: "1deg" }}
+        initial={reduce ? false : { clipPath: "inset(0 0 100% 0)", y: -40 }}
+        whileInView={{ clipPath: "inset(0 0 0% 0)", y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 1.4, ease: "linear" }}
+      >
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
 const STEPS = [
   {
     who: "SERV Prompt Guard",
@@ -156,10 +226,7 @@ const STEPS = [
     who: "The wallet itself",
     what: "Payments go out through Coinbase AgentKit from a wallet that carries the same limits: only wallets in the contractor book, never more than a month at the agreed rate. Coinbase's signer enforces them, not Payrun and not a model.",
     artifact: (
-      <div className="tag flex items-center justify-between gap-4 bg-manila py-3 pr-4 text-ink">
-        <span className="font-type text-xs">0x94e6…09C6 · 1 USDC</span>
-        <span className="font-sans text-xs font-black tracking-[0.12em] text-block">REFUSED BY SIGNER</span>
-      </div>
+      <RefusedTag />
     ),
   },
 ];
@@ -225,6 +292,19 @@ export function Landing({ data }: { data: LandingData }) {
         <HeroInvoice />
       </section>
 
+      {/* The pile, sorted: the product doing its job, in miniature. */}
+      <section className="px-5 pb-20 sm:px-8" aria-label="A pay run in miniature">
+        <div className="mx-auto max-w-[1140px]">
+          <h2 className="max-w-[22ch] text-[clamp(2.1rem,4.5vw,3.4rem)] font-black leading-[0.98] tracking-[-0.04em]">Watch the pile sort itself.</h2>
+          <p className="mt-4 max-w-[54ch] text-lg leading-relaxed">
+            Each invoice meets four layers in order. The first one that objects decides; a clean invoice passes all four and gets paid through Coinbase AgentKit.
+          </p>
+          <div className="mt-10">
+            <PileMachine />
+          </div>
+        </div>
+      </section>
+
       {/* Second: the order an invoice goes through. A real sequence, so it is numbered. */}
       <section className="bg-paper-2/0 px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-[1100px]">
@@ -232,7 +312,7 @@ export function Landing({ data }: { data: LandingData }) {
           <ol className="mt-12 flex flex-col gap-12">
             {STEPS.map((s, i) => (
               <li key={s.who} className="grid items-center gap-6 md:grid-cols-[4rem_minmax(0,1fr)_minmax(0,0.9fr)]">
-                <span className="font-sans text-6xl font-black leading-none tracking-[-0.05em] text-cork-deep">{i + 1}</span>
+                <StepNumber n={i + 1} />
                 <div>
                   <h3 className="text-2xl font-black tracking-[-0.03em]">{s.who}</h3>
                   <p className="mt-2 max-w-[52ch] leading-relaxed">{s.what}</p>
@@ -262,13 +342,17 @@ export function Landing({ data }: { data: LandingData }) {
           <div className="grid gap-6 sm:grid-cols-2">
             {data.holes.slice(0, 4).map((h, i) => (
               <Drop key={h.title} tilt={[-1.6, 1.2, 0.8, -1][i]} delay={i * 0.07}>
-                <div className="rounded-[3px] bg-note p-5 text-ink shadow-[3px_4px_0_oklch(0.18_0.06_258)]">
+                <motion.div
+                  className="rounded-[3px] bg-note p-5 text-ink shadow-[3px_4px_0_oklch(0.18_0.06_258)]"
+                  whileHover={reduce ? undefined : { y: -6, rotate: i % 2 ? -1.5 : 1.5, boxShadow: "6px 9px 0 oklch(0.18 0.06 258)" }}
+                  transition={{ duration: 0.2, ease: EASE }}
+                >
                   <h3 className="font-black leading-snug tracking-[-0.02em]">{h.title}</h3>
                   <p className="mt-2 font-hand text-[1.2rem] leading-[1.15]">{h.why}</p>
                   <p className="mt-3 text-xs font-bold">
                     Reviewer today: <VerdictWord v={h.today} />
                   </p>
-                </div>
+                </motion.div>
               </Drop>
             ))}
           </div>
@@ -288,15 +372,15 @@ export function Landing({ data }: { data: LandingData }) {
               Read the full results
             </Link>
           </div>
-          <Drop tilt={1}>
+          <PrintOut>
             <div className="receipt bg-paper px-6 pt-5 font-type text-[0.82rem] text-ink">
               <p className="text-center font-sans text-xs font-black tracking-[0.2em]">PAYRUN · PROOF RUN</p>
               <div className="my-3 border-t border-dashed border-ink-3" />
-              {[
-                ["Invoices", String(data.cases || 40)],
+              {([
+                ["Invoices", <CountUp key="c" value={data.cases || 40} duration={1.6} />],
                 ["Traps caught, every setup", data.traps || "24/24"],
                 ["Hidden instruction", "blocked by guard"],
-                ["Holes in the policy", String(data.holes.length || 4)],
+                ["Holes in the policy", <CountUp key="h" value={data.holes.length || 4} duration={1.6} />],
                 ...(data.flips
                   ? [
                       ["Flips on loose wording", ""],
@@ -305,7 +389,7 @@ export function Landing({ data }: { data: LandingData }) {
                       ["  raw gpt-5.4", `${data.flips.rawBig}/${data.flips.probes}`],
                     ]
                   : []),
-              ].map(([k, v]) => (
+              ] as [string, React.ReactNode][]).map(([k, v]) => (
                 <p key={k} className="flex justify-between gap-4 whitespace-pre">
                   <span>{k}</span>
                   <span className="font-bold">{v}</span>
@@ -314,7 +398,7 @@ export function Landing({ data }: { data: LandingData }) {
               <div className="my-3 border-t border-dashed border-ink-3" />
               <p className="text-center text-xs">Wallet refused the scammer: yes</p>
             </div>
-          </Drop>
+          </PrintOut>
         </div>
       </section>
 

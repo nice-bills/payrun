@@ -26,10 +26,10 @@ Tactile, exact, a little wry. The product is an accounts-payable desk: paper inv
 
 - One focal thing per screen: one invoice, one policy memo, one pay run. Everything else is peripheral.
 - Show the evidence, not a summary of it: the verdict points at the words in the invoice that decided it.
-- Motion only answers a question: "did that register?", "where am I?", "is it working?". The rubber stamp is the one earned flourish, and only when a verdict is fresh.
+- Motion answers a question ("did that register?", "where am I?", "is it working?") or shows the work happening: the pile sorting itself on the landing page, a highlighter sweeping the invoice the agent is reading, a coin when money moves. Desk objects only: paper, stamps, trays, pen. The rubber stamp slams only when a verdict is fresh.
 - Honest about the machine: say when something is replayed, estimated, testnet, or scaled.
 - Cut copy first. If a label can be a stamp, a number or a highlight, it is.
 
 ## Accessibility & Inclusion
 
-WCAG 2.2 AA. The primary user has ADHD: minimal text, instant unambiguous feedback on every input, no state where it is unclear whether the app is working, no decorative motion. Verdicts never rely on colour alone (stamp word + colour + position). Full `prefers-reduced-motion` support. Keyboard navigation through the invoice list.
+WCAG 2.2 AA. The primary user has ADHD: minimal text, instant unambiguous feedback on every input, no state where it is unclear whether the app is working, no motion that blocks: loops run only on screen and pause on hover. Verdicts never rely on colour alone (stamp word + colour + position). Full `prefers-reduced-motion` support. Keyboard navigation through the invoice list.

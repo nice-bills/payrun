@@ -13,11 +13,14 @@ export function Stamp({
   subline,
   fresh = false,
   size = "lg",
+  delay = 0,
 }: {
   verdict: Verdict;
   subline?: string;
   fresh?: boolean;
   size?: "lg" | "sm";
+  /** Seconds before a fresh stamp lands, to let a list of them land one by one. */
+  delay?: number;
 }) {
   const reduce = useReducedMotion();
   const v = VERDICT[verdict];
@@ -33,7 +36,7 @@ export function Stamp({
       style={{ rotate: big ? -8 : -6 }}
       initial={fresh && !reduce ? { scale: 1.9, opacity: 0, rotate: -18 } : false}
       animate={{ scale: 1, opacity: 1, rotate: big ? -8 : -6 }}
-      transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+      transition={{ duration: 0.2, delay, ease: [0.23, 1, 0.32, 1] }}
     >
       <span className={big ? "text-[2.6rem] tracking-[0.06em]" : "text-[0.7rem] tracking-[0.08em]"}>
         {v.word}

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Caveat, Courier_Prime, Schibsted_Grotesk } from "next/font/google";
+import { MotionRoot } from "@/components/MotionRoot";
 import "./globals.css";
 
 const schibsted = Schibsted_Grotesk({ subsets: ["latin"], weight: ["400", "500", "700", "800", "900"], variable: "--font-schibsted" });
@@ -14,7 +15,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${schibsted.variable} ${courier.variable} ${caveat.variable}`}>
-      <body className="min-h-dvh">{children}</body>
+      <body className="min-h-dvh">
+        <MotionRoot>{children}</MotionRoot>
+      </body>
     </html>
   );
 }

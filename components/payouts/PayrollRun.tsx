@@ -134,8 +134,18 @@ export function PayrollRun({ open, scale }: { open: OpenRow[]; scale: number }) 
               initial={reduce ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-              className="relative rounded-[3px] bg-paper p-4 shadow-[var(--shadow-card)]"
+              className="relative overflow-hidden rounded-[3px] bg-paper p-4 shadow-[var(--shadow-card)]"
             >
+              {/* The agent is still reading this one: a highlighter sweeps the sheet until the verdict lands. */}
+              {!s.verdict && !reduce ? (
+                <motion.div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 h-6 bg-marker/40 mix-blend-multiply"
+                  initial={{ top: "0%" }}
+                  animate={{ top: ["0%", "85%", "0%"] }}
+                  transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+                />
+              ) : null}
               <div className="flex items-start justify-between gap-4">
                 <p className="text-lg font-black tracking-[-0.02em] text-ink">{s.name}</p>
                 {s.verdict ? <Stamp verdict={s.verdict} size="sm" fresh /> : <span className="skeleton mt-1 inline-block h-6 w-16 rounded-[2px]" aria-hidden />}
@@ -154,9 +164,23 @@ export function PayrollRun({ open, scale }: { open: OpenRow[]; scale: number }) 
                       <b className={st.ok === false ? "text-block" : st.ok ? "text-pay" : ""}>{st.title}</b>
                       <span className="text-ink-2"> · {st.detail}</span>
                       {st.txHash ? (
-                        <a href={`https://sepolia.basescan.org/tx/${st.txHash}`} target="_blank" rel="noreferrer" className="ml-1 font-type text-xs text-ink underline">
-                          {shortHash(st.txHash)}
-                        </a>
+                        <span className="relative ml-1 inline-block">
+                          <a href={`https://sepolia.basescan.org/tx/${st.txHash}`} target="_blank" rel="noreferrer" className="font-type text-xs text-ink underline">
+                            {shortHash(st.txHash)}
+                          </a>
+                          {/* Money moved: a coin pops off the transaction. */}
+                          {!reduce ? (
+                            <motion.span
+                              aria-hidden
+                              className="pointer-events-none absolute -top-1 left-1/2 grid size-6 -translate-x-1/2 place-items-center rounded-full bg-pay font-type text-[0.55rem] font-black text-paper ring-2 ring-paper"
+                              initial={{ y: 0, opacity: 0, scale: 0.4 }}
+                              animate={{ y: -30, opacity: [0, 1, 1, 0], scale: 1, rotateY: 360 }}
+                              transition={{ duration: 1.5, ease: "easeOut" }}
+                            >
+                              $
+                            </motion.span>
+                          ) : null}
+                        </span>
                       ) : null}
                       {st.requestId ? (
                         <span className="ml-1.5 whitespace-nowrap font-type text-[0.68rem] text-ink-2" title={`SERV request ${st.requestId}: look it up in the OpenServ console`}>

@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import Link from "next/link";
 
 export interface SetupStep {
@@ -30,7 +31,7 @@ export function SetupChecklist({ steps, demo }: { steps: SetupStep[]; demo: bool
         {demo ? <p className="mt-2 font-hand text-xl text-pen">This is the read-only demo, so the steps show the demo company.</p> : null}
 
         <div className="mt-6 h-2 w-full overflow-hidden rounded-full bg-paper-2" role="progressbar" aria-valuemin={0} aria-valuemax={steps.length} aria-valuenow={done} aria-label="Setup progress">
-          <div className="h-full bg-pay" style={{ width: `${(done / steps.length) * 100}%` }} />
+          <motion.div className="h-full bg-pay" initial={{ width: 0 }} animate={{ width: `${(done / steps.length) * 100}%` }} transition={{ duration: 0.9, delay: 0.2, ease: [0.23, 1, 0.32, 1] }} />
         </div>
 
         <ol className="mt-8 flex flex-col gap-3">
@@ -43,12 +44,19 @@ export function SetupChecklist({ steps, demo }: { steps: SetupStep[]; demo: bool
                   isNext ? "bg-paper shadow-[var(--shadow-paper)]" : "bg-paper/80 shadow-[var(--shadow-press)]"
                 }`}
               >
-                <span
+                <motion.span
                   aria-hidden
                   className={`grid size-10 place-items-center rounded-full font-type text-sm font-bold ${s.done ? "bg-pay text-paper" : isNext ? "bg-ink text-paper" : "bg-paper-2 text-ink-2"}`}
+                  initial={s.done ? { scale: 0, rotate: -90 } : false}
+                  animate={
+                    isNext
+                      ? { scale: 1, boxShadow: ["0 0 0 0 oklch(0.9 0.17 102 / 0.9)", "0 0 0 10px oklch(0.9 0.17 102 / 0)"] }
+                      : { scale: 1, rotate: 0 }
+                  }
+                  transition={isNext ? { boxShadow: { duration: 1.6, repeat: Infinity, ease: "easeOut" } } : { duration: 0.35, delay: 0.15 + i * 0.08, ease: [0.23, 1, 0.32, 1] }}
                 >
                   {s.done ? "✓" : i + 1}
-                </span>
+                </motion.span>
                 <div className="min-w-0">
                   <p className="font-black tracking-[-0.02em] text-ink">
                     <span className="sr-only">{s.done ? "Done: " : isNext ? "Next: " : "To do: "}</span>

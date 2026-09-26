@@ -3,6 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { CountUp } from "@/components/CountUp";
 import { Stamp } from "@/components/Stamp";
 import { Wordmark } from "@/components/TopBar";
 import type { Verdict } from "@/src/core/types";
@@ -115,7 +116,14 @@ export function Arena({
           <h1 className="mt-3 text-[clamp(2.6rem,6.4vw,5rem)] font-black leading-[0.95] tracking-[-0.045em]">
             We gave an AI payroll agent a wallet.
             <br />
-            <span className="text-pen">Try to scam it.</span>
+            <motion.span
+              className="inline-block text-pen"
+              initial={false}
+              animate={reduce ? undefined : { x: [0, -10, 9, -6, 4, -2, 0], rotate: [0, -1.5, 1.2, -0.8, 0.4, 0, 0] }}
+              transition={{ duration: 0.6, delay: 0.7, ease: EASE }}
+            >
+              Try to scam it.
+            </motion.span>
           </h1>
           <p className="mt-7 max-w-[48ch] text-lg leading-relaxed">
             Send it any invoice you like. Hidden text, fake approvals, a sob story about a frozen wallet. The policy approves no work this month, so it should pay nobody.{" "}
@@ -158,9 +166,9 @@ export function Arena({
       <section className="mx-auto max-w-[1240px] px-5 pb-10 sm:px-8" aria-label="Scoreboard">
         <div className="grid gap-4 sm:grid-cols-3">
           {[
-            { k: "Attempts", v: stats ? stats.attempts.toLocaleString("en-US") : "…" },
-            { k: "Times it paid", v: stats ? String(stats.won) : "…" },
-            { k: "Paid out", v: stats ? `${stats.paidOutTestUsdc} test USDC` : "…" },
+            { k: "Attempts", v: stats ? <CountUp value={stats.attempts} /> : "…" },
+            { k: "Times it paid", v: stats ? <CountUp value={stats.won} /> : "…" },
+            { k: "Paid out", v: stats ? <><CountUp value={stats.paidOutTestUsdc} format={(n) => String(Math.round(n * 100) / 100)} /> test USDC</> : "…" },
           ].map((s) => (
             <div key={s.k} className="rounded-[3px] bg-band p-5 text-on-band shadow-[var(--shadow-paper)]">
               <p className="font-type text-xs text-on-band-2">{s.k}</p>
@@ -185,7 +193,24 @@ export function Arena({
                   <p className="font-black">
                     <span className="font-type text-ink-2">{i + 1}.</span> {l.name}
                   </p>
-                  <p className="font-type text-sm font-bold tabular-nums">{stats ? `${stats.caughtBy[l.name]} caught` : ""}</p>
+                  <p className="font-type text-sm font-bold tabular-nums">
+                    {stats ? (
+                      <>
+                        <motion.span
+                          key={stats.caughtBy[l.name]}
+                          className={`inline-block ${stats.caughtBy[l.name] ? "text-block" : ""}`}
+                          initial={reduce ? false : { scale: 1.9 }}
+                          animate={{ scale: 1 }}
+                          transition={{ duration: 0.35, delay: 0.4 + i * 0.12, ease: EASE }}
+                        >
+                          {stats.caughtBy[l.name]}
+                        </motion.span>{" "}
+                        caught
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </p>
                 </div>
                 <p className="mt-1 text-sm text-ink-2">{l.what}</p>
               </li>
@@ -199,7 +224,7 @@ export function Arena({
           {!board && !down ? <div className="skeleton mt-5 h-40 rounded-[3px]" aria-hidden /> : null}
           <ol className="mt-5 flex flex-col gap-3">
             <AnimatePresence initial={false}>
-              {board?.attempts.map((a) => (
+              {board?.attempts.map((a, n) => (
                 <motion.li
                   key={a.id}
                   layout={!reduce}
@@ -208,7 +233,7 @@ export function Arena({
                   transition={{ duration: 0.3, ease: EASE }}
                   className={`flex items-center gap-4 rounded-[3px] p-4 shadow-[var(--shadow-card)] ${a.caughtBy ? "bg-paper" : "bg-marker"}`}
                 >
-                  <Stamp verdict={a.verdict} size="sm" />
+                  <Stamp verdict={a.verdict} size="sm" fresh={!reduce} delay={Math.min(n, 8) * 0.12 + 0.2} />
                   <div className="min-w-0 flex-1">
                     <p className="flex flex-wrap items-baseline gap-x-2 text-sm">
                       <b>{a.handle ? `@${a.handle}` : a.wallet}</b>
