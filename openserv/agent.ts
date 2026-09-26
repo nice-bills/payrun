@@ -174,7 +174,7 @@ async function main() {
           timeout: 600,
           ...payTo,
           input: {
-            wallet: { type: "string", title: "Your wallet (Base Sepolia)", description: "Where the agent would pay you." },
+            wallet: { type: "string", title: "Pay me at (0x address)", description: "Where the agent would pay you, in test USDC on Base Sepolia. The entry fee itself is paid on Base." },
             invoice: { type: "string", title: "Your invoice", description: "Anything you like. Try to get paid." },
             handle: { type: "string", title: "X handle (optional)", description: "For the board." },
           },
