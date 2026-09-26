@@ -90,10 +90,18 @@ async function main() {
       const dir = args[0] && !args[0].startsWith("--") ? args[0] : "fixtures/invoices";
       // A fixed receipt date keeps the demo (and its recorded SERV responses) reproducible.
       const receivedAt = opt("received") ?? DEMO_RECEIVED_AT;
-      const files = readdirSync(dir).filter((f) => /\.(txt|eml|pdf|md)$/i.test(f)).sort();
+      const files = readdirSync(dir).filter((f) => /\.(txt|eml|pdf|md|png|jpe?g|webp)$/i.test(f)).sort();
+      const { isImage, transcribeImageFile } = await import("./core/vision");
       for (const f of files) {
         const id = basename(f).replace(/\.[^.]+$/, "");
         const path = join(dir, f);
+        if (isImage(path)) {
+          // Photos and scans: SERV vision transcribes every character, faint text included.
+          const t = await transcribeImageFile(serv, path);
+          store.upsertInvoice({ id, source: f, rawText: t.text, receivedAt, hiddenText: t.hiddenText });
+          console.log(`  ${f}: transcribed by SERV${t.hiddenText ? `; hard-to-see text: "${t.hiddenText.slice(0, 60)}…"` : ""}`);
+          continue;
+        }
         store.upsertInvoice({ id, source: f, rawText: await readInvoiceText(path), receivedAt, hiddenText: await readHiddenPdfText(path) });
       }
       console.log(`Ingested ${files.length} invoices from ${dir}.`);

@@ -107,7 +107,11 @@ export function InvoiceSheet({ item, fresh, activeNote }: { item: DeskItem; fres
               >
                 {showHidden ? "Hide the invisible text" : "Reveal what the model was fed"}
               </button>
-              {showHidden ? <span className="font-hand text-xl leading-tight text-block">1pt white type. You can&apos;t see it; a model reads it.</span> : null}
+              {showHidden ? (
+                <span className="font-hand text-xl leading-tight text-block">
+                  {kindOf(item.invoice.source) === "Photo" ? "Faint type in the photo. You can barely see it; a model reads it." : "1pt white type. You can't see it; a model reads it."}
+                </span>
+              ) : null}
             </div>
           ) : null}
         </div>

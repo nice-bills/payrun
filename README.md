@@ -58,7 +58,7 @@ The wallet signs only what Payrun Check asked for: USDC on Base, up to `maxPrice
 
 | Surface | SERV feature |
 |---|---|
-| Invoice intake | Prompt Guard on the extraction call |
+| Invoice intake | Prompt Guard on the extraction call; photos and scans are transcribed by SERV vision first (faint, tiny and low-contrast text included and flagged), so the guard screens exactly what the model will read |
 | Verdicts | Policy-as-system-prompt, Kronos + Multipath, Shadow Agent with a per-invoice hint |
 | Policy editor | SERV reviews the wording on every save (conflicts, undefined terms, ambiguity, missing cases) with one-click fixes |
 | Holes in the policy | SERV writes boundary invoices, judges each three times, and surfaces cases the wording leaves to the reviewer; the owner picks a reading, SERV drafts the clause, replay shows what changes before it goes live |
@@ -73,7 +73,7 @@ The wallet signs only what Payrun Check asked for: USDC on Base, up to `maxPrice
 From recorded runs in this repo (`/proof` in the app):
 
 - 40 generated invoices, 24 traps: every setup (SERV + luna, raw luna, raw gpt-5.4) caught all 24 once code states the facts.
-- The hidden-text PDF was blocked by the guard before the model read it.
+- The hidden-text PDF was blocked by the guard before the model read it. The same attack as a photo (an instruction in faint 7px grey type, `fixtures/images/`) takes the same path: `npm run cli -- ingest fixtures/images`; offline walkthrough: `npm run demo:photo`.
 - 4 holes found in the 7-clause v1 policy; the wording review flagged 3 of them independently.
 - On ambiguous invoices, each setup flipped on 1 of 4. A bigger model doesn't settle loose wording; a clause does, which is why every hole becomes a decision for the owner.
 

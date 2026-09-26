@@ -13,7 +13,7 @@ export function whoFor(item: DeskItem, names: Map<string, string>): string {
   return (d?.contractorId && names.get(d.contractorId)) || d?.fields?.contractorName || item.invoice.source;
 }
 
-const KIND: Record<string, string> = { pdf: "PDF", eml: "Email", txt: "Text", md: "Text" };
+const KIND: Record<string, string> = { pdf: "PDF", eml: "Email", txt: "Text", md: "Text", png: "Photo", jpg: "Photo", jpeg: "Photo", webp: "Photo" };
 export const kindOf = (source: string) => KIND[source.split(".").pop()?.toLowerCase() ?? ""] ?? "File";
 
 const INK: Record<Verdict, string> = { PAY: "text-pay", HOLD: "text-hold", BLOCK: "text-block" };

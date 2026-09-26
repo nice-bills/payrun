@@ -41,6 +41,8 @@ export interface ServCall {
   features?: ServFeature[];
   system: string;
   user: string;
+  /** Images sent with the user turn (data: or https: URLs), for vision models. */
+  images?: string[];
   /** Strict JSON schema for the response. */
   schema?: { name: string; schema: Record<string, unknown> };
   /** Arm serv_prompt_guard: SERV screens the user-controlled context before the model runs. */
@@ -177,7 +179,7 @@ export class ServClient {
       model,
       messages: [
         { role: "system", content: c.system },
-        { role: "user", content: c.user },
+        { role: "user", content: c.images?.length ? [{ type: "text", text: c.user }, ...c.images.map((url) => ({ type: "image_url", image_url: { url } }))] : c.user },
         ...(c.turns ?? []),
       ],
     };
