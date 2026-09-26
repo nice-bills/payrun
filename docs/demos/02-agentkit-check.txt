@@ -1,0 +1,24 @@
+
+An AgentKit agent with Payrun installed
+Wallet 0x3b19fC22962a86D55547bE3B84079dF27cb467fF on base-mainnet
+Actions: ERC20ActionProvider_get_balance, ERC20ActionProvider_transfer, ERC20ActionProvider_approve, ERC20ActionProvider_get_allowance, ERC20ActionProvider_get_erc20_token_address, payrun_check_invoice
+
+Before paying Ama's invoice: payrun_check_invoice
+  Verdict: PAY
+  clause 1: 12 days at the agreed 350 USDC day rate.  «12 days × 350 USDC»
+  clause 2: Within the 15-day cap.  «12 days»
+  Paid for the check: {"success":true,"transaction":"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","network":"base","payer":"0x3b19fC22962a86D55547bE3B84079dF27cb467fF"}
+  → the agent may now call erc20 transfer to the wallet on file
+
+Before paying an invoice with hidden text: payrun_check_invoice
+  Verdict: BLOCK (Prompt Guard refused the invoice; no model read it)
+  Paid for the check: {"success":true,"transaction":"0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee","network":"base","payer":"0x3b19fC22962a86D55547bE3B84079dF27cb467fF"}
+  → the agent does not pay
+
+x402 payments the Payrun Check endpoint received (signatures verified)
+  0x3b19fC22962a86D55547bE3B84079dF27cb467fF → 0x5a1e500000000000000000000000000000000E45: 0.05 USDC · EIP-3009 signature valid ✓
+  0x3b19fC22962a86D55547bE3B84079dF27cb467fF → 0x5a1e500000000000000000000000000000000E45: 0.05 USDC · EIP-3009 signature valid ✓
+
+A server that asks 0.50 USDC for the same check (the agent's cap is 0.10)
+  Not paid: the check asked for more than 0.1 USDC, another asset, or another payee. Nothing was signed; treat the invoice as HOLD.
+  Payments signed for it: 0

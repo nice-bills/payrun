@@ -82,3 +82,83 @@ export const line = (s = "") => console.log(s);
 export const head = (s: string) => console.log(`\n\x1b[1m${s}\x1b[0m`);
 export const step = (s: { actor: string; ok: boolean | null; title: string; detail: string }) =>
   console.log(`  ${s.actor.padEnd(8)} ${s.ok === false ? "✗" : s.ok ? "✓" : "·"} ${s.title} — ${s.detail.slice(0, 140)}`);
+
+/**
+ * A stand-in for an OpenServ x402 trigger: answers 402 with its price (x402 v1,
+ * as OpenServ advertises it), checks the EIP-3009 payment signature for real,
+ * then runs `work(payload)` and replies with its result.
+ */
+export async function fakeX402Trigger(opts: {
+  priceUsdc: number;
+  payTo: string;
+  network?: "base" | "base-sepolia";
+  work: (payload: any) => Promise<unknown>;
+}): Promise<{ url: string; paid: { from: string; value: string; to: string; verified: boolean }[]; close: () => Promise<void> }> {
+  const { verifyTypedData } = await import("viem");
+  const network = opts.network ?? "base";
+  const chainId = network === "base" ? 8453 : 84532;
+  const asset = network === "base" ? "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" : "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+  const paid: { from: string; value: string; to: string; verified: boolean }[] = [];
+  let url = "";
+  const server: Server = createServer((req, res) => {
+    let body = "";
+    req.on("data", (d) => (body += d));
+    req.on("end", async () => {
+      const header = req.headers["x-payment"] ?? req.headers["payment-signature"];
+      const requirement = {
+        scheme: "exact", network, maxAmountRequired: String(Math.round(opts.priceUsdc * 1e6)), resource: url,
+        description: "Payrun Check", mimeType: "application/json", payTo: opts.payTo, maxTimeoutSeconds: 600, asset,
+        extra: { name: "USD Coin", version: "2" },
+      };
+      if (!header) {
+        res.writeHead(402, { "content-type": "application/json" });
+        return res.end(JSON.stringify({ x402Version: 1, error: "X-PAYMENT header is required", accepts: [requirement] }));
+      }
+      const p = JSON.parse(Buffer.from(String(header), "base64").toString());
+      const auth = p.payload.authorization;
+      const verified = await verifyTypedData({
+        address: auth.from,
+        domain: { name: "USD Coin", version: "2", chainId, verifyingContract: asset as `0x${string}` },
+        types: { TransferWithAuthorization: [
+          { name: "from", type: "address" }, { name: "to", type: "address" }, { name: "value", type: "uint256" },
+          { name: "validAfter", type: "uint256" }, { name: "validBefore", type: "uint256" }, { name: "nonce", type: "bytes32" },
+        ] },
+        primaryType: "TransferWithAuthorization",
+        message: { ...auth, value: BigInt(auth.value), validAfter: BigInt(auth.validAfter), validBefore: BigInt(auth.validBefore) },
+        signature: p.payload.signature,
+      });
+      paid.push({ from: auth.from, value: auth.value, to: auth.to, verified });
+      if (!verified || BigInt(auth.value) < BigInt(requirement.maxAmountRequired) || auth.to.toLowerCase() !== opts.payTo.toLowerCase()) {
+        res.writeHead(402, { "content-type": "application/json" });
+        return res.end(JSON.stringify({ x402Version: 1, error: "invalid payment", accepts: [requirement] }));
+      }
+      const { payload } = JSON.parse(body);
+      const result = await opts.work(payload);
+      const settle = Buffer.from(JSON.stringify({ success: true, transaction: `0x${"e".repeat(64)}`, network, payer: auth.from })).toString("base64");
+      res.writeHead(200, { "content-type": "application/json", "x-payment-response": settle, "access-control-expose-headers": "X-PAYMENT-RESPONSE" });
+      // OpenServ returns the workflow's output; the agent's reply is the check JSON as text.
+      res.end(JSON.stringify({ status: "completed", output: JSON.stringify(result, null, 2) }));
+    });
+  });
+  await new Promise<void>((r) => server.listen(0, "127.0.0.1", r));
+  url = `http://127.0.0.1:${(server.address() as { port: number }).port}/webhooks/x402/trigger/demo`;
+  return { url, paid, close: () => new Promise((r) => server.close(() => r())) };
+}
+
+/** AgentKit 0.10.4 fires usage analytics without awaiting them; offline, the rejection would kill the demo. */
+export function quietAgentKit() {
+  process.on("unhandledRejection", (reason) => {
+    if (reason instanceof Error && reason.stack?.includes("sendAnalyticsEvent")) return;
+    throw reason;
+  });
+}
+
+/** A throwaway local-key AgentKit wallet on Base (signs x402 payments offline; never sends a transaction). */
+export async function localWallet() {
+  const { ViemWalletProvider } = await import("@coinbase/agentkit");
+  const { createWalletClient, http } = await import("viem");
+  const { generatePrivateKey, privateKeyToAccount } = await import("viem/accounts");
+  const { base } = await import("viem/chains");
+  // AgentKit bundles its own viem; the client is the same at runtime, only the declarations differ.
+  return new ViemWalletProvider(createWalletClient({ account: privateKeyToAccount(generatePrivateKey()), chain: base, transport: http("http://127.0.0.1:1") }) as never);
+}

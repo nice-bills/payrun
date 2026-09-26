@@ -39,6 +39,19 @@ Setup: `npm run cli -- arena setup` (creates the arena wallet and its cap rule),
 
 `openserv/agent.ts` publishes the review as an x402 service on OpenServ's agent market: another agent sends its own policy, an invoice and the payee's terms, pays per call in USDC on Base, and gets PAY / HOLD / BLOCK with cited clauses. Same pipeline (`src/core/check.ts`): SERV reads the terms, Prompt Guard screens the invoice, code checks the facts, SERV applies the caller's policy. Set `PAYRUN_EARNINGS_WALLET` to receive payments in your own wallet, then `npm run openserv` (its first run signs up for OpenServ with a new wallet and prints the paywall URL). Live: [Payrun Check paywall](https://platform.openserv.ai/workspace/paywall/274c7b5ee0c745d6afbfa9f35264be85), $0.05 per check.
 
+### For any AgentKit agent: `payrun_check_invoice`
+
+`src/agentkit/payrunCheck.ts` is an AgentKit action provider. An agent that is about to pay an invoice adds it next to its other providers and gets `payrun_check_invoice`: it sends its policy, the invoice verbatim and the payee's terms, pays Payrun Check's x402 price from its own AgentKit wallet, and gets PAY / HOLD / BLOCK with cited clauses.
+
+```ts
+const agentkit = await AgentKit.from({
+  walletProvider,
+  actionProviders: [erc20ActionProvider(), payrunCheckActionProvider({ maxPriceUsdc: 0.1 })],
+});
+```
+
+The wallet signs only what Payrun Check asked for: USDC on Base, up to `maxPriceUsdc`, to `payTo` if set (an x402 payment policy, checked before anything is signed). `npm run demo:check` runs it offline against a local x402 endpoint that verifies the EIP-3009 signature and runs the real check pipeline; `--live` pays the real Payrun Check on OpenServ (0.05 USDC on Base from a CDP wallet; set `PAYRUN_CHECK_URL` if the trigger URL changes).
+
 ## Where SERV sits
 
 | Surface | SERV feature |
