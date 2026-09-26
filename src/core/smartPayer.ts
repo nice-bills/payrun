@@ -45,6 +45,7 @@ export async function createSmartPayer(): Promise<SmartPayer> {
   const ownerAddress = provider.ownerAccount.address;
 
   async function send(transfers: BatchTransfer[]): Promise<BatchResult> {
+    let userOpHash: `0x${string}`;
     try {
       const op = await cdp.evm.sendUserOperation({
         smartAccount,
@@ -52,11 +53,18 @@ export async function createSmartPayer(): Promise<SmartPayer> {
         calls: transfers.map(transferCall),
         paymasterUrl: provider.getPaymasterUrl(),
       });
-      const done = await cdp.evm.waitForUserOperation({ smartAccountAddress: smartAccount.address, userOpHash: op.userOpHash });
-      if (done.status === "complete") return { ok: true, txHash: done.transactionHash, userOpHash: op.userOpHash, message: `${transfers.length} transfers in user operation ${op.userOpHash}` };
-      return { ok: false, txHash: null, userOpHash: op.userOpHash, message: `User operation ${op.userOpHash} failed onchain.` };
+      userOpHash = op.userOpHash;
     } catch (e) {
+      // Refused before it was sent (e.g. by the signer's rules): nothing moved.
       return { ok: false, txHash: null, message: e instanceof Error ? e.message : String(e) };
+    }
+    try {
+      const done = await cdp.evm.waitForUserOperation({ smartAccountAddress: smartAccount.address, userOpHash });
+      if (done.status === "complete") return { ok: true, txHash: done.transactionHash, userOpHash, message: `${transfers.length} transfers in user operation ${userOpHash}` };
+      return { ok: false, txHash: null, userOpHash, message: `User operation ${userOpHash} failed onchain.` };
+    } catch (e) {
+      // Sent, but not confirmed: the money may have moved. Never treat this as unpaid.
+      return { ok: false, unconfirmed: true, txHash: null, userOpHash, message: `User operation ${userOpHash} was sent but not confirmed (${e instanceof Error ? e.message : String(e)}). Check it before paying these invoices again.` };
     }
   }
 

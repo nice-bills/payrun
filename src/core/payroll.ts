@@ -47,14 +47,14 @@ export async function runPayroll(serv: ServClient, store: Store, wallet: AgentWa
   // A batching wallet settles every approved transfer now, in one user operation.
   const batch = wallet && "flush" in wallet ? await (wallet as BatchingWallet).flush() : null;
   if (batch) {
-    const status = batch.ok ? "sent" : isPolicyRejection(batch.message) ? "rejected" : "failed";
+    const status = batch.ok ? "sent" : batch.unconfirmed ? "unconfirmed" : isPolicyRejection(batch.message) ? "rejected" : "failed";
     const queued = runs.filter((r) => r.payment?.status === "queued");
     for (const r of queued) {
       const payment = { ...r.payment!, status, txHash: batch.txHash, message: batch.message, sentAt: new Date().toISOString() } as const;
       store.addPayment(payment);
       const step: AgentStep = batch.ok
         ? { actor: "Coinbase", title: "signed the batched transfer", detail: `${queued.length} payouts in one gasless user operation.`, ok: true, txHash: batch.txHash }
-        : { actor: "Coinbase", title: status === "rejected" ? "signer refused the batch" : "batch failed", detail: batch.message.slice(0, 240), ok: false };
+        : { actor: "Coinbase", title: status === "rejected" ? "signer refused the batch" : status === "unconfirmed" ? "batch sent, not confirmed" : "batch failed", detail: batch.message.slice(0, 240), ok: status === "unconfirmed" ? null : false };
       r.steps.push(step);
       r.payment = payment;
       onEvent?.({ type: "step", invoiceId: r.invoiceId, name: r.name, step });

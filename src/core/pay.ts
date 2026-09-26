@@ -20,7 +20,7 @@ export interface PaymentResult {
   /** Amount actually moved onchain (testnet settlement scale applied). */
   settledUsdc: number;
   /** queued: in a pay run's batch, not yet settled (a later row records the outcome). */
-  status: "sent" | "rejected" | "failed" | "queued";
+  status: "sent" | "rejected" | "failed" | "queued" | "unconfirmed";
   txHash: string | null;
   message: string;
   sentAt: string;

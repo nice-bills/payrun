@@ -133,8 +133,9 @@ export class Store {
     return (this.db.prepare("SELECT json FROM payments ORDER BY id").all() as { json: string }[]).map((r) => JSON.parse(r.json));
   }
 
+  /** Invoices a pay run must not pay again: sent, or sent without confirmation (the money may have moved). */
   paidInvoiceIds(): Set<string> {
-    return new Set((this.db.prepare("SELECT invoice_id FROM payments WHERE status = 'sent'").all() as { invoice_id: string }[]).map((r) => r.invoice_id));
+    return new Set((this.db.prepare("SELECT invoice_id FROM payments WHERE status IN ('sent', 'unconfirmed')").all() as { invoice_id: string }[]).map((r) => r.invoice_id));
   }
 
   addReport(kind: string, data: unknown): void {

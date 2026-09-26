@@ -70,3 +70,14 @@ describe("batched pay run", () => {
     expect(store.payments().map((p) => p.status)).toEqual(["queued", "rejected"]);
   });
 });
+
+describe("an unconfirmed batch", () => {
+  it("is never paid again by a later pay run", async () => {
+    const { mkdtempSync } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const { Store } = await import("../src/core/store");
+    const store = new Store(`${mkdtempSync(`${tmpdir()}/batch-`)}/p.db`);
+    store.addPayment({ invoiceId: "a", contractorId: "ama", to: "0x1", amountUsdc: 1, settledUsdc: 0.001, status: "unconfirmed", txHash: null, message: "sent, not confirmed", sentAt: "2026-09-26T00:00:00Z" });
+    expect(store.paidInvoiceIds().has("a")).toBe(true);
+  });
+});

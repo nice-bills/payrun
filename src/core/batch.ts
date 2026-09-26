@@ -18,6 +18,8 @@ export interface BatchResult {
   txHash: string | null;
   /** The user operation, when the wallet reports it. */
   userOpHash?: string | null;
+  /** Sent but not confirmed: the transfers may have settled. */
+  unconfirmed?: boolean;
   message: string;
 }
 
