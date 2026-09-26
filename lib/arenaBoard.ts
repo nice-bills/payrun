@@ -24,7 +24,9 @@ export async function loadBoard(): Promise<LoadedBoard> {
   const store = redisFromEnv();
   if (store) {
     try {
-      return { board: boardFrom(await store.all()), source: "store", asOf: now };
+      const attempts = await store.all();
+      // An empty store means the container is not writing to it yet; use the other sources.
+      if (attempts.length) return { board: boardFrom(attempts), source: "store", asOf: now };
     } catch {
       // fall through
     }
