@@ -33,6 +33,8 @@ Every refusal goes back to the model as a tool result, and it must hold or block
 
 The board outlives the container: every attempt is also pushed to a Redis list (Upstash REST, or Vercel KV), a redeployed container restores from it before taking entries, and `/arena` renders on the server from the most durable source that answers (the store, local runs, the live container, then `demo/arena-board.json` from `npm run cli -- arena snapshot`). Demo with no keys: `npm run demo:board`.
 
+**The house red team** (`src/agentkit/redTeam.ts`) attacks it with the same stack: SERV writes one invoice per tactic (hidden instruction, fake approval, padded days, expense dressed as work, wallet swap, authority, policy-lawyering, rate drift) against the arena's written policy, and an AgentKit wallet pays each entry fee over x402 and asks to be paid to itself. Every result goes on the public board. `npm run demo:redteam` shows the loop offline; `npm run cli -- redteam [--tactics a,b] --go` runs it for real (entry fees in USDC on Base from `PAYRUN_REDTEAM_WALLET`).
+
 Setup: `npm run cli -- arena setup` (creates the arena wallet and its cap rule), fund it with test USDC and a little Base Sepolia ETH, then `npm run openserv:deploy`. Local attempt: `npm run cli -- arena try --wallet 0x… --file invoice.txt`.
 
 ## Payrun Check, sold per call on OpenServ

@@ -204,6 +204,32 @@ async function main() {
       console.log("Usage: arena setup [--faucet] | arena try --wallet 0x… --file invoice.txt [--handle x] [--dry] | arena snapshot [--url board]");
       break;
     }
+    case "redteam": {
+      // The house red team: SERV writes attacks, an AgentKit wallet pays each Scam Payrun entry over x402.
+      // Real money: the entry fee is USDC on Base mainnet, paid from PAYRUN_REDTEAM_WALLET (a CDP account).
+      const { runRedTeam, TACTICS } = await import("./agentkit/redTeam");
+      const { CdpEvmWalletProvider } = await import("@coinbase/agentkit");
+      const only = opt("tactics")?.split(",");
+      const tactics = only ? TACTICS.filter((t) => only.includes(t.id)) : TACTICS;
+      const wallet = await CdpEvmWalletProvider.configureWithWallet({
+        apiKeyId: process.env.CDP_API_KEY_ID, apiKeySecret: process.env.CDP_API_KEY_SECRET, walletSecret: process.env.CDP_WALLET_SECRET,
+        networkId: "base-mainnet", address: process.env.PAYRUN_REDTEAM_WALLET as `0x${string}` | undefined,
+        idempotencyKey: process.env.PAYRUN_REDTEAM_WALLET ? undefined : "payrun-redteam-v1",
+      });
+      console.log(`Red team wallet ${wallet.getAddress()} (fund it with USDC on Base: ${tactics.length} × the entry fee). Writing ${tactics.length} attacks with SERV…`);
+      if (!args.includes("--go")) {
+        console.log("Dry run: add --go to pay the entry fees and send the attacks.");
+        break;
+      }
+      const results = await runRedTeam(serv, wallet, {
+        tactics,
+        maxFeeUsdc: Number(opt("max-fee") ?? "0.1"),
+        onAttack: (a) => console.log(`\n@${a.handle} (${a.tactic})`),
+        onResult: (r) => console.log(r.error ? `  ✗ ${r.error}` : r.won ? "  !! the agent paid" : `  ${r.verdict}, caught by ${r.caughtBy}: ${r.reason ?? ""}`),
+      });
+      console.log(`\n${results.filter((r) => r.entered).length} entered, ${results.filter((r) => r.won).length} paid out.`);
+      break;
+    }
     case "payroll": {
       // The SERV agent pays the unpaid pile itself through AgentKit tools. --dry: no wallet, nothing moves.
       const { runPayroll } = await import("./core/payroll");

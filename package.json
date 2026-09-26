@@ -17,7 +17,8 @@
     "openserv:build": "tsx scripts/build-openserv.mts",
     "openserv:deploy": "npm run openserv:build && tsx scripts/deploy-openserv.mts",
     "demo:board": "tsx scripts/demo/01-durable-board.ts",
-    "demo:check": "tsx scripts/demo/02-agentkit-check.ts"
+    "demo:check": "tsx scripts/demo/02-agentkit-check.ts",
+    "demo:redteam": "tsx scripts/demo/03-red-team.ts"
   },
   "dependencies": {
     "@coinbase/agentkit": "^0.10.4",

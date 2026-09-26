@@ -17,21 +17,13 @@
  * Base, up to `maxPriceUsdc` (default 0.10), to the expected payee if one is set.
  */
 import { customActionProvider, EvmWalletProvider } from "@coinbase/agentkit";
-import { registerExactEvmScheme } from "@x402/evm/exact/client";
-import { wrapFetchWithPayment, x402Client } from "@x402/fetch";
 import { z } from "zod/v3";
+import { findVerdict, isPriceRefusal, x402Post } from "./x402";
+
+export { findVerdict, paymentFilter } from "./x402";
 
 /** The live Payrun Check x402 trigger on OpenServ (the paywall page's API endpoint). */
 export const PAYRUN_CHECK_URL = process.env.PAYRUN_CHECK_URL ?? "https://api.openserv.ai/webhooks/x402/trigger/274c7b5ee0c745d6afbfa9f35264be85";
-
-/** USDC on Base and Base Sepolia: the only assets the check is paid in. */
-const USDC: Record<string, string> = {
-  "eip155:8453": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-  "eip155:84532": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-  // x402 v1 names, as OpenServ's triggers advertise them
-  base: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
-  "base-sepolia": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
-};
 
 export interface PayrunCheckOptions {
   /** x402 trigger URL of Payrun Check. */
@@ -58,75 +50,10 @@ export interface PayrunVerdict {
   [k: string]: unknown;
 }
 
-/** Only USDC on Base, within the price cap, to the expected payee. Anything else is never signed. */
-export function paymentFilter(maxPriceUsdc: number, payTo?: string) {
-  const max = BigInt(Math.round(maxPriceUsdc * 1e6));
-  return (_v: number, reqs: { network: string; asset: string; amount?: string; maxAmountRequired?: string; payTo: string }[]) =>
-    reqs.filter((r) => {
-      const usdc = USDC[r.network];
-      const amount = r.amount ?? r.maxAmountRequired;
-      return (
-        !!usdc &&
-        r.asset.toLowerCase() === usdc.toLowerCase() &&
-        amount !== undefined &&
-        BigInt(amount) <= max &&
-        (!payTo || r.payTo.toLowerCase() === payTo.toLowerCase())
-      );
-    });
-}
-
-/** The workflow's reply wraps the check's JSON; find the verdict wherever it sits. */
-export function findVerdict(data: unknown): PayrunVerdict | null {
-  if (data && typeof data === "object") {
-    const o = data as Record<string, unknown>;
-    if (o.verdict === "PAY" || o.verdict === "HOLD" || o.verdict === "BLOCK") return o as PayrunVerdict;
-    for (const v of Object.values(o)) {
-      const found = findVerdict(v);
-      if (found) return found;
-    }
-  }
-  if (typeof data === "string") {
-    const start = data.indexOf("{");
-    const end = data.lastIndexOf("}");
-    if (start >= 0 && end > start) {
-      try {
-        return findVerdict(JSON.parse(data.slice(start, end + 1)));
-      } catch {
-        return null;
-      }
-    }
-  }
-  return null;
-}
-
 /** Pay for one check from an AgentKit EVM wallet and return the verdict with the payment proof. */
 export async function payrunCheck(walletProvider: EvmWalletProvider, input: z.infer<typeof PayrunCheckSchema>, opts: PayrunCheckOptions = {}) {
-  const client = new x402Client();
-  registerExactEvmScheme(client, { signer: walletProvider.toSigner() });
-  client.registerPolicy(paymentFilter(opts.maxPriceUsdc ?? 0.1, opts.payTo) as never);
-  const pay = wrapFetchWithPayment(opts.fetchImpl ?? fetch, client);
-  const res = await pay(opts.url ?? PAYRUN_CHECK_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ buyerAddress: walletProvider.getAddress(), payload: input }),
-  });
-  const text = await res.text();
-  let data: unknown = text;
-  try {
-    data = JSON.parse(text);
-  } catch {
-    // plain text reply
-  }
-  const proof = res.headers.get("payment-response") ?? res.headers.get("x-payment-response");
-  let payment: unknown = null;
-  if (proof) {
-    try {
-      payment = JSON.parse(atob(proof));
-    } catch {
-      payment = { raw: proof };
-    }
-  }
-  return { ok: res.ok, status: res.status, verdict: res.ok ? findVerdict(data) : null, payment, data };
+  const r = await x402Post(walletProvider, opts.url ?? PAYRUN_CHECK_URL, input, { maxPriceUsdc: opts.maxPriceUsdc ?? 0.1, payTo: opts.payTo, fetchImpl: opts.fetchImpl });
+  return { ...r, verdict: r.ok ? (findVerdict(r.data) as PayrunVerdict | null) : null };
 }
 
 export function payrunCheckActionProvider(opts: PayrunCheckOptions = {}) {
@@ -143,7 +70,7 @@ export function payrunCheckActionProvider(opts: PayrunCheckOptions = {}) {
         return JSON.stringify({ ...r.verdict, payment: r.payment }, null, 2);
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
-        if (/filtered out by policies|rejected by spendControls/.test(msg)) {
+        if (isPriceRefusal(msg)) {
           return JSON.stringify({ error: true, message: `Not paid: the check asked for more than ${opts.maxPriceUsdc ?? 0.1} USDC, another asset, or another payee. Nothing was signed; treat the invoice as HOLD.` }, null, 2);
         }
         return JSON.stringify({ error: true, message: `Payrun Check failed (${msg}); treat as HOLD.` }, null, 2);
