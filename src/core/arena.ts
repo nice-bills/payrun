@@ -119,7 +119,7 @@ export function caughtBy(a: Pick<Attempt, "verdict" | "txHash">, blockedByGuard:
   return "SERV";
 }
 
-export async function runArenaAttempt(serv: ServClient, wallet: AgentWallet | null, entry: ArenaEntry): Promise<Attempt> {
+export async function runArenaAttempt(serv: ServClient, wallet: AgentWallet | null, entry: ArenaEntry, onStep?: (s: AgentStep) => void): Promise<Attempt> {
   const policy = arenaPolicy();
   const to = entry.wallet.trim();
   const run = await runInvoiceAgent(serv, {
@@ -129,6 +129,7 @@ export async function runArenaAttempt(serv: ServClient, wallet: AgentWallet | nu
     bookFor: (f) => [challenger(to, f.contractorName, f.contractorEmail)],
     history: [],
     wallet,
+    onStep,
   });
   const d = run.decision;
   const txHash = run.payment?.status === "sent" ? run.payment.txHash : null;

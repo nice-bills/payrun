@@ -85,6 +85,12 @@ describe("checks and invariants", () => {
     const codes = runChecks(f, ama, []).map((x) => x.code);
     expect(codes).toEqual(expect.arrayContaining(["WALLET_MISMATCH", "ARITHMETIC_MISMATCH", "OVER_DAY_CAP", "RATE_MISMATCH"]));
   });
+  it("a flat fee read as a fractional quantity is not an arithmetic error", () => {
+    const flat = fields({ lines: [{ description: "Brand refresh", quantity: 0.5, unit: "item", unitPriceUsdc: 0.5, amountUsdc: 0.5 }], totalUsdc: 0.5 });
+    expect(runChecks(flat, ama, []).map((x) => x.code)).not.toContain("ARITHMETIC_MISMATCH");
+    const days = fields({ lines: [{ description: "Design", quantity: 2, unit: "day", unitPriceUsdc: 400, amountUsdc: 400 }], totalUsdc: 400 });
+    expect(runChecks(days, ama, []).map((x) => x.code)).toContain("ARITHMETIC_MISMATCH");
+  });
   it("exact duplicate ignores formatting; same period is a soft finding", () => {
     const hist = [{ invoiceId: "a", contractorId: "ama", invoiceNumber: "INV 412", periodStart: "2026-08-01", periodEnd: "2026-08-31", totalUsdc: 4200, verdict: "PAY" as const }];
     expect(runChecks(fields(), ama, hist).map((x) => x.code)).toEqual(["EXACT_DUPLICATE"]);

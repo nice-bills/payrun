@@ -58,7 +58,9 @@ export function runChecks(fields: InvoiceFields, contractor: Contractor | null, 
   if (fields.totalUsdc == null) {
     out.push({ code: "MISSING_TOTAL", hard: true, detail: "Invoice has no total." });
   } else {
-    const badLine = fields.lines.find((l) => cents(l.quantity * l.unitPriceUsdc) !== cents(l.amountUsdc));
+    // A flat fee sometimes comes back from extraction as "0.5 × 0.5 = 0.5"; the price is the amount, so the sum is fine.
+    const flatFee = (l: InvoiceFields["lines"][number]) => (l.unit === "item" || l.unit === "expense") && cents(l.unitPriceUsdc) === cents(l.amountUsdc);
+    const badLine = fields.lines.find((l) => !flatFee(l) && cents(l.quantity * l.unitPriceUsdc) !== cents(l.amountUsdc));
     const lineSum = fields.lines.reduce((s, l) => s + cents(l.amountUsdc), 0);
     if (badLine) {
       out.push({ code: "ARITHMETIC_MISMATCH", hard: true, detail: `Line "${badLine.description}": ${badLine.quantity} × ${badLine.unitPriceUsdc} ≠ ${badLine.amountUsdc}.` });

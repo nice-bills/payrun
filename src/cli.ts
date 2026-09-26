@@ -176,9 +176,9 @@ async function main() {
         const bad = validateEntry(entry);
         if (bad) throw new Error(bad);
         const wallet = args.includes("--dry") ? null : await createAgentKitPayer({ address: process.env.PAYRUN_ARENA_WALLET });
-        const a = await runArenaAttempt(serv, wallet, entry);
+        console.log("Reading the attempt with SERV (the first run compiles the arena policy and can take a few minutes)…");
+        const a = await runArenaAttempt(serv, wallet, entry, (st) => console.log(`  ${st.actor.padEnd(8)} ${st.ok === false ? "✗" : st.ok ? "✓" : "·"} ${st.title} — ${st.detail}`));
         new ArenaLog("data/arena.json").add(a);
-        for (const st of a.steps) console.log(`  ${st.actor.padEnd(8)} ${st.ok === false ? "✗" : st.ok ? "✓" : "·"} ${st.title} — ${st.detail}`);
         console.log(a.caughtBy ? `→ ${a.verdict}, caught by ${a.caughtBy}` : `→ PAID ${a.paidUsdc} test USDC (${a.txHash})`);
         break;
       }
