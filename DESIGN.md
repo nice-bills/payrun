@@ -33,7 +33,7 @@ Track: AgentKit (OpenServ SERV Hackathon, Edition 01). Network: Base Sepolia onl
 
 ## Recorded SERV responses
 
-`PAYRUN_SERV_CASSETTE=auto` saves every live SERV response to `fixtures/cassettes/` (keyed by the exact request) and replays it afterwards for free. `npm run demo:replay` rebuilds the whole 11-invoice demo from recordings with no API key, into `data/replay.db`. The recorded demo ran on `gpt-5.4-nano`; new runs default to `gpt-6-luna` (`PAYRUN_MODEL`).
+`PAYRUN_SERV_CASSETTE=auto` saves every live SERV response to `fixtures/cassettes/` (keyed by the exact request) and replays it afterwards for free. `npm run demo:replay` rebuilds the whole 11-invoice demo from recordings with no API key, into `data/replay.db`. The recorded demo runs on `gpt-6-luna`, the default small model (`PAYRUN_MODEL`). The older `gpt-5.4-nano` recordings predate the confirmed-facts lines in the judgment request, so they no longer match it.
 
 ## Status (24 Sep)
 

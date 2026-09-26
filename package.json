@@ -7,7 +7,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "cli": "tsx src/cli.ts",
-    "demo:replay": "PAYRUN_DB=data/replay.db PAYRUN_SERV_CASSETTE=replay PAYRUN_MODEL=gpt-5.4-nano sh -c 'rm -f data/replay.db && npm run -s cli -- init && npm run -s cli -- ingest && npm run -s cli -- run'",
+    "demo:replay": "PAYRUN_DB=data/replay.db PAYRUN_SERV_CASSETTE=replay PAYRUN_MODEL=gpt-6-luna sh -c 'rm -f data/replay.db && npm run -s cli -- init && npm run -s cli -- ingest && npm run -s cli -- run'",
     "dev": "next dev --port 3100",
     "build": "next build",
     "start": "next start --port 3100",
