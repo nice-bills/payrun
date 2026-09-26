@@ -27,6 +27,8 @@ interface Board {
   attempts: BoardAttempt[];
 }
 
+type Source = "store" | "local" | "live" | "snapshot" | "none";
+
 const EASE = [0.23, 1, 0.32, 1] as const;
 
 /** The four layers, in the order an invoice meets them. */
@@ -48,18 +50,19 @@ function ago(iso: string) {
 export function Arena({
   policy,
   terms,
-  boardUrl,
+  initial,
   paywallUrl,
   fee,
 }: {
   policy: string[];
   terms: { dayRateUsdc: number; monthlyDayCap: number; maxPayout: number };
-  boardUrl: string;
+  initial: { board: Board | null; source: Source; asOf: string };
   paywallUrl: string | null;
   fee: string;
 }) {
   const reduce = useReducedMotion();
-  const [board, setBoard] = useState<Board | null>(null);
+  const [board, setBoard] = useState<Board | null>(initial.board);
+  const [source, setSource] = useState<{ source: Source; asOf: string }>({ source: initial.source, asOf: initial.asOf });
   const [down, setDown] = useState(false);
 
   // The board lives next to the agent; refresh it while the page is open.
@@ -67,11 +70,13 @@ export function Arena({
     let alive = true;
     const load = async () => {
       try {
-        const r = await fetch(boardUrl, { cache: "no-store" });
+        // Same-origin: the server picks the most durable source that answers.
+        const r = await fetch("/arena/board.json", { cache: "no-store" });
         if (!r.ok) throw new Error(String(r.status));
-        const b = (await r.json()) as Board;
+        const b = (await r.json()) as Board & { source: Source; asOf: string };
         if (alive) {
           setBoard(b);
+          setSource({ source: b.source, asOf: b.asOf });
           setDown(false);
         }
       } catch {
@@ -84,7 +89,7 @@ export function Arena({
       alive = false;
       clearInterval(t);
     };
-  }, [boardUrl]);
+  }, []);
 
   const stats = board?.stats;
 
@@ -163,7 +168,11 @@ export function Arena({
             </div>
           ))}
         </div>
-        {down ? <p className="mt-3 font-type text-xs">The board is not answering right now. Attempts still count.</p> : null}
+        {source.source === "snapshot" ? (
+          <p className="mt-3 font-type text-xs">Board as of {new Date(source.asOf).toUTCString().slice(5, 22)} UTC. The agent is waking up; attempts still count.</p>
+        ) : down && !board ? (
+          <p className="mt-3 font-type text-xs">The board is not answering right now. Attempts still count.</p>
+        ) : null}
       </section>
 
       <section className="mx-auto grid max-w-[1240px] gap-10 px-5 pb-24 sm:px-8 lg:grid-cols-[360px_1fr]">
@@ -203,7 +212,9 @@ export function Arena({
                   <div className="min-w-0 flex-1">
                     <p className="flex flex-wrap items-baseline gap-x-2 text-sm">
                       <b>{a.handle ? `@${a.handle}` : a.wallet}</b>
-                      <span className="font-type text-xs text-ink-2">{ago(a.at)}</span>
+                      <span className="font-type text-xs text-ink-2" suppressHydrationWarning>
+                        {ago(a.at)}
+                      </span>
                       <span className="rounded-[2px] bg-band px-1.5 py-0.5 font-type text-[0.68rem] font-bold text-on-band">
                         {a.caughtBy ? `caught by ${a.caughtBy}` : `PAID ${a.paidUsdc} test USDC`}
                       </span>

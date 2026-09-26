@@ -173,7 +173,7 @@ describe("Scam Payrun arena", () => {
     const { tmpdir } = await import("node:os");
     const log = new ArenaLog(`${mkdtempSync(`${tmpdir()}/arena-`)}/a.json`);
     const w = "0x2222222222222222222222222222222222222222";
-    for (let i = 0; i < 2; i++) log.add({ id: String(i), at: new Date().toISOString(), handle: null, wallet: w, verdict: "HOLD", caughtBy: "SERV", clauses: [2], reason: "r", paidUsdc: 0, txHash: null, servRequests: 2, steps: [] });
+    for (let i = 0; i < 2; i++) await log.add({ id: String(i), at: new Date().toISOString(), handle: null, wallet: w, verdict: "HOLD", caughtBy: "SERV", clauses: [2], reason: "r", paidUsdc: 0, txHash: null, servRequests: 2, steps: [] });
     expect(log.refusal(w, { perDay: 10, perWalletPerDay: 2 })).toMatch(/per wallet/);
     expect(log.refusal("0x3333333333333333333333333333333333333333", { perDay: 2, perWalletPerDay: 5 })).toMatch(/a day/);
     const b = log.board();

@@ -15,7 +15,8 @@
     "demo:serve": "PAYRUN_DEMO=1 next dev --port 3200",
     "openserv": "tsx openserv/agent.ts",
     "openserv:build": "tsx scripts/build-openserv.mts",
-    "openserv:deploy": "npm run openserv:build && tsx scripts/deploy-openserv.mts"
+    "openserv:deploy": "npm run openserv:build && tsx scripts/deploy-openserv.mts",
+    "demo:board": "tsx scripts/demo/01-durable-board.ts"
   },
   "dependencies": {
     "@coinbase/agentkit": "^0.10.4",

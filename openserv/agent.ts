@@ -19,6 +19,7 @@ import { Agent, run } from "@openserv-labs/sdk";
 import { provision, triggers } from "@openserv-labs/client";
 import { z } from "zod";
 import { ArenaLog, runArenaAttempt, validateEntry, ARENA_POLICY, type ArenaEntry } from "../src/core/arena";
+import { redisFromEnv } from "../src/core/arenaStore";
 import { checkInvoice } from "../src/core/check";
 import { ServClient } from "../src/core/serv";
 
@@ -65,7 +66,7 @@ agent.addCapability({
  * auth middleware (like /health), with no invoice text in it.
  */
 const ARENA = !!process.env.PAYRUN_ARENA_WALLET;
-const arenaLog = new ArenaLog(process.env.ARENA_LOG ?? "data/arena.json");
+const arenaLog = new ArenaLog(process.env.ARENA_LOG ?? "data/arena.json", redisFromEnv());
 let queue: Promise<unknown> = Promise.resolve();
 /** One attempt at a time: a single wallet, so transfers never race for a nonce. */
 const serial = <T>(work: () => Promise<T>): Promise<T> => {
@@ -114,7 +115,7 @@ if (ARENA) {
         const { createAgentKitPayer } = await import("../src/core/pay");
         const wallet = await createAgentKitPayer({ address: process.env.PAYRUN_ARENA_WALLET });
         const attempt = await runArenaAttempt(new ServClient({ traceDir: null }), wallet, entry);
-        arenaLog.add(attempt);
+        await arenaLog.add(attempt);
         const { steps, ...shown } = attempt;
         return JSON.stringify(
           {
@@ -135,6 +136,11 @@ async function main() {
   // The deployed copy must reuse the provisioned identity, never sign up a new account.
   if (process.env.PAYRUN_REQUIRE_OPENSERV_STATE === "1" && !existsSync(".openserv.json")) {
     throw new Error(".openserv.json is missing, so provision() would create a new OpenServ account. Rebuild with npm run openserv:build.");
+  }
+  if (ARENA) {
+    // A redeployed container starts with an empty disk: bring the board back first.
+    const restored = await arenaLog.restore().catch((e) => (console.warn(`Arena store: ${e instanceof Error ? e.message : e}`), 0));
+    console.log(`Arena board: ${arenaLog.all().length} attempts${restored ? ` (${restored} restored from the durable store)` : ""}.`);
   }
   const result = await provision({
     agent: {

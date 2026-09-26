@@ -161,6 +161,7 @@ async function main() {
     case "arena": {
       // Scam Payrun. setup: a separate CDP account with only the per-transfer cap. try: one local attempt.
       const { compileArenaWalletPolicy, runArenaAttempt, ArenaLog, validateEntry, arenaMaxSettled } = await import("./core/arena");
+      const { redisFromEnv } = await import("./core/arenaStore");
       const { createAgentKitPayer } = await payments();
       const sub = args[0];
       if (sub === "setup") {
@@ -178,11 +179,29 @@ async function main() {
         const wallet = args.includes("--dry") ? null : await createAgentKitPayer({ address: process.env.PAYRUN_ARENA_WALLET });
         console.log("Reading the attempt with SERV (the first run compiles the arena policy and can take a few minutes)…");
         const a = await runArenaAttempt(serv, wallet, entry, (st) => console.log(`  ${st.actor.padEnd(8)} ${st.ok === false ? "✗" : st.ok ? "✓" : "·"} ${st.title} — ${st.detail}`));
-        new ArenaLog("data/arena.json").add(a);
+        await new ArenaLog("data/arena.json", redisFromEnv()).add(a);
         console.log(a.caughtBy ? `→ ${a.verdict}, caught by ${a.caughtBy}` : `→ PAID ${a.paidUsdc} test USDC (${a.txHash})`);
         break;
       }
-      console.log("Usage: arena setup [--faucet] | arena try --wallet 0x… --file invoice.txt [--handle x] [--dry]");
+      if (sub === "snapshot") {
+        // Freeze the public board into the repo, so /arena shows it while the container sleeps or redeploys.
+        const { boardFrom } = await import("./core/arena");
+        const { SNAPSHOT_FILE } = await import("./core/arenaStore");
+        const store = redisFromEnv();
+        const url = opt("url") ?? process.env.ARENA_BOARD_URL ?? "https://container-pd2mspsteh5k.fly.dev/arena/board";
+        let board: unknown = null;
+        let from = "";
+        if (store) [board, from] = [boardFrom(await store.all()), "the durable store"];
+        if (!board) {
+          const r = await fetch(url, { signal: AbortSignal.timeout(15000) }).catch(() => null);
+          if (r?.ok) [board, from] = [await r.json(), url];
+        }
+        if (!board) [board, from] = [new ArenaLog("data/arena.json").board(), "data/arena.json"];
+        writeFileSync(SNAPSHOT_FILE, JSON.stringify({ ...(board as object), snapshotAt: new Date().toISOString() }, null, 1));
+        console.log(`Wrote ${SNAPSHOT_FILE} from ${from}: ${(board as { stats: { attempts: number } }).stats.attempts} attempts.`);
+        break;
+      }
+      console.log("Usage: arena setup [--faucet] | arena try --wallet 0x… --file invoice.txt [--handle x] [--dry] | arena snapshot [--url board]");
       break;
     }
     case "payroll": {

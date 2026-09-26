@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseUnits } from "viem";
 import { runInvoiceAgent, type AgentStep, type AgentWallet } from "./agent";
+import type { DurableStore } from "./arenaStore";
 import { makePolicyVersion } from "./policy";
 import type { ServClient } from "./serv";
 import type { Contractor } from "./types";
@@ -155,9 +156,42 @@ export async function runArenaAttempt(serv: ServClient, wallet: AgentWallet | nu
   return attempt;
 }
 
-/** Attempts, kept as one JSON file next to the agent. Small, append-only, public. */
+/** The public board: stats and the latest attempts, with no invoice text. */
+export function boardFrom(all: Attempt[], limit = 60) {
+  const by = (c: CaughtBy) => all.filter((a) => a.caughtBy === c).length;
+  return {
+    policy: ARENA_POLICY,
+    terms: { ...ARENA_TERMS, maxPayoutTestUsdc: arenaMaxSettled() },
+    stats: {
+      attempts: all.length,
+      won: all.filter((a) => a.caughtBy === null).length,
+      paidOutTestUsdc: Math.round(all.reduce((s, a) => s + a.paidUsdc, 0) * 1e6) / 1e6,
+      caughtBy: { "Prompt Guard": by("Prompt Guard"), "Payrun checks": by("Payrun checks"), SERV: by("SERV"), "Coinbase signer": by("Coinbase signer") },
+    },
+    // Public: no invoice text, only what the defence did.
+    attempts: all
+      .slice(-limit)
+      .reverse()
+      .map(({ steps, ...a }) => ({
+        ...a,
+        wallet: a.wallet.includes("…") ? a.wallet : `${a.wallet.slice(0, 6)}…${a.wallet.slice(-4)}`,
+        steps: (steps ?? []).map((s) => ({ actor: s.actor, title: s.title, ok: s.ok })),
+      })),
+  };
+}
+
+export type Board = ReturnType<typeof boardFrom>;
+
+/**
+ * Attempts, kept as one JSON file next to the agent. Small, append-only, public.
+ * With a durable store, every attempt is mirrored there too, and a fresh container
+ * restores the file from it before taking entries.
+ */
 export class ArenaLog {
-  constructor(private file: string) {}
+  constructor(
+    private file: string,
+    private mirror: DurableStore | null = null,
+  ) {}
 
   all(): Attempt[] {
     if (!existsSync(this.file)) return [];
@@ -168,10 +202,25 @@ export class ArenaLog {
     }
   }
 
-  add(a: Attempt): void {
-    const attempts = [...this.all(), a];
+  private write(attempts: Attempt[]): void {
     mkdirSync(dirname(this.file), { recursive: true });
     writeFileSync(this.file, JSON.stringify({ attempts }, null, 1));
+  }
+
+  /** Saves locally first; a failed mirror write is reported, never lost locally. */
+  async add(a: Attempt): Promise<void> {
+    this.write([...this.all(), a]);
+    if (this.mirror) await this.mirror.push(a).catch((e) => console.warn(`Arena store: ${e instanceof Error ? e.message : e}`));
+  }
+
+  /** Merge the durable copy into the local file (by id, in time order). Returns how many came back. */
+  async restore(): Promise<number> {
+    if (!this.mirror) return 0;
+    const local = this.all();
+    const seen = new Set(local.map((a) => a.id));
+    const missing = (await this.mirror.all()).filter((a) => !seen.has(a.id));
+    if (missing.length) this.write([...local, ...missing].sort((x, y) => Date.parse(x.at) - Date.parse(y.at)));
+    return missing.length;
   }
 
   /** Spending limits: SERV credit is real even when the entry fee is testnet. */
@@ -183,20 +232,7 @@ export class ArenaLog {
     return null;
   }
 
-  board(limit = 60) {
-    const all = this.all();
-    const by = (c: CaughtBy) => all.filter((a) => a.caughtBy === c).length;
-    return {
-      policy: ARENA_POLICY,
-      terms: { ...ARENA_TERMS, maxPayoutTestUsdc: arenaMaxSettled() },
-      stats: {
-        attempts: all.length,
-        won: all.filter((a) => a.caughtBy === null).length,
-        paidOutTestUsdc: Math.round(all.reduce((s, a) => s + a.paidUsdc, 0) * 1e6) / 1e6,
-        caughtBy: { "Prompt Guard": by("Prompt Guard"), "Payrun checks": by("Payrun checks"), SERV: by("SERV"), "Coinbase signer": by("Coinbase signer") },
-      },
-      // Public: no invoice text, only what the defence did.
-      attempts: all.slice(-limit).reverse().map(({ steps, ...a }) => ({ ...a, wallet: `${a.wallet.slice(0, 6)}…${a.wallet.slice(-4)}`, steps: steps.map((s) => ({ actor: s.actor, title: s.title, ok: s.ok })) })),
-    };
+  board(limit = 60): Board {
+    return boardFrom(this.all(), limit);
   }
 }

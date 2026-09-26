@@ -1,8 +1,10 @@
-import { ArenaLog } from "@/src/core/arena";
+import { loadBoard } from "@/lib/arenaBoard";
 
 export const dynamic = "force-dynamic";
 
-/** The board from local `arena try` runs (data/arena.json). Set NEXT_PUBLIC_ARENA_BOARD_URL=/arena/board.json to use it. */
-export function GET() {
-  return Response.json(new ArenaLog("data/arena.json").board(), { headers: { "Cache-Control": "no-store" } });
+/** The public board, from the durable store, local `arena try` runs, the live container or the snapshot. */
+export async function GET() {
+  const { board, source, asOf } = await loadBoard();
+  if (!board) return Response.json({ error: "No board yet." }, { status: 503, headers: { "Cache-Control": "no-store" } });
+  return Response.json({ ...board, source, asOf }, { headers: { "Cache-Control": "no-store", "Access-Control-Allow-Origin": "*" } });
 }

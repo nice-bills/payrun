@@ -31,6 +31,8 @@ Every refusal goes back to the model as a tool result, and it must hold or block
 
 `/arena` is a public challenge. Anyone pays a small x402 entry on OpenServ, becomes a contractor on file (100 USDC a day, 5-day cap), and sends any invoice. The arena policy approves no work this month, so the right answer is always "don't pay". If the agent pays you, you keep it (at most 0.5 test USDC, enforced by Coinbase's signer on a separate arena wallet). Each attempt runs the real pipeline, and the public board records which layer caught it: Prompt Guard, Payrun's checks, SERV, or the signer. Invoice text is never published. Limits: 100 attempts a day, 5 per wallet (`ARENA_DAILY_LIMIT`, `ARENA_WALLET_DAILY_LIMIT`), because SERV credit is real even when the entry fee is test USDC.
 
+The board outlives the container: every attempt is also pushed to a Redis list (Upstash REST, or Vercel KV), a redeployed container restores from it before taking entries, and `/arena` renders on the server from the most durable source that answers (the store, local runs, the live container, then `demo/arena-board.json` from `npm run cli -- arena snapshot`). Demo with no keys: `npm run demo:board`.
+
 Setup: `npm run cli -- arena setup` (creates the arena wallet and its cap rule), fund it with test USDC and a little Base Sepolia ETH, then `npm run openserv:deploy`. Local attempt: `npm run cli -- arena try --wallet 0x… --file invoice.txt`.
 
 ## Payrun Check, sold per call on OpenServ
