@@ -2,7 +2,9 @@ import type { CreatePolicyBody } from "@coinbase/cdp-sdk";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { parseUnits } from "viem";
-import { runInvoiceAgent, type AgentStep, type AgentWallet } from "./agent";
+// Type-only: the agent (and through it Coinbase AgentKit) loads only when an attempt runs, so the
+// board and /arena never pull the wallet SDK into their serverless function.
+import type { AgentStep, AgentWallet } from "./agent";
 import type { DurableStore } from "./arenaStore";
 import { makePolicyVersion } from "./policy";
 import type { ServClient } from "./serv";
@@ -123,6 +125,7 @@ export function caughtBy(a: Pick<Attempt, "verdict" | "txHash">, blockedByGuard:
 export async function runArenaAttempt(serv: ServClient, wallet: AgentWallet | null, entry: ArenaEntry, onStep?: (s: AgentStep) => void): Promise<Attempt> {
   const policy = arenaPolicy();
   const to = entry.wallet.trim();
+  const { runInvoiceAgent } = await import("./agent");
   const run = await runInvoiceAgent(serv, {
     invoice: { id: `arena-${Date.now()}`, source: "arena", rawText: entry.invoice, receivedAt: new Date().toISOString() },
     policy,
