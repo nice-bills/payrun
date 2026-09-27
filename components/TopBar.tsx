@@ -39,11 +39,11 @@ export function TopBar({
   const path = usePathname();
   return (
     <header className="z-20 shrink-0 bg-band">
-      <div className="mx-auto flex h-16 max-w-[1520px] items-center gap-4 px-4 sm:gap-8 sm:px-6">
+      <div className="mx-auto flex max-w-[1520px] flex-wrap items-center gap-x-4 px-4 pt-3 sm:h-16 sm:flex-nowrap sm:gap-8 sm:px-6 sm:pt-0">
         <Link href="/desk" aria-label="Payrun desk" className="shrink-0">
           <Wordmark />
         </Link>
-        <nav aria-label="Sections" className="no-scrollbar flex min-w-0 items-center gap-1 overflow-x-auto">
+        <nav aria-label="Sections" className="no-scrollbar order-last -mx-2 flex w-full min-w-0 items-center gap-0.5 overflow-x-auto py-2 sm:order-none sm:mx-0 sm:w-auto sm:gap-1 sm:py-0">
           {NAV.map((n) => {
             const active = path.startsWith(n.href);
             return (
@@ -51,7 +51,7 @@ export function TopBar({
                 key={n.href}
                 href={n.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative px-3.5 py-1.5 text-sm font-bold transition-colors duration-150 ${active ? "text-ink" : "text-on-band-2 hover:text-on-band"}`}
+                className={`relative shrink-0 px-2.5 py-1.5 text-sm font-bold sm:px-3.5 transition-colors duration-150 ${active ? "text-ink" : "text-on-band-2 hover:text-on-band"}`}
               >
                 {/* A paper tab slides to the current section: "where am I". */}
                 {active ? (

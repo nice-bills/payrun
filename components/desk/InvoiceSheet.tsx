@@ -94,6 +94,12 @@ export function InvoiceSheet({ item, fresh, activeNote }: { item: DeskItem; fres
           <span className="ml-auto">Received {stampDate(item.invoice.receivedAt)}</span>
         </header>
 
+        {d ? (
+          <div className="flex justify-end px-7 pt-5 sm:absolute sm:right-10 sm:top-[4.5rem] sm:p-0">
+            <Stamp key={`${item.invoice.id}-${d.decidedAt}`} verdict={d.finalVerdict} subline={subline} fresh={fresh} />
+          </div>
+        ) : null}
+
         <div className="px-7 pb-10 pt-7 sm:px-10">
           <pre className="max-w-[64ch] whitespace-pre-wrap break-words font-type text-[0.95rem] leading-[1.75] text-ink">{render(body, spans, activeNote)}</pre>
 
@@ -116,11 +122,6 @@ export function InvoiceSheet({ item, fresh, activeNote }: { item: DeskItem; fres
           ) : null}
         </div>
 
-        {d ? (
-          <div className="absolute right-5 top-16 sm:right-10 sm:top-[4.5rem]">
-            <Stamp key={`${item.invoice.id}-${d.decidedAt}`} verdict={d.finalVerdict} subline={subline} fresh={fresh} />
-          </div>
-        ) : null}
       </motion.div>
 
       {item.paid ? (
