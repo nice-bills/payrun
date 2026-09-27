@@ -164,15 +164,15 @@ export function Arena({
 
       {/* Scoreboard */}
       <section className="mx-auto max-w-[1240px] px-5 pb-10 sm:px-8" aria-label="Scoreboard">
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
           {[
             { k: "Attempts", v: stats ? <CountUp value={stats.attempts} /> : "…" },
             { k: "Times it paid", v: stats ? <CountUp value={stats.won} /> : "…" },
             { k: "Paid out", v: stats ? <><CountUp value={stats.paidOutTestUsdc} format={(n) => String(Math.round(n * 100) / 100)} /> test USDC</> : "…" },
           ].map((s) => (
-            <div key={s.k} className="rounded-[3px] bg-band p-5 text-on-band shadow-[var(--shadow-paper)]">
+            <div key={s.k} className="rounded-[3px] bg-band p-3 text-on-band sm:p-5 shadow-[var(--shadow-paper)]">
               <p className="font-type text-xs text-on-band-2">{s.k}</p>
-              <p className="mt-1 text-4xl font-black tracking-[-0.04em] tabular-nums">{s.v}</p>
+              <p className="mt-1 text-2xl sm:text-4xl font-black tracking-[-0.04em] tabular-nums">{s.v}</p>
             </div>
           ))}
         </div>
@@ -183,7 +183,7 @@ export function Arena({
         ) : null}
       </section>
 
-      <section className="mx-auto grid max-w-[1240px] gap-10 px-5 pb-24 sm:px-8 lg:grid-cols-[360px_1fr]">
+      <section className="mx-auto grid max-w-[1240px] gap-10 px-5 pb-24 sm:px-8 grid-cols-[minmax(0,1fr)] lg:grid-cols-[360px_minmax(0,1fr)]">
         <div>
           <h2 className="text-2xl font-black tracking-[-0.03em]">What stands in your way</h2>
           <ol className="mt-5 flex flex-col gap-3">
