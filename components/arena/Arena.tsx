@@ -177,7 +177,7 @@ export function Arena({
           ))}
         </div>
         {source.source === "snapshot" ? (
-          <p className="mt-3 font-type text-xs">Board as of {new Date(source.asOf).toUTCString().slice(5, 22)} UTC. The agent is waking up; attempts still count.</p>
+          <p className="mt-3 font-type text-xs">Board as of {new Date(source.asOf).toUTCString().slice(5, 22)} UTC. New attempts still count and show here once the agent records them.</p>
         ) : down && !board ? (
           <p className="mt-3 font-type text-xs">The board is not answering right now. Attempts still count.</p>
         ) : null}

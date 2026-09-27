@@ -33,15 +33,17 @@ export async function loadBoard(): Promise<LoadedBoard> {
   }
   const local = new ArenaLog("data/arena.json").all();
   if (local.length) return { board: boardFrom(local), source: "local", asOf: now };
+  const snap = readSnapshot<Board>();
   if (/^https?:\/\//.test(LIVE_BOARD_URL)) {
     try {
       const r = await fetch(LIVE_BOARD_URL, { cache: "no-store", signal: AbortSignal.timeout(4000) });
-      if (r.ok) return { board: (await r.json()) as Board, source: "live", asOf: now };
+      const live = r.ok ? ((await r.json()) as Board) : null;
+      // A freshly redeployed container answers with an empty board; the snapshot knows more.
+      if (live && (live.attempts.length || !snap?.attempts.length)) return { board: live, source: "live", asOf: now };
     } catch {
       // fall through
     }
   }
-  const snap = readSnapshot<Board>();
   if (snap) return { board: snap, source: "snapshot", asOf: snap.snapshotAt ?? now };
   return { board: null, source: "none", asOf: now };
 }
